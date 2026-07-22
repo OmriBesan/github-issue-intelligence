@@ -56,4 +56,52 @@ by AI and how the output was reviewed, adapted, and integrated.
 
 ---
 
+## Entry 002 — Stage 1A: GitHub Issue Collection Pipeline
+
+**Date:** 2026-07-22
+**Tool:** Google Antigravity (AI coding assistant powered by Gemini)
+**Stage:** 1A — Data Collection
+
+### What the AI assisted with
+
+1. **Designing the GitHub API client module** (`github_client.py`)
+   - Suggested using `requests.Session` for connection reuse.
+   - Designed the PR filtering logic (checking for the `"pull_request"` key).
+   - Designed the Link-header pagination parser.
+   - Structured the metadata dictionary to include only safe, non-sensitive fields.
+
+2. **Writing the CLI script** (`collect_issues.py`)
+   - Generated the `argparse` interface with `--help` text.
+   - Wrote the statistics printer (label frequencies, date range, missing bodies).
+
+3. **Writing the unit test suite** (`test_github_client.py`)
+   - Designed the `FakeResponse` class to avoid any real network calls.
+   - Wrote all 7 test cases covering PR exclusion, pagination, token safety,
+     HTTP errors, and file output verification.
+
+4. **Debugging and fixing a real bug**
+   - The AI discovered and fixed a `KeyError: 'page'` bug that appeared when
+     following GitHub Link-header pagination (params dict was cleared but the
+     debug log still referenced it). Fixed by introducing a separate `page_number`
+     counter.
+
+5. **Fixing a Windows encoding issue**
+   - The `✅` emoji in print statements caused a `UnicodeEncodeError` on Windows
+     cp1252 terminals. The AI replaced them with plain ASCII `[OK]` markers.
+
+### What we did ourselves
+
+- Approved the design of the collector before any code was written.
+- Reviewed every generated file.
+- Ran the actual collection and inspected the real output.
+
+### How we verified the AI output
+
+- All 16 pytest tests pass.
+- `ruff check` reports no issues.
+- The real collection produced 500 valid issues with 0 PR entries and no token
+  data in any output file, confirmed by a programmatic JSON inspection script.
+
+---
+
 *Future entries will be added at the end of each stage.*

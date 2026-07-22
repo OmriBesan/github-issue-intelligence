@@ -138,6 +138,29 @@ committed). See `.env.example` for the full list of variables.
 
 ---
 
+## Data Collection
+
+Issues are collected from GitHub using the `scripts/collect_issues.py` script.
+Pull requests are excluded automatically.
+
+```powershell
+# Collect up to 500 issues from scikit-learn (open + closed)
+.venv\Scripts\python scripts\collect_issues.py `
+    --owner scikit-learn `
+    --repo  scikit-learn `
+    --state all `
+    --max-issues 500 `
+    --output data\raw\scikit-learn_issues_sample.json
+```
+
+Output files (not committed — see `.gitignore`):
+- `data/raw/scikit-learn_issues_sample.json` — collected issue records
+- `data/raw/scikit-learn_issues_sample_metadata.json` — collection statistics
+
+Requires `GITHUB_TOKEN` to be set in `.env`.
+
+---
+
 ## Contributing
 
 This is a university course project with two contributors. Changes are made

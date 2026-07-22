@@ -78,3 +78,111 @@ have releases compatible with Python 3.14.
   in `docs/handoff.md`.
 - If any dependency is found to be incompatible with Python 3.14, we will
   record the fix in this decision log.
+
+---
+
+## Decision 003 — Separate data collection from the audit notebook
+
+**Date:** 2026-07-22
+**Stage:** 1A (data collection)
+**Status:** Accepted
+
+### Context
+
+We could have combined data collection and the audit into a single notebook.
+
+### Decision
+
+Collection lives in a standalone Python module (`github_client.py`) and a
+CLI script (`collect_issues.py`). The audit notebook (Stage 1B) will import
+the already-collected JSON files.
+
+### Rationale
+
+- Collection makes real network requests; notebooks are not the right place
+  for these.
+- Separating them means collection can be re-run independently if the raw
+  data needs refreshing, without re-running all audit cells.
+- It keeps reusable logic in `src/`, which is testable, importable, and
+  version-controlled independently of the notebook.
+
+---
+
+## Decision 004 — Exclude pull requests at collection time
+
+**Date:** 2026-07-22
+**Stage:** 1A (data collection)
+**Status:** Accepted
+
+### Context
+
+The GitHub Issues API returns both issues and pull requests in the same
+endpoint. In our scikit-learn sample of 2322 API items, 1822 (78.5%) were
+pull requests.
+
+### Decision
+
+Any API item that contains a `"pull_request"` key is immediately discarded
+during collection. It is never written to disk.
+
+### Rationale
+
+- Pull requests are not GitHub issues in the semantic sense. Including them
+  would corrupt the classification task.
+- Filtering at collection time avoids polluting the raw JSON with records
+  that would need to be filtered out in every downstream step.
+
+---
+
+## Decision 005 — Preserve raw data before any preprocessing
+
+**Date:** 2026-07-22
+**Stage:** 1A (data collection)
+**Status:** Accepted
+
+### Decision
+
+The raw JSON from the API is saved to `data/raw/` exactly as received
+(with only field selection and label simplification applied). No text
+cleaning, tokenisation, or normalisation is applied at collection time.
+
+### Rationale
+
+- Preprocessing decisions (lowercasing, stopword removal, etc.) should be
+  made after examining the data in the audit stage.
+- Preserving raw text allows us to experiment with different preprocessing
+  strategies without re-downloading from the API.
+- The `data/raw/` directory is gitignored so large files are never committed.
+
+---
+
+## Decision 006 — Collect 500 issues as the first sample
+
+**Date:** 2026-07-22
+**Stage:** 1A (data collection)
+**Status:** Accepted
+
+### Context
+
+scikit-learn has thousands of issues. We need a manageable first sample for
+the audit without exhausting the GitHub API rate limit.
+
+### Decision
+
+500 regular issues (state=all, most recent first) is our initial sample.
+
+### Rationale
+
+- 500 issues is enough to observe label distributions, identify class
+  imbalance, and assess data quality.
+- It fits comfortably within one GitHub API rate-limit window (5000
+  requests/hour for authenticated users).
+- The collector can be re-run with a larger `--max-issues` value later if
+  the audit shows we need more data.
+
+### Observed result
+
+- 2322 API items inspected to collect 500 regular issues.
+- 1822 PRs excluded (78.5% of API items were PRs).
+- 4976 rate-limit requests remaining after collection.
+
