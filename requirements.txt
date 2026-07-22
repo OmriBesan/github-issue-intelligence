@@ -1,0 +1,24 @@
+# requests — GitHub API calls
+requests
+
+# Data manipulation
+pandas
+numpy
+
+# Visualisation
+matplotlib
+
+# Machine learning (classical models, TF-IDF, evaluation)
+scikit-learn
+
+# Load .env files safely
+python-dotenv
+
+# Interactive exploration
+jupyter
+
+# Testing
+pytest
+
+# Linting and formatting
+ruff

@@ -1,0 +1,15 @@
+[tool.pytest.ini_options]
+# Tell pytest to look for packages inside src/
+# This means `import issue_intelligence` works without installing the package.
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[tool.ruff]
+# Target the same Python version we are running
+target-version = "py312"
+line-length = 88
+
+[tool.ruff.lint]
+# Enable: pycodestyle (E,W), pyflakes (F), isort (I)
+select = ["E", "W", "F", "I"]
+ignore = []

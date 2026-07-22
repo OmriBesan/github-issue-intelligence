@@ -1,0 +1,69 @@
+# =============================================================
+# GitHub Issue Intelligence — .gitignore
+# =============================================================
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Environment secrets — NEVER commit this file
+.env
+
+# Python byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+*.egg
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Linting
+.ruff_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Raw data downloaded from APIs — not committed to version control
+# Processed data and trained models are also excluded
+data/raw/*
+data/interim/*
+data/processed/*
+!data/raw/.gitkeep
+!data/interim/.gitkeep
+!data/processed/.gitkeep
+
+# Model artifacts
+models/
+*.pkl
+*.joblib
+*.pt
+*.pth
+*.onnx
+
+# Reports and figures generated at runtime
+reports/figures/*
+!reports/figures/.gitkeep
+
+# Notebooks scratch output (keep .ipynb files themselves)
+notebooks/.ipynb_checkpoints/
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
