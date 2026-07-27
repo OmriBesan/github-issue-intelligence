@@ -7,14 +7,17 @@ work at any point and know exactly where to start.
 
 ## Current State
 
-**Completed stage:** Stage 1B — Dataset Audit
+**Completed stage:** Stage 1C — Historical Collection and Label Review
 **Date completed:** 2026-07-27
 
-Stages 0, 1A, and 1B are all complete.
-- A sample of 500 scikit-learn issues has been collected (`data/raw/`).
-- A full audit notebook has been created and executed.
-- Six figures have been generated and saved to `reports/figures/`.
-- Provisional label scheme and next-step recommendations are documented.
+Stages 0, 1A, 1B, and 1C are all complete.
+
+- A 500-issue recent sample (2025–2026) exists in `data/raw/scikit-learn_issues_sample.json`.
+- A 5,000-issue historical sample (2010–2018) exists in `data/raw/scikit-learn_issues_history.json`.
+- A full historical audit has been run on the 5,000-issue dataset.
+- Eight figures are saved to `reports/figures/history/`.
+- A three-scheme label comparison has been performed.
+- Five new design decisions (012–016) are recorded.
 
 ---
 
@@ -41,7 +44,7 @@ source .venv/bin/activate
 pytest tests/ -v
 ```
 
-Expected: **50 passed** (34 audit tests + 16 collector tests).
+Expected: **69 passed** (45 audit tests + 22 collector tests + 2 setup tests).
 
 ## How to Run the Linter
 
@@ -53,139 +56,217 @@ Expected: no issues reported.
 
 ---
 
-## How to Re-run the Audit Script
+## How to Re-run the Historical Audit
 
 ```powershell
 .venv\Scripts\python scripts\audit_dataset.py `
-    --input   data\raw\scikit-learn_issues_sample.json `
+    --input    data\raw\scikit-learn_issues_history.json `
+    --metadata data\raw\scikit-learn_issues_history_metadata.json `
+    --figures-dir reports\figures\history
+```
+
+This regenerates all eight figures and prints the full text summary including
+the three-scheme label comparison.
+
+## How to Re-run the Recent Sample Audit
+
+```powershell
+.venv\Scripts\python scripts\audit_dataset.py `
+    --input    data\raw\scikit-learn_issues_sample.json `
     --metadata data\raw\scikit-learn_issues_sample_metadata.json `
     --figures-dir reports\figures
 ```
 
-This regenerates all six figures and prints a text summary.
+---
 
-## How to Re-execute the Notebook
+## Collection Commands
+
+### Recent sample (Stage 1A — newest 500 issues)
 
 ```powershell
-.venv\Scripts\jupyter nbconvert --to notebook --inplace --execute `
-    notebooks\01_data_audit.ipynb `
-    --ExecutePreprocessor.kernel_name=github-issue-intelligence `
-    --ExecutePreprocessor.timeout=300
+.venv\Scripts\python scripts\collect_issues.py `
+    --owner scikit-learn --repo scikit-learn `
+    --state all --max-issues 500 `
+    --output data\raw\scikit-learn_issues_sample.json
 ```
 
-To view the notebook interactively:
+### Historical sample (Stage 1C — oldest 5000 issues)
 
 ```powershell
-.venv\Scripts\jupyter notebook notebooks\01_data_audit.ipynb
+.venv\Scripts\python scripts\collect_issues.py `
+    --owner scikit-learn --repo scikit-learn `
+    --state all --sort created --direction asc --max-issues 5000 `
+    --output data\raw\scikit-learn_issues_history.json
 ```
 
 ---
 
-## Stage 1B Audit Results (2026-07-27)
-
-### Overview
+## Stage 1C Collection Results (2026-07-27)
 
 | Metric | Value |
 |--------|-------|
-| Total issues | 500 |
-| Unique label names | 59 |
-| With at least one label | 462 (92.4%) |
-| Without labels | 38 (7.6%) |
-| With multiple labels | 228 (45.6%) |
-| Missing/empty body | 1 (0.2%) |
-| Missing/empty title | 0 |
-| Open issues | 167 (33.4%) |
-| Closed issues | 333 (66.6%) |
+| API items inspected | 11,087 |
+| Pull requests excluded | 6,087 (54.9%) |
+| Duplicates skipped | 0 |
+| Regular issues saved | 5,000 |
+| Rate limit remaining | 4,889 |
+| Earliest issue date | 2010-08-31 |
+| Latest issue date | 2018-05-28 |
+| Years covered | 9 (2010–2018) |
 
-### Text Length (combined title + body)
+### Issues per Year
 
-| Stat | Value |
+| Year | Count |
 |------|-------|
-| Min | 13 chars |
-| Median | 1,766 chars |
-| Mean | 2,497 chars |
-| 95th percentile | 6,631 chars |
-| Max | 56,563 chars |
+| 2010 | 13 |
+| 2011 | 174 |
+| 2012 | 470 |
+| 2013 | 519 |
+| 2014 | 508 |
+| 2015 | 926 |
+| 2016 | 936 |
+| 2017 | 1,080 |
+| 2018 | 374 (partial — through May only) |
 
-### Leakage Check
+> [!NOTE]
+> The 2018 data is partial. Coverage ends at May 2018 because the 5,000-issue
+> limit was reached. The gap between 2018 and the recent sample (Sep 2025)
+> represents ~7 years of uncollected data.
 
-| Check | Count |
-|-------|-------|
-| Titles with category prefix ([BUG], ENH:, …) | 120 (24.0%) |
-| Titles containing a type label name literally | 79 (15.8%) |
+---
 
-### Provisional Type Subset (5 labels, single-type issues only)
+## Stage 1C Audit Results
 
 | Metric | Value |
 |--------|-------|
-| Usable issues | 326 (65.2% of total) |
-| Excluded — no type label | 161 |
-| Excluded — multiple type labels | 13 |
+| Total issues | 5,000 |
+| With labels | 2,504 (50.1%) |
+| Without labels | 2,496 (49.9%) |
+| Multi-label | 1,429 (28.6%) |
+| Missing body | 40 (0.8%) |
+| Unique label names | 69 |
+| Leakage — prefix titles | 266 (5.3%) |
+| Leakage — label in title | 370 (7.4%) |
 
-| Class | Count | % of subset |
-|-------|-------|-------------|
-| Bug | 156 | 47.9% |
-| Documentation | 64 | 19.6% |
-| New Feature | 55 | 16.9% |
-| RFC | 26 | 8.0% |
-| Build / CI | 25 | 7.7% |
-
----
-
-## Files Generated in Stage 1B
-
-| File | Description | Committed? |
-|------|-------------|-----------|
-| `src/issue_intelligence/data/audit.py` | Reusable audit functions | Yes |
-| `scripts/audit_dataset.py` | CLI audit script | Yes |
-| `tests/test_audit.py` | 34 unit tests | Yes |
-| `notebooks/01_data_audit.ipynb` | Executed audit notebook | Yes |
-| `reports/figures/top_label_frequencies.png` | Top-30 labels bar chart | Yes |
-| `reports/figures/labels_per_issue_distribution.png` | Labels-per-issue histogram | Yes |
-| `reports/figures/type_label_distribution.png` | Type class bar chart | Yes |
-| `reports/figures/creation_dates_by_month.png` | Monthly issue counts | Yes |
-| `reports/figures/text_length_distribution.png` | Text length histograms | Yes |
-| `reports/figures/label_cooccurrence_heatmap.png` | Co-occurrence heatmap | Yes |
-
-Data files (gitignored, must be present locally):
-- `data/raw/scikit-learn_issues_sample.json`
-- `data/raw/scikit-learn_issues_sample_metadata.json`
+> [!NOTE]
+> The 49.9% unlabelled rate is much higher than the recent sample (7.6%).
+> This reflects scikit-learn's older issue-tracking practices — labelling
+> was not consistently applied before approx. 2015.
 
 ---
 
-## Key Audit Findings
+## Critical Label Finding: "Enhancement" Was Missed
 
-1. **Class imbalance is severe** — Bug dominates at 47.9%.
-   Build / CI has only 25 examples (7.7%).
-   A model cannot be reliably trained on 25 examples of one class.
+The **fourth most frequent label** in the historical dataset is **"Enhancement"
+(456 occurrences)**.  This label was **not** included in the provisional 5-class
+scheme, which only listed "New Feature" (210 occurrences).
 
-2. **24% leakage risk** — Many issue titles contain category prefixes.
-   Prefixes must be stripped in preprocessing and leakage measured explicitly.
+The label scheme evolved over time:
+- 2010–2017: "Enhancement" was the primary feature-request label
+- 2017–present: "New Feature" (and "RFC") replaced "Enhancement"
 
-3. **Two distinct label roles** — Type labels and component labels must be
-   separated.  We should design two classification tasks.
-
-4. **Sample covers only 10 months** — Recency bias is a real concern.
-   The full history of scikit-learn goes back to 2010.
-
-5. **326 usable single-type issues** — This is enough for a prototype model
-   but not for a reliable, balanced classifier.
+**Any future label scheme must include "Enhancement" in the feature class.**
 
 ---
 
-## Next Planned Task — Stage 1C: Larger Collection
+## Label Scheme Comparison
 
-Before preprocessing or modelling, collect a larger and more historically
-representative sample.
+Three schemes were evaluated on the 5,000-issue historical dataset:
+
+| Scheme | Classes | Usable Issues | Min Class | Imbalance Ratio | Verdict |
+|--------|---------|--------------|-----------|-----------------|---------|
+| A (5-class original) | Bug, Documentation, New Feature, RFC, Build/CI | 1,524 | 3 (RFC) | 252:1 | **Rejected** |
+| B (4-class, RFC merged) | Bug, Documentation, Enhancement, Build/CI | 1,524 | 59 (Build/CI) | 12.8:1 | Borderline |
+| C (3-class core) | Bug, Documentation, Enhancement | 1,525 | 269 (Enhancement) | 2.8:1 | **Recommended** |
+
+> [!IMPORTANT]
+> None of these schemes include the "Enhancement" label from older issues.
+> Adding it to Scheme C would increase the Enhancement count from 269 to ~725,
+> reducing the imbalance ratio to approximately 1.5:1.
+
+### Recommended Label Mapping for Stage 2
+
+```python
+LABEL_SCHEME = {
+    "Bug":           ["Bug"],
+    "Documentation": ["Documentation"],
+    "Enhancement":   ["Enhancement", "New Feature", "RFC", "Build / CI"],
+}
+```
+
+---
+
+## Files Generated in Stage 1C
+
+### Code Changes (committed)
+
+| File | Change |
+|------|--------|
+| `src/issue_intelligence/data/github_client.py` | Added sort, direction, deduplication |
+| `src/issue_intelligence/data/audit.py` | Added 3 new analysis functions |
+| `scripts/collect_issues.py` | Added --sort, --direction CLI args |
+| `scripts/audit_dataset.py` | Added 2 new charts + scheme comparison |
+| `tests/test_github_client.py` | Added 7 new tests (total: 22) |
+| `tests/test_audit.py` | Added 15 new tests (total: 45) |
+| `docs/decisions.md` | Added Decisions 012–016 |
+| `docs/gpt_usage.md` | Added Entry 004 |
+| `docs/handoff.md` | Rewritten for Stage 1C |
+
+### Data Files (gitignored — must be present locally)
+
+| File | Size |
+|------|------|
+| `data/raw/scikit-learn_issues_history.json` | ~13 MB |
+| `data/raw/scikit-learn_issues_history_metadata.json` | ~400 bytes |
+| `data/raw/scikit-learn_issues_sample.json` | ~1.4 MB |
+| `data/raw/scikit-learn_issues_sample_metadata.json` | ~325 bytes |
+
+### Figures (gitignored — regenerate with audit script)
+
+Historical figures are in `reports/figures/history/`:
+
+| File | Content |
+|------|---------|
+| `top_label_frequencies.png` | Top-30 labels bar chart |
+| `labels_per_issue_distribution.png` | Label count histogram |
+| `type_label_distribution.png` | 5-class provisional type counts |
+| `creation_dates_by_month.png` | Monthly issue timeline |
+| `text_length_distribution.png` | Title/body/combined length distributions |
+| `label_cooccurrence_heatmap.png` | Top-20 label co-occurrence matrix |
+| `issues_per_year.png` | **NEW** — Issues created per calendar year |
+| `type_labels_by_year.png` | **NEW** — Stacked type-label chart by year |
+
+---
+
+## Decisions Summary
+
+| Decision | Summary |
+|----------|---------|
+| 012 | Collect oldest-first using direction=asc |
+| 013 | "Enhancement" is a separate, important historical label |
+| 014 | RFC retired — only 3 historical examples |
+| 015 | Build/CI borderline — needs review after combined dataset |
+| 016 | Scheme C (3-class) recommended for Stage 2 |
+
+---
+
+## Next Planned Task — Stage 2: Preprocessing
+
+Stage 1 (Data Collection and Audit) is now complete.
+
+The next task is **Stage 2: Text Preprocessing**.
 
 Tell the assistant:
-> **"Begin Stage 1C: re-collect scikit-learn issues to obtain at least
-> 3,000 issues spanning the full repository history."**
+> **"Begin Stage 2: preprocess the historical issue dataset for machine learning.
+> Use the recommended 3-class label scheme (Bug, Documentation, Enhancement)
+> with the label mapping from Decision 016."**
 
-Criteria for the new collection:
-- At least 100 single-type examples in each of the five classes.
-- Issues spanning at least 3 years of history.
-- Same collector and output format as Stage 1A.
+Key requirements for Stage 2:
+1. Strip known category prefixes from titles (e.g. "[BUG]", "ENH:", "RFC:").
+2. Truncate combined text to a sensible maximum length.
+3. Apply the Scheme C label mapping, including "Enhancement" as a historical label.
+4. Build a train/validation/test split with stratification.
+5. Save the preprocessed dataset as a separate file (do not overwrite raw data).
 
 ---
 
@@ -193,10 +274,11 @@ Criteria for the new collection:
 
 | Commit | Message |
 |--------|---------|
+| `515fba3` | feat: add scikit-learn dataset audit (Stage 1B) |
 | `545c2bf` | feat: add GitHub issue collection pipeline (Stage 1A) |
 | `cffa512` | chore: initialize project structure |
 
-(Stage 1B commit will appear here after the commit is made.)
+(Stage 1C commit will appear here after commit is made.)
 
 ---
 
@@ -210,22 +292,3 @@ Criteria for the new collection:
 | Dependencies file | `requirements.txt` |
 | Lock file | `requirements-lock.txt` |
 | Git repository | Local only (no remote) |
-
----
-
-## Key Files
-
-| File | Purpose |
-|------|---------|
-| `src/issue_intelligence/data/github_client.py` | GitHub API collector |
-| `src/issue_intelligence/data/audit.py` | Reusable audit functions |
-| `scripts/collect_issues.py` | Data collection CLI |
-| `scripts/audit_dataset.py` | Audit CLI (generates figures + summary) |
-| `notebooks/01_data_audit.ipynb` | Full audit notebook (executed) |
-| `tests/test_github_client.py` | Collector unit tests (16 tests) |
-| `tests/test_audit.py` | Audit unit tests (34 tests) |
-| `reports/figures/` | All generated audit figures |
-| `docs/project_plan.md` | Full staged project plan |
-| `docs/decisions.md` | Decision log — decisions 001–011 |
-| `docs/gpt_usage.md` | AI usage log |
-| `.env.example` | Secrets template — copy to `.env` |

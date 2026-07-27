@@ -5,12 +5,23 @@ Command-line script that collects GitHub issues and prints basic statistics.
 
 Usage
 -----
+# Most-recent 500 issues (Stage 1A style)
 .venv\\Scripts\\python scripts\\collect_issues.py \\
     --owner scikit-learn \\
     --repo  scikit-learn \\
     --state all \\
     --max-issues 500 \\
     --output data\\raw\\scikit-learn_issues_sample.json
+
+# Full historical collection — oldest first (Stage 1C)
+.venv\\Scripts\\python scripts\\collect_issues.py \\
+    --owner     scikit-learn \\
+    --repo      scikit-learn \\
+    --state     all \\
+    --sort      created \\
+    --direction asc \\
+    --max-issues 5000 \\
+    --output data\\raw\\scikit-learn_issues_history.json
 
 The script reads GITHUB_TOKEN from a .env file (or the environment).
 The token is never printed or written to any output file.
@@ -30,7 +41,7 @@ from pathlib import Path
 # without installing the package in editable mode.
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-from issue_intelligence.data.github_client import (
+from issue_intelligence.data.github_client import (  # noqa: E402
     GitHubAPIError,
     GitHubIssueCollector,
     MissingTokenError,
@@ -59,15 +70,19 @@ def build_parser() -> argparse.ArgumentParser:
             "and save them as JSON. Pull requests are excluded automatically."
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
+        epilog="""\
 Examples:
-  # Collect up to 500 issues (open + closed) from scikit-learn
+  # Most-recent 500 issues (Stage 1A)
   python scripts/collect_issues.py \\
-      --owner scikit-learn \\
-      --repo  scikit-learn \\
-      --state all \\
-      --max-issues 500 \\
+      --owner scikit-learn --repo scikit-learn \\
+      --state all --max-issues 500 \\
       --output data/raw/scikit-learn_issues_sample.json
+
+  # Historical 5000 issues — oldest first (Stage 1C)
+  python scripts/collect_issues.py \\
+      --owner scikit-learn --repo scikit-learn \\
+      --state all --sort created --direction asc --max-issues 5000 \\
+      --output data/raw/scikit-learn_issues_history.json
 
 Environment:
   GITHUB_TOKEN  GitHub Personal Access Token (classic, public_repo scope).
@@ -89,6 +104,24 @@ Environment:
         choices=["open", "closed", "all"],
         default="all",
         help="Issue state to collect (default: all).",
+    )
+    parser.add_argument(
+        "--sort",
+        choices=["created", "updated", "comments"],
+        default="created",
+        help=(
+            "API sort field "
+            "(default: created)."
+        ),
+    )
+    parser.add_argument(
+        "--direction",
+        choices=["asc", "desc"],
+        default="desc",
+        help=(
+            "Sort direction: 'desc' (newest first, default) or "
+            "'asc' (oldest first, use for historical coverage)."
+        ),
     )
     parser.add_argument(
         "--max-issues",
@@ -123,7 +156,7 @@ def print_statistics(issues: list[dict], metadata: dict) -> None:
     """Print a concise summary of the collected dataset."""
     total = len(issues)
     if total == 0:
-        print("\n⚠  No issues collected.")
+        print("\n[WARN] No issues collected.")
         return
 
     with_labels = sum(1 for i in issues if i.get("labels"))
@@ -148,9 +181,12 @@ def print_statistics(issues: list[dict], metadata: dict) -> None:
     print("  COLLECTION SUMMARY")
     print("=" * 60)
     print(f"  Repository          : {metadata.get('repository')}")
+    sort_dir = f"{metadata.get('sort')} / {metadata.get('direction')}"
+    print(f"  Sort / direction    : {sort_dir}")
     print(f"  State filter        : {metadata.get('state_filter')}")
     print(f"  API items inspected : {metadata.get('api_items_inspected')}")
     print(f"  Pull requests excl. : {metadata.get('pull_requests_excluded')}")
+    print(f"  Duplicates skipped  : {metadata.get('duplicates_skipped', 0)}")
     print(f"  Regular issues saved: {total}")
     print(f"  Authenticated       : {metadata.get('authenticated')}")
     print(f"  Rate limit remaining: {metadata.get('remaining_rate_limit')}")
@@ -188,6 +224,8 @@ def main() -> None:
             owner=args.owner,
             repo=args.repo,
             state=args.state,
+            sort=args.sort,
+            direction=args.direction,
             max_issues=args.max_issues,
             output_path=output_path,
         )
@@ -204,7 +242,6 @@ def main() -> None:
     stem = output_path.stem
     meta_path = output_path.with_name(stem + "_metadata" + output_path.suffix)
     print(f"[OK] Metadata saved to: {meta_path}")
-    print("\nNext step: run the Stage 1B data audit notebook.")
 
 
 if __name__ == "__main__":

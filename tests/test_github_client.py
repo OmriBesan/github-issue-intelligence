@@ -312,3 +312,181 @@ class TestGitHubIssueCollector:
         assert "GITHUB_TOKEN" not in str(saved_meta)
         # authenticated is a boolean
         assert isinstance(saved_meta["authenticated"], bool)
+
+    # ------------------------------------------------------------------
+    # Stage 1C — new tests
+    # ------------------------------------------------------------------
+
+    # 8. Sort and direction parameters are passed to the API
+    def test_sort_and_direction_passed_to_api(self) -> None:
+        """Collector must pass sort and direction to the GitHub API."""
+        page = [_make_issue(1)]
+
+        with patch.dict("os.environ", {"GITHUB_TOKEN": "fake-token"}):
+            with patch("requests.Session.get") as mock_get:
+                mock_get.side_effect = [
+                    FakeResponse(page),
+                    FakeResponse([]),
+                ]
+                collector = GitHubIssueCollector()
+                _, metadata = collector.collect(
+                    owner="owner",
+                    repo="repo",
+                    sort="created",
+                    direction="asc",
+                    max_issues=10,
+                )
+
+        # Check that the first call included sort and direction params
+        first_call_kwargs = mock_get.call_args_list[0]
+        params = first_call_kwargs[1].get("params") or first_call_kwargs[0][1]
+        assert params.get("sort") == "created"
+        assert params.get("direction") == "asc"
+
+    # 9. Metadata contains sort and direction fields
+    def test_metadata_contains_sort_and_direction(self) -> None:
+        """Metadata must record the sort and direction used during collection."""
+        page = [_make_issue(1)]
+
+        with patch.dict("os.environ", {"GITHUB_TOKEN": "fake-token"}):
+            with patch("requests.Session.get") as mock_get:
+                mock_get.side_effect = [
+                    FakeResponse(page),
+                    FakeResponse([]),
+                ]
+                collector = GitHubIssueCollector()
+                _, metadata = collector.collect(
+                    owner="owner",
+                    repo="repo",
+                    sort="created",
+                    direction="asc",
+                    max_issues=10,
+                )
+
+        assert metadata["sort"] == "created"
+        assert metadata["direction"] == "asc"
+
+    # 10. Metadata contains date coverage fields
+    def test_metadata_contains_date_coverage(self) -> None:
+        """Metadata must record earliest and latest creation dates."""
+        issue_a = _make_issue(1)
+        issue_a["created_at"] = "2015-03-01T00:00:00Z"
+        issue_b = _make_issue(2)
+        issue_b["created_at"] = "2020-06-15T00:00:00Z"
+        page = [issue_a, issue_b]
+
+        with patch.dict("os.environ", {"GITHUB_TOKEN": "fake-token"}):
+            with patch("requests.Session.get") as mock_get:
+                mock_get.side_effect = [
+                    FakeResponse(page),
+                    FakeResponse([]),
+                ]
+                collector = GitHubIssueCollector()
+                _, metadata = collector.collect(
+                    owner="owner", repo="repo", max_issues=100
+                )
+
+        assert metadata["earliest_created_at"] == "2015-03-01T00:00:00Z"
+        assert metadata["latest_created_at"] == "2020-06-15T00:00:00Z"
+
+    # 11. Deduplication skips issues already seen by ID
+    def test_deduplication_skips_duplicate_ids(self) -> None:
+        """The same issue ID appearing twice must only be saved once."""
+        dup_issue = _make_issue(42)  # id = 1042
+        page1 = [dup_issue, _make_issue(1)]
+        page2 = [dup_issue, _make_issue(2)]  # dup_issue appears again
+
+        next_link = '<https://api.github.com/repos/o/r/issues?page=2>; rel="next"'
+
+        with patch.dict("os.environ", {"GITHUB_TOKEN": "fake-token"}):
+            with patch("requests.Session.get") as mock_get:
+                mock_get.side_effect = [
+                    FakeResponse(page1, headers={"Link": next_link}),
+                    FakeResponse(page2),
+                ]
+                collector = GitHubIssueCollector()
+                issues, metadata = collector.collect(
+                    owner="owner", repo="repo", max_issues=100
+                )
+
+        ids = [i["id"] for i in issues]
+        # The duplicate issue ID (1042) should appear exactly once
+        assert ids.count(dup_issue["id"]) == 1
+        # Total unique issues = 3 (42, 1, 2)
+        assert len(issues) == 3
+        assert metadata["duplicates_skipped"] == 1
+
+    # 12. metadata contains duplicates_skipped key
+    def test_metadata_contains_duplicates_skipped(self) -> None:
+        """Metadata must always include a 'duplicates_skipped' key."""
+        page = [_make_issue(1)]
+
+        with patch.dict("os.environ", {"GITHUB_TOKEN": "fake-token"}):
+            with patch("requests.Session.get") as mock_get:
+                mock_get.side_effect = [
+                    FakeResponse(page),
+                    FakeResponse([]),
+                ]
+                collector = GitHubIssueCollector()
+                _, metadata = collector.collect(
+                    owner="owner", repo="repo", max_issues=10
+                )
+
+        assert "duplicates_skipped" in metadata
+        assert metadata["duplicates_skipped"] == 0
+
+    # 13. No pull requests in saved output (Stage 1C recheck)
+    def test_no_prs_in_history_output(self, tmp_path: Path) -> None:
+        """All saved issues must be free of the pull_request field."""
+        page = [_make_issue(i) for i in range(1, 5)] + [_make_pr(99)]
+        output_file = tmp_path / "history.json"
+
+        with patch.dict("os.environ", {"GITHUB_TOKEN": "fake-token"}):
+            with patch("requests.Session.get") as mock_get:
+                mock_get.side_effect = [
+                    FakeResponse(page),
+                    FakeResponse([]),
+                ]
+                collector = GitHubIssueCollector()
+                collector.collect(
+                    owner="owner",
+                    repo="repo",
+                    sort="created",
+                    direction="asc",
+                    max_issues=100,
+                    output_path=output_file,
+                )
+
+        saved = json.loads(output_file.read_text(encoding="utf-8"))
+        assert all("pull_request" not in i for i in saved)
+        assert len(saved) == 4  # 4 issues, 1 PR excluded
+
+    # 14. Output path does not overwrite a different file
+    def test_different_output_paths_are_independent(
+        self, tmp_path: Path
+    ) -> None:
+        """Collecting to two different paths must not overwrite each other."""
+        page_a = [_make_issue(1)]
+        page_b = [_make_issue(999)]
+        path_a = tmp_path / "sample.json"
+        path_b = tmp_path / "history.json"
+
+        with patch.dict("os.environ", {"GITHUB_TOKEN": "fake-token"}):
+            with patch("requests.Session.get") as mock_get:
+                mock_get.side_effect = [FakeResponse(page_a), FakeResponse([])]
+                GitHubIssueCollector().collect(
+                    owner="o", repo="r", max_issues=10, output_path=path_a
+                )
+
+            with patch("requests.Session.get") as mock_get:
+                mock_get.side_effect = [FakeResponse(page_b), FakeResponse([])]
+                GitHubIssueCollector().collect(
+                    owner="o", repo="r", max_issues=10, output_path=path_b
+                )
+
+        data_a = json.loads(path_a.read_text(encoding="utf-8"))
+        data_b = json.loads(path_b.read_text(encoding="utf-8"))
+        assert data_a[0]["number"] == 1
+        assert data_b[0]["number"] == 999
+        # The original sample must be untouched
+        assert data_a[0]["number"] != data_b[0]["number"]

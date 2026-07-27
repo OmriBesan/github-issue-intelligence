@@ -20,12 +20,15 @@ import pytest
 
 from issue_intelligence.data.audit import (
     PROVISIONAL_TYPE_LABELS,
+    build_label_scheme_stats,
     build_provisional_subset,
     compute_label_cooccurrence,
+    compute_label_distribution_by_year,
     compute_label_frequencies,
     compute_labels_per_issue,
     compute_missing_data,
     compute_text_lengths,
+    compute_yearly_distribution,
     detect_leakage,
     load_issues,
 )
@@ -361,3 +364,163 @@ class TestLoadIssues:
         loaded = load_issues(good_file)
         assert len(loaded) == 2
         assert loaded[0]["number"] == 1
+
+
+# ---------------------------------------------------------------------------
+# Stage 1C — new tests
+# ---------------------------------------------------------------------------
+
+
+class TestComputeYearlyDistribution:
+    def test_counts_by_year(self) -> None:
+        issues = [
+            _make_issue(1, created_at="2018-03-15T10:00:00Z"),
+            _make_issue(2, created_at="2018-11-01T00:00:00Z"),
+            _make_issue(3, created_at="2020-06-30T00:00:00Z"),
+        ]
+        yearly = compute_yearly_distribution(issues)
+        assert yearly["2018"] == 2
+        assert yearly["2020"] == 1
+        assert yearly.get("2019", 0) == 0
+
+    def test_missing_created_at_is_skipped(self) -> None:
+        issues = [
+            _make_issue(1, created_at=None),  # type: ignore[arg-type]
+            _make_issue(2, created_at="2021-01-01T00:00:00Z"),
+        ]
+        yearly = compute_yearly_distribution(issues)
+        assert yearly.get("2021") == 1
+        assert sum(yearly.values()) == 1  # the None issue is not counted
+
+    def test_empty_list_returns_empty_counter(self) -> None:
+        yearly = compute_yearly_distribution([])
+        assert len(yearly) == 0
+
+    def test_returns_correct_year_strings(self) -> None:
+        issues = [_make_issue(1, created_at="2023-12-31T23:59:59Z")]
+        yearly = compute_yearly_distribution(issues)
+        assert "2023" in yearly
+        # Year keys should be exactly 4 characters
+        for key in yearly:
+            assert len(key) == 4
+            assert key.isdigit()
+
+
+class TestComputeLabelDistributionByYear:
+    def _issues_for_year_test(self) -> list[dict]:
+        return [
+            _make_issue(1, labels=["Bug"], created_at="2019-05-01T00:00:00Z"),
+            _make_issue(2, labels=["Bug"], created_at="2020-03-01T00:00:00Z"),
+            _make_issue(3, labels=["Documentation"], created_at="2020-07-01T00:00:00Z"),
+            _make_issue(4, labels=["New Feature"], created_at="2021-01-01T00:00:00Z"),
+            # Multi-type: excluded by single-type rule
+            _make_issue(
+                5,
+                labels=["Bug", "Documentation"],
+                created_at="2021-02-01T00:00:00Z",
+            ),
+            # No type label: excluded
+            _make_issue(6, labels=["Needs Triage"], created_at="2021-03-01T00:00:00Z"),
+        ]
+
+    def test_correct_year_assignment(self) -> None:
+        issues = self._issues_for_year_test()
+        labels = ["Bug", "Documentation", "New Feature"]
+        by_year = compute_label_distribution_by_year(issues, labels)
+        assert by_year["2019"]["Bug"] == 1
+        assert by_year["2020"]["Bug"] == 1
+        assert by_year["2020"]["Documentation"] == 1
+        assert by_year["2021"]["New Feature"] == 1
+
+    def test_multi_type_issue_not_counted(self) -> None:
+        issues = self._issues_for_year_test()
+        labels = ["Bug", "Documentation", "New Feature"]
+        by_year = compute_label_distribution_by_year(issues, labels)
+        # Issue 5 (Bug + Documentation in 2021) should not be counted
+        assert by_year.get("2021", {}).get("Bug", 0) == 0
+        assert by_year.get("2021", {}).get("Documentation", 0) == 0
+
+    def test_non_type_labels_excluded(self) -> None:
+        issues = self._issues_for_year_test()
+        labels = ["Bug", "Documentation", "New Feature"]
+        by_year = compute_label_distribution_by_year(issues, labels)
+        # Issue 6 (Needs Triage, 2021) should not add any count
+        assert sum(
+            by_year.get("2021", {}).values()
+        ) == 1  # only New Feature from issue 4
+
+
+class TestBuildLabelSchemeStats:
+    def _make_issues_for_scheme(self) -> list[dict]:
+        return [
+            _make_issue(1, labels=["Bug"]),
+            _make_issue(2, labels=["Bug"]),
+            _make_issue(3, labels=["Documentation"]),
+            _make_issue(4, labels=["New Feature"]),
+            _make_issue(5, labels=["RFC"]),
+            _make_issue(6, labels=["Build / CI"]),
+            _make_issue(7, labels=["Needs Triage"]),  # no scheme class
+            # Multi-class: Bug maps to BugClass, RFC maps to Enhancement
+            _make_issue(8, labels=["Bug", "RFC"]),
+        ]
+
+    def test_five_class_scheme_counts_correctly(self) -> None:
+        issues = self._make_issues_for_scheme()
+        scheme_a = {
+            "Bug": ["Bug"],
+            "Documentation": ["Documentation"],
+            "New Feature": ["New Feature"],
+            "RFC": ["RFC"],
+            "Build / CI": ["Build / CI"],
+        }
+        stats = build_label_scheme_stats(issues, scheme_a)
+        assert stats["class_counts"]["Bug"] == 2
+        assert stats["class_counts"]["Documentation"] == 1
+        assert stats["total_usable"] == 6  # issues 1-6 each map to one class
+        assert stats["excluded_unlabelled"] == 1  # issue 7 (Needs Triage)
+        assert stats["excluded_multi_class"] == 1  # issue 8 (Bug + RFC)
+
+    def test_merged_scheme_increases_class_count(self) -> None:
+        issues = self._make_issues_for_scheme()
+        # Merge RFC into New Feature
+        scheme_b = {
+            "Bug": ["Bug"],
+            "Documentation": ["Documentation"],
+            "Enhancement": ["New Feature", "RFC"],
+            "Build / CI": ["Build / CI"],
+        }
+        stats = build_label_scheme_stats(issues, scheme_b)
+        assert stats["class_counts"]["Enhancement"] == 2  # New Feature + RFC
+        assert stats["total_usable"] == 6  # issues 1-6 each map to one class
+        # Issue 8 (Bug + RFC) maps to Bug + Enhancement → multi-class, excluded
+        assert stats["excluded_multi_class"] == 1
+
+    def test_imbalance_ratio_computed(self) -> None:
+        issues = self._make_issues_for_scheme()
+        scheme_a = {
+            "Bug": ["Bug"],
+            "Documentation": ["Documentation"],
+            "New Feature": ["New Feature"],
+            "RFC": ["RFC"],
+            "Build / CI": ["Build / CI"],
+        }
+        stats = build_label_scheme_stats(issues, scheme_a)
+        # max = 2 (Bug), min = 1 (others) → ratio = 2.0
+        assert stats["imbalance_ratio"] == pytest.approx(2.0)
+
+    def test_min_class_count_is_correct(self) -> None:
+        issues = self._make_issues_for_scheme()
+        scheme_b = {
+            "Bug": ["Bug"],
+            "Documentation": ["Documentation"],
+            "Enhancement": ["New Feature", "RFC"],
+            "Build / CI": ["Build / CI"],
+        }
+        stats = build_label_scheme_stats(issues, scheme_b)
+        assert stats["min_class_count"] == 1
+
+    def test_empty_scheme_excludes_all(self) -> None:
+        issues = self._make_issues_for_scheme()
+        stats = build_label_scheme_stats(issues, {})
+        assert stats["total_usable"] == 0
+        assert stats["excluded_unlabelled"] == len(issues)

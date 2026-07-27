@@ -318,3 +318,178 @@ reduce recency bias.
 
 - Each of the five type classes must have at least 100 single-type examples.
 - The collection should span at least 3 years of repository history.
+
+---
+
+## Decision 012 — Collect historical issues oldest-first using sort=created direction=asc
+
+**Date:** 2026-07-27
+**Stage:** 1C (historical collection)
+**Status:** Accepted
+
+### Context
+
+The Stage 1B sample (500 issues) covered only the 10 most-recent months
+of scikit-learn history.  The provisional subset had severe class imbalance
+(6.2:1 ratio) and the smallest class (Build / CI) had only 25 examples.
+
+### Decision
+
+Re-collect using `sort=created&direction=asc&state=all&max_issues=5000`.
+This fetches the oldest 5,000 regular issues first, maximising historical
+coverage.
+
+### Result
+
+- 5,000 regular issues collected
+- 11,087 API items inspected
+- 6,087 pull requests excluded
+- 0 duplicates skipped
+- Date range: 2010-08-31 to 2018-05-28 (9 calendar years, 7.7 years)
+- Rate limit remaining: 4,889
+
+---
+
+## Decision 013 — "Enhancement" label is a distinct historical target, not equivalent to "New Feature"
+
+**Date:** 2026-07-27
+**Stage:** 1C (label review)
+**Status:** Accepted — important correction to provisional scheme
+
+### Context
+
+In the historical dataset (2010–2018), the top label by frequency is "Bug"
+(837) but the fourth-most frequent label is "Enhancement" (456).  The
+provisional scheme included "New Feature" (210 occurrences) but NOT
+"Enhancement".  The two labels co-exist: some issues have only "Enhancement",
+others have only "New Feature", and some have both.
+
+### Finding
+
+The scikit-learn label scheme changed over time:
+- 2010–approx.2017: "Enhancement" was the primary feature-request label
+- 2017–present: "New Feature" and "RFC" have largely replaced "Enhancement"
+
+If "Enhancement" is excluded from the target scheme, the feature-request
+class covers only 206 out of approximately 660+ eligible issues.
+
+### Decision
+
+Any final label scheme must include "Enhancement" in the feature/enhancement
+class.  An updated provisional scheme for Stage 2 will use:
+  - Bug (or similar)
+  - Documentation
+  - Enhancement (combining "Enhancement" + "New Feature" + optionally "RFC")
+  - Build / CI (if kept as separate class)
+
+---
+
+## Decision 014 — RFC label is unusable as an independent class
+
+**Date:** 2026-07-27
+**Stage:** 1C (label review)
+**Status:** Accepted
+
+### Context
+
+The provisional five-class scheme included "RFC" as a separate class.
+
+### Finding
+
+In the historical dataset of 5,000 issues:
+- RFC: only **3** single-type examples (essentially zero)
+
+In the Stage 1B sample of 500 recent issues:
+- RFC: 26 single-type examples — still below the 100-example threshold
+
+Conclusion: "RFC" has never been consistently applied as a primary label in
+scikit-learn's history.  It appears as a secondary label alongside "New
+Feature" or "Enhancement" rather than as a standalone type.
+
+### Decision
+
+RFC will **not** be retained as an independent class.  It will be merged into
+the Enhancement/New Feature class in all future label schemes.
+
+---
+
+## Decision 015 — Build / CI is borderline; final inclusion depends on merged dataset
+
+**Date:** 2026-07-27
+**Stage:** 1C (label review)
+**Status:** Under review — revisit after Stage 2 data collection
+
+### Context
+
+In the historical dataset (5,000 issues):
+- Build / CI: **59** single-type examples (below the 100-example threshold)
+
+In the recent sample (Stage 1B):
+- Build / CI: **25** single-type examples
+
+Combined across both samples without deduplication: approx. 84 examples.
+The threshold is 100.
+
+### Finding
+
+Build / CI is also arguably a component label (which part of the system is
+affected) rather than an issue-type label (what kind of issue is it).
+A "Build / CI" issue is typically also a "Bug" or "Enhancement" — it
+describes the target system, not the nature of the problem.
+
+### Decision
+
+Build / CI will be held under review.  If the combined dataset (Stage 1D or
+beyond) yields ≥ 100 single-type examples, it will be retained.  Otherwise
+it will be merged into Bug or dropped.  This decision is deferred to Stage 2.
+
+---
+
+## Decision 016 — Recommended three label schemes for Stage 2 evaluation
+
+**Date:** 2026-07-27
+**Stage:** 1C (label review)
+**Status:** Accepted — to be finalised in Stage 2
+
+### Context
+
+The Stage 1C audit evaluated three label schemes against the 5,000-issue
+historical dataset.
+
+### Scheme A — Original 5-class (Bug, Documentation, New Feature, RFC, Build/CI)
+- Usable issues: 1,524
+- Imbalance ratio: **252:1** (Bug=757, RFC=3) — completely unacceptable
+- Verdict: **rejected**
+
+### Scheme B — 4-class (Bug, Documentation, Enhancement, Build/CI)
+where Enhancement = New Feature + RFC
+- Usable issues: 1,524
+- Imbalance ratio: **12.8:1** (Bug=757, Build/CI=59)
+- Verdict: acceptable only if Build/CI reaches ≥ 100 examples in the full
+  dataset; otherwise to be merged.
+- Note: does NOT yet include the "Enhancement" label from older issues.
+
+### Scheme C — 3-class core (Bug, Documentation, Enhancement)
+where Enhancement = New Feature + RFC + Build/CI
+- Usable issues: 1,525
+- Imbalance ratio: **2.8:1** (Bug=757, Enhancement=269)
+- Verdict: **recommended as baseline** — well-balanced, robust, and
+  semantically clear.
+- Note: still does NOT include "Enhancement" (old label) — adding it will
+  further improve the Enhancement count to ~725, reducing the ratio.
+
+### Decision
+
+Scheme C (3-class) is the recommended starting point for Stage 2.  The
+exact label mappings will be:
+  - Bug: ["Bug"]
+  - Documentation: ["Documentation"]
+  - Enhancement: ["Enhancement", "New Feature", "RFC", "Build / CI"]
+
+This scheme is the only one that achieves both:
+1. ≥ 100 examples per class
+2. Imbalance ratio < 3:1
+
+---
+
+*Decisions 001–016 recorded as of Stage 1C.*

@@ -33,15 +33,18 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 from issue_intelligence.data.audit import (  # noqa: E402
     PROVISIONAL_TYPE_LABELS,
+    build_label_scheme_stats,
     build_provisional_subset,
     categorize_labels_provisionally,
     compute_label_cooccurrence,
+    compute_label_distribution_by_year,
     compute_label_frequencies,
     compute_labels_per_issue,
     compute_missing_data,
     compute_state_distribution,
     compute_temporal_distribution,
     compute_text_lengths,
+    compute_yearly_distribution,
     describe_lengths,
     detect_leakage,
     load_issues,
@@ -230,6 +233,52 @@ def make_cooccurrence_heatmap(
     _save(fig, figures_dir / "label_cooccurrence_heatmap.png", "cooccurrence_heatmap")
 
 
+def make_yearly_chart(yearly: Counter, figures_dir: Path) -> None:
+    """Bar chart of issues per year — key for historical coverage check."""
+    if not yearly:
+        return
+    years = sorted(yearly.keys())
+    counts = [yearly[y] for y in years]
+    fig, ax = plt.subplots(figsize=(max(8, len(years) * 0.7), 5))
+    bars = ax.bar(years, counts, color="#5B8DB8", edgecolor="white", linewidth=0.5)
+    ax.bar_label(bars, fontsize=8, padding=3)
+    ax.set_xlabel("Year")
+    ax.set_ylabel("Issues")
+    ax.set_title("Issues Created per Year")
+    ax.grid(axis="y", alpha=0.35)
+    plt.xticks(rotation=45, ha="right")
+    plt.tight_layout()
+    _save(fig, figures_dir / "issues_per_year.png", "yearly_distribution")
+
+
+def make_label_by_year_chart(
+    issues: list[dict],
+    type_labels: list[str],
+    figures_dir: Path,
+) -> None:
+    """Stacked area chart — how each type label's usage evolved by year."""
+    by_year = compute_label_distribution_by_year(issues, type_labels)
+    if not by_year:
+        return
+    years = sorted(by_year.keys())
+    fig, ax = plt.subplots(figsize=(max(8, len(years) * 0.8), 5))
+    colors = ["#E05A54", "#5B8DB8", "#5CAD6A", "#D4A843", "#9B6BB5"]
+    bottom = [0] * len(years)
+    for label, color in zip(type_labels, colors):
+        counts = [by_year.get(y, {}).get(label, 0) for y in years]
+        ax.bar(years, counts, bottom=bottom, label=label,
+               color=color, edgecolor="white", linewidth=0.3)
+        bottom = [b + c for b, c in zip(bottom, counts)]
+    ax.set_xlabel("Year")
+    ax.set_ylabel("Single-type issues")
+    ax.set_title("Type Label Distribution by Year")
+    ax.legend(loc="upper left", fontsize=9)
+    ax.grid(axis="y", alpha=0.3)
+    plt.xticks(rotation=45, ha="right")
+    plt.tight_layout()
+    _save(fig, figures_dir / "type_labels_by_year.png", "label_by_year")
+
+
 # ---------------------------------------------------------------------------
 # Text summary printer
 # ---------------------------------------------------------------------------
@@ -252,17 +301,40 @@ def print_summary(
     with_labels = sum(1 for c in lpi if c > 0)
     multi_label = sum(1 for c in lpi if c > 1)
 
+    # Date coverage
+    yearly = compute_yearly_distribution(issues)
+    years = sorted(yearly.keys())
+    n_years = (int(years[-1]) - int(years[0]) + 1) if len(years) >= 2 else 1
+
     print("\n" + "=" * 65)
-    print("  STAGE 1B — DATASET AUDIT SUMMARY")
+    print("  DATASET AUDIT SUMMARY")
     print("=" * 65)
     print(f"  Repository              : {metadata.get('repository')}")
     print(f"  Collection timestamp    : {metadata.get('collection_timestamp')}")
+    sort_val = metadata.get('sort', 'created')
+    dir_val = metadata.get('direction', 'desc')
+    print(f"  Sort / direction        : {sort_val} / {dir_val}")
     print(f"  State filter            : {metadata.get('state_filter')}")
     print()
     print("  --- Overview ---")
     print(f"  Total issues            : {total}")
     for state, cnt in sorted(state_dist.items()):
         print(f"  State [{state:<6}]        : {cnt}  ({100*cnt/total:.1f}%)")
+    print()
+    print("  --- Date Coverage ---")
+    earliest = min(years) if years else "N/A"
+    latest = max(years) if years else "N/A"
+    print(f"  Earliest year           : {earliest}")
+    print(f"  Latest year             : {latest}")
+    print(f"  Years covered           : {n_years}")
+    print(f"  Metadata earliest date  : {metadata.get('earliest_created_at', 'N/A')}")
+    print(f"  Metadata latest date    : {metadata.get('latest_created_at', 'N/A')}")
+    print()
+    if years:
+        print("  Issues per year:")
+        for y in years:
+            bar_len = int(30 * yearly[y] / max(yearly.values()))
+            print(f"    {y}: {yearly[y]:>5}  {'|' * bar_len}")
     print()
     print("  --- Labels ---")
     without = total - with_labels
@@ -288,7 +360,7 @@ def print_summary(
     print(f"  Titles with type prefix : {len(leakage['prefix_matches'])}")
     print(f"  Titles with label name  : {len(leakage['label_in_title'])}")
     print()
-    print("  --- Provisional Type Subset ---")
+    print("  --- Provisional Type Subset (original 5-class scheme) ---")
     print(f"  Type labels used        : {sorted(PROVISIONAL_TYPE_LABELS)}")
     print(f"  Usable issues           : {subset_result['total_usable']}")
     print(f"  Excluded (no type label): {subset_result['excluded_unlabelled']}")
@@ -302,6 +374,52 @@ def print_summary(
     for label, cnt in class_items:
         pct = 100 * cnt / usable if usable else 0
         print(f"    {label:<25} {cnt:>4}  ({pct:.1f}%)")
+
+    # --- Label scheme comparison ---
+    print()
+    print("  --- Label Scheme Comparison ---")
+    type_labels_list = list(PROVISIONAL_TYPE_LABELS)
+
+    # Scheme A: Original 5-class
+    scheme_a = {lb: [lb] for lb in type_labels_list}
+    stats_a = build_label_scheme_stats(issues, scheme_a)
+
+    # Scheme B: Merge RFC into Enhancement; keep Build/CI
+    scheme_b = {
+        "Bug": ["Bug"],
+        "Documentation": ["Documentation"],
+        "Enhancement": ["New Feature", "RFC"],
+        "Build / CI": ["Build / CI"],
+    }
+    stats_b = build_label_scheme_stats(issues, scheme_b)
+
+    # Scheme C: 3-class core
+    scheme_c = {
+        "Bug": ["Bug"],
+        "Documentation": ["Documentation"],
+        "Enhancement": ["New Feature", "RFC", "Build / CI"],
+    }
+    stats_c = build_label_scheme_stats(issues, scheme_c)
+
+    schemes = [
+        ("A — Original 5-class", stats_a),
+        ("B — 4-class (RFC merged into Enhancement)", stats_b),
+        ("C — 3-class core", stats_c),
+    ]
+    for name, stats in schemes:
+        ratio = stats["imbalance_ratio"]
+        ratio_str = f"{ratio:.1f}:1" if ratio is not None else "N/A"
+        print(f"\n  Scheme {name}")
+        print(f"    Usable issues  : {stats['total_usable']}")
+        print(f"    Min class count: {stats['min_class_count']}")
+        print(f"    Imbalance ratio: {ratio_str}")
+        print("    Classes:")
+        for cls, cnt in sorted(
+            stats["class_counts"].items(), key=lambda x: -x[1]
+        ):
+            pct = 100 * cnt / stats["total_usable"] if stats["total_usable"] else 0
+            print(f"      {cls:<25} {cnt:>5}  ({pct:.1f}%)")
+
     print()
     print("  --- Top 20 Labels ---")
     for rank, (label, cnt) in enumerate(freq.most_common(20), 1):
@@ -345,6 +463,9 @@ def main() -> None:
     make_temporal_chart(monthly, figures_dir)
     make_text_length_chart(lengths, figures_dir)
     make_cooccurrence_heatmap(issues, freq, figures_dir)
+    # Stage 1C — additional charts
+    make_yearly_chart(compute_yearly_distribution(issues), figures_dir)
+    make_label_by_year_chart(issues, list(PROVISIONAL_TYPE_LABELS), figures_dir)
 
     print_summary(
         issues, metadata, freq, missing, lengths,

@@ -392,3 +392,136 @@ def build_provisional_subset(
         "total_usable": len(subset),
         "type_label_overlap": type_label_overlap,
     }
+
+
+# ---------------------------------------------------------------------------
+# Stage 1C — yearly analysis and label scheme comparison
+# ---------------------------------------------------------------------------
+
+
+def compute_yearly_distribution(issues: list[dict]) -> Counter:
+    """
+    Count issues by year of creation.
+
+    Returns a Counter keyed by 'YYYY' strings, sorted chronologically.
+    """
+    yearly: Counter = Counter()
+    for issue in issues:
+        ts = issue.get("created_at")
+        if ts:
+            try:
+                dt = datetime.fromisoformat(ts.replace("Z", "+00:00"))
+                yearly[dt.strftime("%Y")] += 1
+            except ValueError:
+                pass
+    return yearly
+
+
+def compute_label_distribution_by_year(
+    issues: list[dict],
+    labels: list[str],
+) -> dict[str, Counter]:
+    """
+    For each year, count how many issues carry each of the given labels.
+
+    Only issues with exactly one matching label are counted (single-type
+    rule), consistent with build_provisional_subset.
+
+    Returns
+    -------
+    A dict mapping year string ('YYYY') to a Counter of label → count.
+    """
+    by_year: dict[str, Counter] = defaultdict(Counter)
+    label_set = set(labels)
+
+    for issue in issues:
+        ts = issue.get("created_at")
+        if not ts:
+            continue
+        try:
+            dt = datetime.fromisoformat(ts.replace("Z", "+00:00"))
+            year = dt.strftime("%Y")
+        except ValueError:
+            continue
+
+        issue_labels = set(issue.get("labels") or [])
+        matches = issue_labels & label_set
+        if len(matches) == 1:
+            assigned = next(iter(matches))
+            by_year[year][assigned] += 1
+
+    return dict(by_year)
+
+
+def build_label_scheme_stats(
+    issues: list[dict],
+    scheme: dict[str, list[str]],
+) -> dict[str, Any]:
+    """
+    Compute class counts for a custom label scheme.
+
+    A label scheme is a dict mapping a new class name to the list of
+    original GitHub labels that should map to it.  For example::
+
+        scheme = {
+            "Bug":           ["Bug"],
+            "Documentation": ["Documentation"],
+            "Enhancement":   ["New Feature", "RFC"],
+            "Infrastructure":["Build / CI"],
+        }
+
+    The single-type rule still applies: an issue must have exactly ONE
+    class (after merging) to be included.  Issues whose original labels
+    map to more than one scheme class are excluded as ambiguous.
+
+    Returns
+    -------
+    A dict with:
+      class_counts       : Counter of scheme_class → count
+      total_usable       : sum of class_counts values
+      excluded_unlabelled: issues with no matching scheme label
+      excluded_multi_class: issues mapping to more than one scheme class
+      imbalance_ratio    : max_count / min_count  (or None if < 2 classes)
+      min_class_count    : minimum examples in any class
+    """
+    # Build reverse mapping: original_label → scheme_class
+    label_to_class: dict[str, str] = {}
+    for class_name, original_labels in scheme.items():
+        for orig in original_labels:
+            label_to_class[orig] = class_name
+
+    class_counts: Counter = Counter()
+    excluded_unlabelled = 0
+    excluded_multi_class = 0
+
+    for issue in issues:
+        issue_labels = set(issue.get("labels") or [])
+        assigned_classes = set()
+        for lb in issue_labels:
+            if lb in label_to_class:
+                assigned_classes.add(label_to_class[lb])
+
+        if len(assigned_classes) == 0:
+            excluded_unlabelled += 1
+        elif len(assigned_classes) > 1:
+            excluded_multi_class += 1
+        else:
+            class_counts[next(iter(assigned_classes))] += 1
+
+    total_usable = sum(class_counts.values())
+    counts = list(class_counts.values())
+    imbalance_ratio = (
+        max(counts) / min(counts)
+        if len(counts) >= 2 and min(counts) > 0
+        else None
+    )
+    min_class_count = min(counts) if counts else 0
+
+    return {
+        "class_counts": class_counts,
+        "total_usable": total_usable,
+        "excluded_unlabelled": excluded_unlabelled,
+        "excluded_multi_class": excluded_multi_class,
+        "imbalance_ratio": imbalance_ratio,
+        "min_class_count": min_class_count,
+    }

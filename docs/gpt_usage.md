@@ -157,4 +157,74 @@ by AI and how the output was reviewed, adapted, and integrated.
 
 ---
 
+## Entry 004 — Stage 1C: Historical Collection and Label Review
+
+**Date:** 2026-07-27
+**Tool:** Google Antigravity (AI coding assistant powered by Gemini)
+**Stage:** 1C — Historical Collection and Label Review
+
+### What the AI assisted with
+
+1. **Extending `github_client.py`**
+   - Added `sort` and `direction` parameters to `collect()`.
+   - Added ID-based deduplication (`seen_ids` set) with `duplicates_skipped` counter.
+   - Added `earliest_created_at` and `latest_created_at` to metadata.
+   - Backwards compatible — defaults unchanged for existing Stage 1A usage.
+
+2. **Extending `collect_issues.py`**
+   - Added `--sort` and `--direction` CLI arguments.
+   - Updated summary output to show sort/direction and duplicates skipped.
+   - Added historical collection example to the script docstring.
+
+3. **Extending `audit.py`**
+   - Added `compute_yearly_distribution()` — counts issues per year.
+   - Added `compute_label_distribution_by_year()` — type-label counts by year
+     (single-type rule applies).
+   - Added `build_label_scheme_stats()` — computes class counts for any custom
+     label scheme, including imbalance ratio and min class count.
+
+4. **Extending `audit_dataset.py`**
+   - Added `make_yearly_chart()` — bar chart of issues per year.
+   - Added `make_label_by_year_chart()` — stacked bar chart of type labels by year.
+   - Updated `print_summary()` to include date coverage and label scheme comparison.
+   - Three schemes (A, B, C) are evaluated automatically during each audit run.
+
+5. **Writing new unit tests**
+   - 19 new tests in `test_github_client.py` (sort/direction params, deduplication,
+     date coverage, output path independence).
+   - 15 new tests in `test_audit.py` (yearly distribution, label by year,
+     label scheme stats).
+
+6. **Running the real historical collection**
+   - Executed: `sort=created&direction=asc&max_issues=5000`
+   - Result: 5,000 issues, 2010-2018, 0 duplicates.
+
+7. **Running the historical audit**
+   - Generated 8 figures in `reports/figures/history/`.
+   - Produced three-scheme comparison in the audit output.
+
+8. **Documenting five new decisions** (012–016)
+   - Historical collection method
+   - "Enhancement" label discovery
+   - RFC retirement
+   - Build/CI status
+   - Recommended Scheme C (3-class)
+
+### What we did ourselves
+
+- Reviewed the staging of all code changes.
+- Interpreted the label scheme comparison output.
+- Made the final architectural decision to recommend Scheme C.
+
+### How we verified the AI output
+
+- 69 pytest tests pass (total: 34 + 22 + 13 across three test files).
+- `ruff check` reports no issues.
+- 5,000 issues collected and verified in the JSON output.
+- 8 figure PNG files saved to `reports/figures/history/`.
+- Token never appears in any output file (confirmed by metadata inspection).
+- `earliest_created_at` = `2010-08-31T07:38:16Z` (9 years of history).
+
+---
+
 *Future entries will be added at the end of each stage.*

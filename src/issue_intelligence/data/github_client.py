@@ -4,8 +4,8 @@ issue_intelligence.data.github_client
 Reusable GitHub Issues API client.
 
 Fetches regular issues (excluding pull requests) from any public
-GitHub repository, handles pagination, rate limiting, and saves
-results as UTF-8 JSON.
+GitHub repository, handles pagination, rate limiting, deduplication,
+and saves results as UTF-8 JSON.
 
 Usage example
 -------------
@@ -16,8 +16,10 @@ issues, metadata = collector.collect(
     owner="scikit-learn",
     repo="scikit-learn",
     state="all",
-    max_issues=500,
-    output_path="data/raw/scikit-learn_issues_sample.json",
+    sort="created",
+    direction="asc",        # oldest-first for historical coverage
+    max_issues=5000,
+    output_path="data/raw/scikit-learn_issues_history.json",
 )
 """
 
@@ -162,6 +164,8 @@ class GitHubIssueCollector:
         owner: str,
         repo: str,
         state: str = "all",
+        sort: str = "created",
+        direction: str = "desc",
         max_issues: int = 500,
         output_path: str | Path | None = None,
     ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
@@ -176,6 +180,11 @@ class GitHubIssueCollector:
             Repository name (e.g. "scikit-learn").
         state : str
             "open", "closed", or "all".
+        sort : str
+            Sort field: "created", "updated", or "comments".
+        direction : str
+            "asc" (oldest first) or "desc" (newest first, default).
+            Use "asc" for maximum historical coverage.
         max_issues : int
             Maximum number of *regular issues* to collect (not API items).
         output_path : str or Path, optional
@@ -184,7 +193,7 @@ class GitHubIssueCollector:
         Returns
         -------
         issues : list of dict
-            Collected regular issue records.
+            Collected regular issue records (deduplicated by GitHub issue ID).
         metadata : dict
             Collection statistics and provenance (no token value).
         """
@@ -200,20 +209,25 @@ class GitHubIssueCollector:
         url = f"{self.BASE_URL}/repos/{owner}/{repo}/issues"
         params: dict[str, Any] = {
             "state": state,
+            "sort": sort,
+            "direction": direction,
             "per_page": 100,
             "page": 1,
         }
 
         issues: list[dict[str, Any]] = []
+        seen_ids: set[int] = set()  # for deduplication
+
         api_items_inspected = 0
         pull_requests_excluded = 0
+        duplicates_skipped = 0
         remaining_rate_limit: int | None = None
         # tracked separately; params are cleared after Link-header pagination
         page_number = 1
 
         logger.info(
-            "Starting collection: %s/%s  state=%s  max=%d",
-            owner, repo, state, max_issues,
+            "Starting collection: %s/%s  state=%s  sort=%s  direction=%s  max=%d",
+            owner, repo, state, sort, direction, max_issues,
         )
 
         while len(issues) < max_issues:
@@ -260,6 +274,15 @@ class GitHubIssueCollector:
                     pull_requests_excluded += 1
                     continue
 
+                # Deduplicate by GitHub issue ID (safety measure for
+                # edge cases at pagination boundaries)
+                issue_id = raw_item.get("id")
+                if issue_id is not None and issue_id in seen_ids:
+                    duplicates_skipped += 1
+                    continue
+                if issue_id is not None:
+                    seen_ids.add(issue_id)
+
                 issues.append(_extract_issue_fields(raw_item))
 
                 if len(issues) >= max_issues:
@@ -277,22 +300,35 @@ class GitHubIssueCollector:
 
         logger.info(
             "Collection complete: %d API items inspected, "
-            "%d PRs excluded, %d issues saved.",
+            "%d PRs excluded, %d duplicates skipped, %d issues saved.",
             api_items_inspected,
             pull_requests_excluded,
+            duplicates_skipped,
             len(issues),
         )
+
+        # Compute date coverage from the collected issues
+        dates = [
+            i["created_at"] for i in issues if i.get("created_at")
+        ]
+        earliest_created_at = min(dates) if dates else None
+        latest_created_at = max(dates) if dates else None
 
         metadata = self._build_metadata(
             owner=owner,
             repo=repo,
             state=state,
+            sort=sort,
+            direction=direction,
             max_issues=max_issues,
             api_items_inspected=api_items_inspected,
             pull_requests_excluded=pull_requests_excluded,
+            duplicates_skipped=duplicates_skipped,
             issues_saved=len(issues),
             authenticated=authenticated,
             remaining_rate_limit=remaining_rate_limit,
+            earliest_created_at=earliest_created_at,
+            latest_created_at=latest_created_at,
         )
 
         if output_path is not None:
@@ -321,24 +357,34 @@ class GitHubIssueCollector:
         owner: str,
         repo: str,
         state: str,
+        sort: str,
+        direction: str,
         max_issues: int,
         api_items_inspected: int,
         pull_requests_excluded: int,
+        duplicates_skipped: int,
         issues_saved: int,
         authenticated: bool,
         remaining_rate_limit: int | None,
+        earliest_created_at: str | None,
+        latest_created_at: str | None,
     ) -> dict[str, Any]:
         """Build the metadata dictionary. The token is never included."""
         return {
             "repository": f"{owner}/{repo}",
             "collection_timestamp": datetime.now(timezone.utc).isoformat(),
             "state_filter": state,
+            "sort": sort,
+            "direction": direction,
             "requested_maximum": max_issues,
             "api_items_inspected": api_items_inspected,
             "pull_requests_excluded": pull_requests_excluded,
+            "duplicates_skipped": duplicates_skipped,
             "regular_issues_saved": issues_saved,
             "authenticated": authenticated,  # boolean only — no token
             "remaining_rate_limit": remaining_rate_limit,
+            "earliest_created_at": earliest_created_at,
+            "latest_created_at": latest_created_at,
         }
 
     @staticmethod
@@ -353,7 +399,7 @@ class GitHubIssueCollector:
         # Save the issues
         with open(output_path, "w", encoding="utf-8") as fh:
             json.dump(issues, fh, ensure_ascii=False, indent=2)
-        logger.info("Issues saved → %s", output_path)
+        logger.info("Issues saved -> %s", output_path)
 
         # Save the metadata alongside the issues file
         meta_path = output_path.with_name(
@@ -361,4 +407,4 @@ class GitHubIssueCollector:
         )
         with open(meta_path, "w", encoding="utf-8") as fh:
             json.dump(metadata, fh, ensure_ascii=False, indent=2)
-        logger.info("Metadata saved → %s", meta_path)
+        logger.info("Metadata saved -> %s", meta_path)
