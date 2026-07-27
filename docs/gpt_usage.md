@@ -104,4 +104,57 @@ by AI and how the output was reviewed, adapted, and integrated.
 
 ---
 
+## Entry 003 — Stage 1B: Dataset Audit
+
+**Date:** 2026-07-27
+**Tool:** Google Antigravity (AI coding assistant powered by Gemini)
+**Stage:** 1B — Dataset Audit
+
+### What the AI assisted with
+
+1. **Designing the audit module** (`audit.py`)
+   - Proposed the full set of analysis functions (12 functions).
+   - Designed `build_provisional_subset()` with the single-type-label rule.
+   - Designed `detect_leakage()` with both prefix and literal-label checks.
+   - Designed `categorize_labels_provisionally()` with four roles.
+
+2. **Writing the CLI audit script** (`audit_dataset.py`)
+   - Generated all six matplotlib figure-generation functions.
+   - Generated the text summary printer.
+   - Used `plt.switch_backend("Agg")` to avoid display issues on Windows.
+
+3. **Writing the unit test suite** (`test_audit.py`)
+   - 34 new tests covering all 10 required scenarios.
+   - All tests use synthetic issue records, not the real raw data.
+
+4. **Writing and executing the Jupyter notebook** (`01_data_audit.ipynb`)
+   - Structured 33 cells across 12 sections.
+   - The notebook calls `audit.py` functions and focuses on explanation.
+   - Executed successfully: all 19 code cells ran, all figures saved.
+
+5. **Documenting decisions** (`docs/decisions.md`)
+   - Decisions 007–011 covering the audit architecture, provisional labels,
+     task separation, leakage risk, and next collection recommendation.
+
+6. **Debugging issues**
+   - Fixed `MissingIDFieldWarning`: added `uuid4`-based `id` fields to all cells.
+   - Fixed `FileNotFoundError` from nbconvert's output path resolution by
+     switching to `--inplace` execution.
+
+### What we did ourselves
+
+- Reviewed and approved the design of the audit module before coding.
+- Inspected the notebook output cells after execution.
+- Reviewed the six generated figures for correctness and readability.
+
+### How we verified the AI output
+
+- 50 pytest tests pass (34 new + 16 from Stage 1A).
+- `ruff check` reports no issues.
+- All 19 notebook code cells executed and have non-empty outputs.
+- 6 figure PNG files saved to `reports/figures/`.
+- The audit script run produced a complete text summary from the real data.
+
+---
+
 *Future entries will be added at the end of each stage.*

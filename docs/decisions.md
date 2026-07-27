@@ -180,9 +180,141 @@ the audit without exhausting the GitHub API rate limit.
 - The collector can be re-run with a larger `--max-issues` value later if
   the audit shows we need more data.
 
-### Observed result
-
 - 2322 API items inspected to collect 500 regular issues.
 - 1822 PRs excluded (78.5% of API items were PRs).
 - 4976 rate-limit requests remaining after collection.
 
+---
+
+## Decision 007 — Keep reusable audit logic in `src/`, not in the notebook
+
+**Date:** 2026-07-27
+**Stage:** 1B (dataset audit)
+**Status:** Accepted
+
+### Decision
+
+All analysis functions (label frequency, co-occurrence, leakage detection,
+provisional subset construction, etc.) are implemented in
+`src/issue_intelligence/data/audit.py`.
+
+The notebook (`notebooks/01_data_audit.ipynb`) and CLI script
+(`scripts/audit_dataset.py`) call these functions rather than reimplementing
+the logic inline.
+
+### Rationale
+
+- Reusable module code is unit-testable; notebook cell code is not.
+- If the dataset changes, only one code path needs updating.
+- The notebook stays focused on explanation and visualisation.
+
+---
+
+## Decision 008 — Use five provisional type labels for Stage 1B
+
+**Date:** 2026-07-27
+**Stage:** 1B (dataset audit)
+**Status:** Provisional — subject to revision after broader collection
+
+### Context
+
+The audit revealed 59 unique label names across 500 issues.  Most labels
+serve workflow, component, or lifecycle roles and are not suitable as
+classification targets.
+
+### Decision
+
+The five provisional issue-type labels are:
+- **Bug**
+- **Documentation**
+- **New Feature**
+- **RFC**
+- **Build / CI**
+
+### Rationale
+
+- These five labels describe the *kind* of problem, not the triage state
+  or the affected component.
+- Together they cover 326 of the 500 issues (65.2%) when restricted to
+  single-type issues.
+- They appear consistently in the top 10 most frequent labels.
+
+### Known limitations
+
+- The sample is only 500 recent issues (10-month window).  The label
+  distribution may not reflect the full repository history.
+- Bug is heavily over-represented (47.9% of the provisional subset).
+  Build / CI has only 25 examples (7.7%).
+- The label scheme must be re-evaluated after collecting 3,000+ issues.
+
+---
+
+## Decision 009 — Separate issue-type from component prediction
+
+**Date:** 2026-07-27
+**Stage:** 1B (dataset audit)
+**Status:** Accepted (plan for Stage 2+)
+
+### Context
+
+The audit identified two clearly distinct label roles in scikit-learn:
+- **Type labels** (Bug, Documentation, …) — what kind of problem.
+- **Component labels** (Array API, Callbacks, …) — where the problem is.
+
+### Decision
+
+Design two separate classification tasks rather than one combined task:
+1. **Task 1 (priority):** Predict issue type (5-class classification).
+2. **Task 2 (optional):** Predict affected component.
+
+### Rationale
+
+- Mixing type and component labels in a single classifier would require
+  multi-label output, which adds significant complexity for a first model.
+- The component label vocabulary is larger and changes as new sub-projects
+  emerge (e.g. Array API, Callbacks, free-threading in the current sample).
+
+---
+
+## Decision 010 — Acknowledge and measure leakage risk before modelling
+
+**Date:** 2026-07-27
+**Stage:** 1B (dataset audit)
+**Status:** Accepted
+
+### Finding
+
+The audit found that 120 out of 500 issue titles (24%) contain a category
+prefix such as `[BUG]`, `ENH:`, or `[RFC]`.  An additional 79 titles contain
+a type label name literally.
+
+### Decision
+
+1. Strip known prefixes from titles in the preprocessing step.
+2. Evaluate the final model on both the full dataset and the prefix-free
+   subset to quantify the leakage effect.
+3. Document this risk in the model card.
+
+---
+
+## Decision 011 — Collect at least 3,000 historical issues before modelling
+
+**Date:** 2026-07-27
+**Stage:** 1B (dataset audit)
+**Status:** Accepted (recommended next step)
+
+### Context
+
+The audit found that the smallest provisional class (Build / CI) has only
+25 examples.  This is insufficient for reliable training.
+
+### Decision
+
+Before Stage 2 (preprocessing and modelling), re-run the collector with
+`--max-issues 3000` or higher, targeting older issues (earliest first) to
+reduce recency bias.
+
+### Success criteria
+
+- Each of the five type classes must have at least 100 single-type examples.
+- The collection should span at least 3 years of repository history.
