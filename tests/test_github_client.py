@@ -490,3 +490,37 @@ class TestGitHubIssueCollector:
         assert data_b[0]["number"] == 999
         # The original sample must be untouched
         assert data_a[0]["number"] != data_b[0]["number"]
+
+
+    def test_start_page_passed_to_first_api_request(self) -> None:
+        """start_page=5 must appear in the first request's query parameters."""
+        page = [_make_issue(1)]
+        with patch.dict("os.environ", {"GITHUB_TOKEN": "fake-token"}):
+            with patch("requests.Session.get") as mock_get:
+                mock_get.side_effect = [FakeResponse(page), FakeResponse([])]
+                GitHubIssueCollector().collect(
+                    owner="o",
+                    repo="r",
+                    sort="created",
+                    direction="asc",
+                    start_page=5,
+                    max_issues=10,
+                )
+        first_call_kwargs = mock_get.call_args_list[0]
+        # The page parameter is passed via the params keyword argument
+        params = first_call_kwargs[1].get("params") or first_call_kwargs[0][1]
+        assert params.get("page") == 5
+
+    def test_start_page_in_metadata(self) -> None:
+        """start_page value must be recorded in the returned metadata dict."""
+        page = [_make_issue(1)]
+        with patch.dict("os.environ", {"GITHUB_TOKEN": "fake-token"}):
+            with patch("requests.Session.get") as mock_get:
+                mock_get.side_effect = [FakeResponse(page), FakeResponse([])]
+                _, metadata = GitHubIssueCollector().collect(
+                    owner="o",
+                    repo="r",
+                    start_page=7,
+                    max_issues=10,
+                )
+        assert metadata["start_page"] == 7

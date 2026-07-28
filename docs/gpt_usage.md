@@ -227,4 +227,65 @@ by AI and how the output was reviewed, adapted, and integrated.
 
 ---
 
+## Entry 005 — Stage 1D: Historical Coverage Completion and Label Mapping Review
+
+**Date:** 2026-07-28
+**Tool:** Google Antigravity (AI coding assistant powered by Gemini)
+**Stage:** 1D — Historical Coverage and Label Validation
+
+### What the AI assisted with
+
+1. **Discovering the GitHub API pagination limit**
+   - Attempting to resume collection with `start_page=112` returned HTTP 422.
+   - The AI identified this as a known GitHub limitation for large repositories
+     and proposed using the `since` query parameter instead.
+
+2. **Extending the collection pipeline**
+   - Added `since` parameter to `GitHubIssueCollector.collect()`.
+   - Added `--since` CLI argument to `collect_issues.py`.
+   - Added `start_page` parameter (retained for small repositories).
+   - Collected 8,380 additional issues (2011–2026-07-27) using
+     `--since 2018-05-29T00:00:00Z`.
+
+3. **Creating the combine module and script**
+   - New `src/issue_intelligence/data/combine.py` with `load_and_combine`,
+     `find_yearly_gaps`, `sample_issues_by_label`, `build_cooccurrence_stats`,
+     and `save_combined`.
+   - New `scripts/combine_datasets.py` CLI that merges, deduplicates, and
+     reports yearly coverage.
+   - Combined all three raw files into 12,190 unique issues covering
+     2010–2026 with no gaps from 2011 onward.
+
+4. **Generating the label review sample**
+   - New `scripts/label_review_sample.py` samples up to 40 issues per label
+     (Enhancement, New Feature, RFC, Build / CI) with a fixed seed.
+   - Saves `reports/label_mapping_review.csv` (160 rows) for human review.
+   - Prints co-occurrence statistics, pairwise overlap, frequency by year, and
+     the full candidate scheme evaluation.
+
+5. **Writing tests for all new functionality**
+   - New `tests/test_combine.py` with 36 tests covering combination,
+     deduplication, yearly gap detection, deterministic sampling,
+     the 3-class scheme, Build/CI exclusion, and co-occurrence stats.
+   - Two new tests in `test_github_client.py` for `start_page` and `since`.
+
+### What the student reviewed and verified
+
+- Confirmed `reports/label_mapping_review.csv` was saved with 160 rows.
+- Confirmed `data/raw/scikit-learn_issues_combined.json` has 12,190 unique issues.
+- Inspected yearly distribution: no gaps 2011–2026.
+- Reviewed candidate scheme counts: Bug 2,274 / Enhancement 2,039 / Documentation 1,397.
+- Reviewed Build / CI co-occurrence: 72/365 issues (19.7%) co-occur with Bug,
+  confirming it is primarily a modifier, not a type class.
+- Ran `pytest tests/ -v` (103 passed) and `ruff check` (clean).
+- Reviewed git diff before committing.
+
+### What was NOT AI-generated
+
+- The decision to exclude Build / CI from the type target (human semantic judgement).
+- Verification that 2019 is the correct transition year from "Enhancement" to "New Feature".
+- The final interpretation of the co-occurrence statistics.
+
+---
+
 *Future entries will be added at the end of each stage.*

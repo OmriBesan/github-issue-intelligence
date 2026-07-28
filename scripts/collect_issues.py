@@ -131,6 +131,27 @@ Environment:
         help="Maximum number of regular issues to collect (default: 500).",
     )
     parser.add_argument(
+        "--start-page",
+        type=int,
+        default=1,
+        metavar="N",
+        help=(
+            "API page number to start from (default: 1). "
+            "Use > 1 to resume a previous collection. "
+            "Combine outputs using combine_datasets.py."
+        ),
+    )
+    parser.add_argument(
+        "--since",
+        default=None,
+        metavar="ISO8601",
+        help=(
+            "ISO-8601 timestamp (e.g. '2018-05-29T00:00:00Z'). "
+            "Only return issues with updated_at >= since. "
+            "Preferred over --start-page for large repositories."
+        ),
+    )
+    parser.add_argument(
         "--output",
         default="data/raw/scikit-learn_issues_sample.json",
         help=(
@@ -226,6 +247,8 @@ def main() -> None:
             state=args.state,
             sort=args.sort,
             direction=args.direction,
+            start_page=args.start_page,
+            since=args.since,
             max_issues=args.max_issues,
             output_path=output_path,
         )

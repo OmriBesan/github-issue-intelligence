@@ -492,4 +492,125 @@ This scheme is the only one that achieves both:
 
 ---
 
-*Decisions 001–016 recorded as of Stage 1C.*
+## Decision 017 — GitHub API pagination limit requires using `since` filter instead of `start_page`
+
+**Date:** 2026-07-27
+**Stage:** 1D (historical coverage completion)
+**Status:** Accepted
+
+### Context
+
+Stage 1C planned to resume collection using `start_page=112` (the page where
+the historical collection ended at 11,087 API items).  On execution, the
+GitHub API returned HTTP 422:
+
+> "Pagination with the page parameter is not supported for large datasets,
+> please use cursor based pagination (after/before)"
+
+This is a known GitHub API restriction for repositories with large issue counts.
+
+### Decision
+
+Use the `since` query parameter instead of `start_page` for large repositories.
+The `since` parameter filters issues by `updated_at >= since`, which effectively
+skips old closed issues and returns the 2018-onwards dataset we need.
+
+The `since` parameter was added to the collector and to the CLI:
+
+```
+--since 2018-05-29T00:00:00Z
+```
+
+Deduplication by issue ID ensures that any pre-2018 issues that happen to have
+been updated after the `since` date are safely handled if we run the combiner.
+
+---
+
+## Decision 018 — `since` filter may include pre-cutoff issues updated after the cutoff date
+
+**Date:** 2026-07-27
+**Stage:** 1D
+**Status:** Accepted — trade-off acknowledged
+
+### Context
+
+Using `since=2018-05-29T00:00:00Z` returns all issues with `updated_at >=
+2018-05-29`. This includes:
+
+1. Old issues (2010-2017 creation) that were updated after 2018 (e.g., still
+   open, had new comments, or were linked to PRs).
+2. Issues created after 2018-05-29 (the ones we want).
+
+### Decision
+
+Group 1 issues are already present in the historical collection. The combiner's
+deduplication by GitHub issue ID will remove them.  No action needed.
+
+Group 2 issues are exactly the gap we need to fill.
+
+This approach is preferred over any cursor-based strategy because it requires
+no changes to the core pagination architecture and produces correct results via
+deduplication.
+
+---
+
+## Decision 019 — Combine three raw files into one deduplicated dataset
+
+**Date:** 2026-07-27
+**Stage:** 1D
+**Status:** Accepted
+
+### Files combined
+
+1. `data/raw/scikit-learn_issues_history.json` — 5,000 issues (2010-2018)
+2. `data/raw/scikit-learn_issues_additional.json` — ~8,000-12,000 issues
+   (primarily 2018-2025, some pre-2018 overlap handled by deduplication)
+3. `data/raw/scikit-learn_issues_sample.json` — 500 issues (2025-2026)
+
+### Decision
+
+A dedicated `combine_datasets.py` script:
+1. Loads files in the order above
+2. Deduplicates by GitHub issue ID (first occurrence wins)
+3. Sorts by created_at ascending
+4. Saves the combined issues and metadata to:
+   - `data/raw/scikit-learn_issues_combined.json`
+   - `data/raw/scikit-learn_issues_combined_metadata.json`
+
+---
+
+## Decision 020 — Build / CI excluded from type target in final candidate scheme
+
+**Date:** 2026-07-27
+**Stage:** 1D (label mapping review)
+**Status:** Accepted
+
+### Context
+
+Decision 015 held Build / CI under review.  The Stage 1D label review will
+provide automated co-occurrence statistics and a 40-issue human-review sample
+to inform the final recommendation.
+
+### Candidate scheme under evaluation
+
+```python
+{
+    "Bug":           ["Bug"],
+    "Documentation": ["Documentation"],
+    "Enhancement":   ["Enhancement", "New Feature", "RFC"],
+}
+```
+
+Build / CI is excluded from this candidate scheme because:
+1. It is semantically a component identifier (CI infrastructure), not an issue
+   type.  A "Build / CI" issue is almost always also a Bug or Enhancement.
+2. It has historically low counts relative to the other classes.
+3. Including it produces a large class imbalance.
+
+The final decision on whether to permanently exclude or include Build / CI will
+be made after inspecting the `reports/label_mapping_review.csv` sample and
+reviewing the co-occurrence statistics produced by `label_review_sample.py`.
+
+---
+
+*Decisions 001–020 recorded as of Stage 1D.*

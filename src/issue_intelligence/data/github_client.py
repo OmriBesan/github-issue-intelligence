@@ -166,6 +166,8 @@ class GitHubIssueCollector:
         state: str = "all",
         sort: str = "created",
         direction: str = "desc",
+        start_page: int = 1,
+        since: str | None = None,
         max_issues: int = 500,
         output_path: str | Path | None = None,
     ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
@@ -185,6 +187,16 @@ class GitHubIssueCollector:
         direction : str
             "asc" (oldest first) or "desc" (newest first, default).
             Use "asc" for maximum historical coverage.
+        start_page : int
+            API page number to begin from (default: 1).
+            Set to a higher value to resume a previous collection.
+            Use deduplication when combining results from multiple runs.
+            NOTE: GitHub rejects page numbers > ~100 for large repositories.
+        since : str, optional
+            ISO-8601 timestamp (e.g. "2018-05-29T00:00:00Z").
+            When set, only issues with ``updated_at >= since`` are returned.
+            Use this instead of ``start_page`` for large repositories to
+            efficiently skip already-collected issues.
         max_issues : int
             Maximum number of *regular issues* to collect (not API items).
         output_path : str or Path, optional
@@ -212,8 +224,10 @@ class GitHubIssueCollector:
             "sort": sort,
             "direction": direction,
             "per_page": 100,
-            "page": 1,
+            "page": start_page,
         }
+        if since is not None:
+            params["since"] = since
 
         issues: list[dict[str, Any]] = []
         seen_ids: set[int] = set()  # for deduplication
@@ -223,11 +237,12 @@ class GitHubIssueCollector:
         duplicates_skipped = 0
         remaining_rate_limit: int | None = None
         # tracked separately; params are cleared after Link-header pagination
-        page_number = 1
+        page_number = start_page
 
         logger.info(
-            "Starting collection: %s/%s  state=%s  sort=%s  direction=%s  max=%d",
-            owner, repo, state, sort, direction, max_issues,
+            "Starting collection: %s/%s  state=%s  sort=%s  "
+            "direction=%s  since=%s  start_page=%d  max=%d",
+            owner, repo, state, sort, direction, since, start_page, max_issues,
         )
 
         while len(issues) < max_issues:
@@ -320,6 +335,8 @@ class GitHubIssueCollector:
             state=state,
             sort=sort,
             direction=direction,
+            since=since,
+            start_page=start_page,
             max_issues=max_issues,
             api_items_inspected=api_items_inspected,
             pull_requests_excluded=pull_requests_excluded,
@@ -359,6 +376,8 @@ class GitHubIssueCollector:
         state: str,
         sort: str,
         direction: str,
+        since: str | None,
+        start_page: int,
         max_issues: int,
         api_items_inspected: int,
         pull_requests_excluded: int,
@@ -376,6 +395,8 @@ class GitHubIssueCollector:
             "state_filter": state,
             "sort": sort,
             "direction": direction,
+            "since_filter": since,
+            "start_page": start_page,
             "requested_maximum": max_issues,
             "api_items_inspected": api_items_inspected,
             "pull_requests_excluded": pull_requests_excluded,
