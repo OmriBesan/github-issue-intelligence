@@ -289,3 +289,57 @@ by AI and how the output was reviewed, adapted, and integrated.
 ---
 
 *Future entries will be added at the end of each stage.*
+
+---
+
+## Entry 006 — Stage 2A: Cleaned Modelling Dataset Preparation
+
+**Date:** 2026-07-28
+**Tool:** Google Antigravity (AI coding assistant powered by Gemini)
+**Stage:** 2A — Dataset Preparation
+
+### What the AI assisted with
+
+1. **Designing and implementing `preprocessing.py`**
+   - Label mapping (Bug, Documentation, Enhancement) with reverse lookup dict.
+   - Conservative text cleaning: prefix removal, whitespace normalization.
+   - `build_dataset()` pipeline with ordered exclusion rules (dedup → no target
+     → multi-target → empty text).
+   - Deterministic sorting by (created_at, issue_id).
+   - I/O helpers: `save_csv()`, `save_jsonl()`, `build_metadata()` with SHA-256
+     hashes.
+
+2. **Implementing `test_preprocessing.py`**
+   - 68 unit tests covering all 17 required test categories.
+   - Tests for each label class, each prefix form (colon and bracket),
+     case-insensitivity, position-sensitivity, CSV/JSONL equivalence, metadata
+     correctness, ordering, and edge cases.
+   - All synthetic records — no external file I/O in tests.
+
+3. **Implementing `scripts/prepare_dataset.py`**
+   - CLI with `--input`, `--out-dir`, `--prefix`, `--sample`, `--seed`.
+   - Full summary printout with exclusion counts, class distribution, imbalance
+     ratio, prefix removal statistics, and date range.
+   - CSV/JSONL equivalence verification section.
+   - Random example inspector per class.
+   - Prefix-removal example display.
+   - Windows cp1252 compatibility via `sys.stdout.reconfigure(encoding="utf-8")`.
+
+### What the student reviewed and verified
+
+- Ran `pytest tests/ -v` — all 171 tests pass.
+- Ran `ruff check` — clean.
+- Ran `prepare_dataset.py` on the real 12,190-issue combined file.
+- Inspected random examples from all three classes and verified targets.
+- Verified 8 prefix-removal examples showing `raw_title` vs `clean_title`.
+- Confirmed CSV/JSONL equivalence check: 5,710 rows, same order, same targets.
+- Confirmed the data files are gitignored (not committed).
+
+### What was NOT AI-generated
+
+- The decision to use colon/bracket forms only (conservative, avoids
+  removing legitimate title words like "Bug report").
+- The justification for discrepancy between Stage 1D leakage estimate (9.3%)
+  and Stage 2A actual removals (3.0%), explained in Decision 022.
+- Review of the prefix-removal examples to confirm no meaningful words were
+  accidentally stripped.

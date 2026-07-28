@@ -607,10 +607,130 @@ Build / CI is excluded from this candidate scheme because:
 2. It has historically low counts relative to the other classes.
 3. Including it produces a large class imbalance.
 
-The final decision on whether to permanently exclude or include Build / CI will
-be made after inspecting the `reports/label_mapping_review.csv` sample and
-reviewing the co-occurrence statistics produced by `label_review_sample.py`.
+The label review confirmed this decision. Build / CI is permanently excluded
+from the issue-type prediction target.
 
 ---
 
-*Decisions 001–020 recorded as of Stage 1D.*
+## Decision 021 — Final label mapping adopted for the modelling dataset
+
+**Date:** 2026-07-28
+**Stage:** 2A — Dataset Preparation
+**Status:** Accepted and implemented
+
+### Decision
+
+The following label mapping is the definitive three-class target for all
+subsequent modelling work:
+
+```python
+LABEL_SCHEME = {
+    "Bug":           ["Bug"],
+    "Documentation": ["Documentation"],
+    "Enhancement":   ["Enhancement", "New Feature", "RFC"],
+}
+```
+
+**Evidence supporting the mapping:**
+1. Historical label evolution analysis (Stage 1B-1D) confirmed that
+   "Enhancement" (pre-2019) and "New Feature" (post-2019) describe the
+   same issue type.
+2. "RFC" (Request for Comments) is the formal process for proposing new
+   features and belongs in the same Enhancement class.
+3. The three raw labels share very low pairwise overlap (5 issues for
+   Enhancement + New Feature, 2 for Enhancement + RFC, 12 for New Feature +
+   RFC out of 5,710 usable issues).
+4. The candidate scheme achieves a 1.63:1 imbalance ratio (max/min class)
+   which is well within the < 3:1 target.
+
+**Applied to the combined dataset:**
+
+| Class | Count | % |
+|-------|-------|---|
+| Bug | 2,274 | 39.8% |
+| Enhancement | 2,039 | 35.7% |
+| Documentation | 1,397 | 24.5% |
+| Total usable | 5,710 | |
+
+---
+
+## Decision 022 — Category prefix removal is the only title transformation
+
+**Date:** 2026-07-28
+**Stage:** 2A
+**Status:** Accepted
+
+### Context
+
+The Stage 1D leakage analysis found that 9.3% of usable issue titles contain
+a category prefix (e.g. `[BUG]`, `BUG:`, `ENH:`, `RFC:`, `DOC:`).  These
+prefixes directly reveal the target class and would cause information leakage
+into models that use raw title text.
+
+### Decision
+
+Remove known category prefixes from the BEGINNING of issue titles only.
+
+Prefixes removed (case-insensitive, colon or bracket form):
+- BUG: / [BUG]
+- DOC: / DOCS: / [DOC] / [DOCS]
+- ENH: / ENHANCEMENT: / [ENH] / [ENHANCEMENT]
+- FEATURE: / [FEATURE]
+- NEW FEATURE: / [NEW FEATURE]
+- RFC: / [RFC]
+- FIX: / [FIX]
+- MAINT: / MAINTENANCE: / [MAINT]
+- TST: / [TST]
+
+The same words appearing in the MIDDLE of a title are NOT removed.
+
+No other title transformations are applied at this stage (no lowercasing,
+no punctuation removal, no stopword removal, no stemming).
+
+Actual prefix removals on the combined dataset: **171 titles** (3.0% of 5,710).
+
+### Justification
+
+The apparent discrepancy between the Stage 1D leakage estimate (9.3% using
+the audit.py detect_leakage pattern) and the Stage 2A result (3.0%) is
+explained by:
+1. The audit.py leakage check uses a broader pattern (matches bare words at
+   the start, e.g. "BUG ") whereas the preprocessing only removes well-formed
+   prefixes (colon or bracket forms like "BUG:" or "[BUG]").
+2. The audit checked the broader provisional usable subset; Stage 2A applies
+   to the final 5,710 record subset only.
+
+The conservative approach (colon/bracket forms only) is preferred because
+removing bare words would incorrectly strip legitimate phrases like
+"Bug tracker: is the title" or "RFC compliance".
+
+---
+
+## Decision 023 — Processed data format: CSV + JSONL + metadata JSON
+
+**Date:** 2026-07-28
+**Stage:** 2A
+**Status:** Accepted
+
+### Decision
+
+The processed dataset is saved in two machine-readable formats:
+
+1. **CSV** (`scikit-learn_issues_model.csv`) — for pandas, Excel inspection,
+   and table-based tools. Lists of labels are JSON-encoded in the
+   `original_labels` column.
+
+2. **JSONL** (`scikit-learn_issues_model.jsonl`) — one record per line,
+   ideal for streaming and transformer fine-tuning pipelines.
+
+3. **Metadata JSON** (`scikit-learn_issues_model_metadata.json`) — provenance,
+   exclusion counts, class statistics, SHA-256 hashes of the CSV and JSONL.
+
+Both CSV and JSONL contain identical records in identical order, verified by
+the equivalence check in `scripts/prepare_dataset.py`.
+
+Processed data is gitignored (large, reproducible from the combined raw file).
+
+---
+
+*Decisions 001–023 recorded as of Stage 2A.*
