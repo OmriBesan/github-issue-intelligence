@@ -24,7 +24,7 @@ Tasks:
 
 ---
 
-## Stage 1 — Dataset Collection and Audit
+## Stage 1 — Dataset Collection and Audit ✅
 
 **Goal:** Download GitHub issues from one or more open-source repositories
 and understand the data before committing to any label scheme or model.
@@ -54,9 +54,12 @@ Audit checks:
 
 ---
 
-## Stage 2 — Simple Baselines
+## Stage 2 — Preprocessing and Baselines (In Progress)
 
-**Goal:** Establish the performance floor before applying any real ML model.
+**Goal:** Establish the cleaned dataset and performance floor before applying any real ML model.
+
+**Stage 2A:** Cleaned Modelling Dataset Preparation ✅ (Complete)
+**Stage 2B:** Data Splitting (Next)
 
 Models:
 - Majority-class baseline (always predicts the most frequent class)

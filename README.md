@@ -7,11 +7,12 @@
 
 ## Project Status
 
-**Stage 0 — Project Initialisation: ✅ Complete**
+**Current Status: Stage 2A Complete, Ready for Stage 2B**
 
-The repository skeleton has been created. No data has been collected yet.
-The dataset, label set, and model architecture will be determined after a
-thorough dataset audit in Stage 1.
+Stages 0, 1A-1D, and 2A are ✅ Complete.
+The repository contains 12,190 raw issues from scikit-learn, and a cleaned
+modelling dataset of 5,710 usable issues with verified targets (Bug, Documentation, Enhancement).
+Next task is Stage 2B: temporal train/validation/test splitting.
 
 ---
 
