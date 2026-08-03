@@ -249,6 +249,22 @@ The five provisional issue-type labels are:
 
 ---
 
+## Decision 0023 — Exclude 'Build / CI' from Target Prediction
+**Date:** 2026-07-28
+**Context:** 'Build / CI' co-occurs highly with 'Bug' and 'Enhancement'. It is a component modifier rather than a core issue type.
+**Decision:** Drop 'Build / CI' completely from the classification target, resulting in a clean 3-class target: Bug, Documentation, Enhancement.
+
+## Decision 024 — Temporal Cutoffs for Primary Evaluation Split
+**Date:** 2026-08-03
+**Context:** We need a 70/15/15 train/val/test split that preserves historical order without leaking issues from the same calendar day across sets.
+**Decision:** We slice the dataset strictly by `created_at` timestamp.
+- **Train (70.0%):** 2010-10-19 to 2022-10-12
+- **Validation (15.0%):** 2022-10-13 to 2024-05-28
+- **Test (15.0%):** 2024-05-29 to 2026-07-27
+We also enforced a rule to push forward any exact-day overlap so that issues filed on the boundary day remain together in the earlier split.
+
+---
+
 ## Decision 009 — Separate issue-type from component prediction
 
 **Date:** 2026-07-27

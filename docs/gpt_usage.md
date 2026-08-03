@@ -359,3 +359,23 @@ by AI and how the output was reviewed, adapted, and integrated.
 - Verified there was no partial Stage 2B work (the working tree was clean).
 - Rewrote `docs/handoff.md` to clearly reflect that Stage 2A was complete and Stage 2B is the next step.
 - Updated `README.md` and `docs/project_plan.md` to indicate Stage 2A completion.
+
+---
+
+## Entry 008 — Data Splitting (Stage 2B)
+
+**Date:** 2026-08-03
+**Tool:** Google Antigravity (AI coding assistant powered by Gemini)
+**Stage:** Stage 2B
+
+### What the AI assisted with
+- Created `src/issue_intelligence/data/splitting.py` to handle both temporal and stratified random splitting.
+- Implemented `build_temporal_split` with boundary adjustments to ensure issues from the same calendar date are never split across train/validation/test sets.
+- Created robust test suite in `tests/test_splitting.py`.
+- Formatted and linted code automatically (Ruff).
+- Implemented `scripts/create_splits.py` CLI utility.
+
+### What the student reviewed and verified
+- Reviewed the temporal cutoff adjustment logic to ensure no data leakage across dates.
+- Verified that all 11 unit tests in `test_splitting.py` pass.
+- Examined the final CLI output which confirms exactly 70.0% train, 15.0% validation, and 15.0% test distribution for both splits.

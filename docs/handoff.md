@@ -7,11 +7,12 @@ work at any point and know exactly where to start.
 
 ## Current State
 
-**Completed stages:** Stages 0, 1A, 1B, 1C, 1D, and 2A
-**Date completed:** 2026-08-02
+**Completed stages:** Stages 0, 1A-1D, 2A, and 2B
+**Date completed:** 2026-08-03
 
-The cleaned dataset has been successfully prepared in Stage 2A.
-The next step is Stage 2B: creating the temporal and stratified splits.
+The cleaned dataset has been successfully prepared in Stage 2A, and temporal and stratified
+random splits have been generated in Stage 2B.
+The next step is Stage 2C: creating simple baselines.
 
 ---
 
@@ -100,23 +101,18 @@ ruff check src/ scripts/ tests/
 ```
 This produces `data/processed/scikit-learn_issues_model.jsonl` (and `.csv`).
 
----
-
-## Stage 2B Work Status
-
-There is currently **no partial Stage 2B work** committed. Stage 2A was confirmed fully completed.
+### 3. Generate Splits (Stage 2B)
+```powershell
+.venv\Scripts\python scripts\create_splits.py --input data\processed\scikit-learn_issues_model.jsonl --out-dir data\processed\splits
+```
 
 ---
 
 ## Exact Next Task
 
-**Stage 2B — temporal and secondary stratified train/validation/test splits.**
-
-> [!WARNING]
-> Do NOT train models before Stage 2B is completely implemented and reviewed.
+**Stage 2C — Simple Baselines.**
 
 Tell the assistant:
-> "Begin Stage 2B only: create reproducible train, validation, and test splits.
-> Use a temporal split as the primary evaluation strategy (~70% train / 15% validation / 15% test).
-> Also create a secondary stratified random split for comparison only.
+> "Begin Stage 2C only: implement simple baselines (majority-class and stratified dummy).
+> Evaluate them using macro F1 and class-wise precision/recall on the validation set.
 > Read the project constraints and rules carefully."

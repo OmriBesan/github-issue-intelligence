@@ -59,7 +59,8 @@ Audit checks:
 **Goal:** Establish the cleaned dataset and performance floor before applying any real ML model.
 
 **Stage 2A:** Cleaned Modelling Dataset Preparation ✅ (Complete)
-**Stage 2B:** Data Splitting (Next)
+**Stage 2B:** Data Splitting ✅ (Complete)
+**Stage 2C:** Simple Baselines (Next)
 
 Models:
 - Majority-class baseline (always predicts the most frequent class)

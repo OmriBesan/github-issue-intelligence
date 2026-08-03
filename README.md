@@ -7,12 +7,13 @@
 
 ## Project Status
 
-**Current Status: Stage 2A Complete, Ready for Stage 2B**
+**Current Status: Stage 2B Complete, Ready for Baselines**
 
-Stages 0, 1A-1D, and 2A are ✅ Complete.
-The repository contains 12,190 raw issues from scikit-learn, and a cleaned
-modelling dataset of 5,710 usable issues with verified targets (Bug, Documentation, Enhancement).
-Next task is Stage 2B: temporal train/validation/test splitting.
+Stages 0, 1A-1D, 2A, and 2B are ✅ Complete.
+The repository contains a cleaned modelling dataset of 5,710 issues, which have
+now been split into reproducible temporal (primary) and stratified random (secondary)
+train, validation, and test sets.
+Next task is Stage 2C: simple baselines.
 
 ---
 
