@@ -412,9 +412,7 @@ def build_dataset(
         records.append(rec)
 
     # Deterministic sort: created_at ascending, then issue_id ascending
-    records.sort(
-        key=lambda r: (r.get("created_at") or "", r.get("issue_id") or 0)
-    )
+    records.sort(key=lambda r: (r.get("created_at") or "", r.get("issue_id") or 0))
 
     # Class counts
     class_counts: dict[str, int] = {cls: 0 for cls in LABEL_SCHEME}

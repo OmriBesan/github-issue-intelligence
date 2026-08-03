@@ -32,7 +32,15 @@ PROVISIONAL_TYPE_LABELS: frozenset[str] = frozenset(
 
 # Prefixes that may indicate the category has leaked into the title.
 LEAKAGE_PREFIXES: list[str] = [
-    "BUG", "DOC", "ENH", "FEATURE", "RFC", "CI", "FIX", "MAINT", "TST",
+    "BUG",
+    "DOC",
+    "ENH",
+    "FEATURE",
+    "RFC",
+    "CI",
+    "FIX",
+    "MAINT",
+    "TST",
 ]
 
 
@@ -56,9 +64,7 @@ def load_issues(path: str | Path) -> list[dict[str, Any]]:
     with open(path, encoding="utf-8") as fh:
         data = json.load(fh)
     if not isinstance(data, list):
-        raise ValueError(
-            f"Expected a JSON array in {path}, got {type(data).__name__}"
-        )
+        raise ValueError(f"Expected a JSON array in {path}, got {type(data).__name__}")
     if len(data) == 0:
         raise ValueError(f"Issues file is empty — nothing to audit: {path}")
     return data
@@ -139,18 +145,24 @@ def categorize_labels_provisionally(
     """
     type_labels = ["Bug", "Documentation", "New Feature", "RFC", "Build / CI"]
     component_labels = [
-        "Array API", "Callbacks", "module:test-suite", "free-threading",
-        "frontend", "API", "module:linear_model",
+        "Array API",
+        "Callbacks",
+        "module:test-suite",
+        "free-threading",
+        "frontend",
+        "API",
+        "module:linear_model",
     ]
     workflow_labels = [
-        "Needs Triage", "Needs Decision", "Needs Investigation",
-        "Needs Info", "Needs Decision - Include Feature",
+        "Needs Triage",
+        "Needs Decision",
+        "Needs Investigation",
+        "Needs Info",
+        "Needs Decision - Include Feature",
     ]
     lifecycle_labels = ["Closing candidate", "spam", "Sprint"]
 
-    known = set(
-        type_labels + component_labels + workflow_labels + lifecycle_labels
-    )
+    known = set(type_labels + component_labels + workflow_labels + lifecycle_labels)
     other = [lb for lb in label_freq if lb not in known]
 
     return {
@@ -302,9 +314,7 @@ def detect_leakage(
     # Pattern: optional whitespace, optional [ or (, then prefix, then
     # ] or ) or : or whitespace — at the very start of the string.
     prefix_pattern = re.compile(
-        r"^\s*[\[\(]?("
-        + "|".join(re.escape(p) for p in prefixes)
-        + r")[\]\):\s]",
+        r"^\s*[\[\(]?(" + "|".join(re.escape(p) for p in prefixes) + r")[\]\):\s]",
         re.IGNORECASE,
     )
 
@@ -375,9 +385,7 @@ def build_provisional_subset(
             excluded_unlabelled += 1
         elif len(type_matches) > 1:
             excluded_multi_type += 1
-            type_label_overlap.append(
-                (issue.get("number", -1), sorted(type_matches))
-            )
+            type_label_overlap.append((issue.get("number", -1), sorted(type_matches)))
         else:
             assigned = next(iter(type_matches))
             subset.append((issue, assigned))
@@ -511,9 +519,7 @@ def build_label_scheme_stats(
     total_usable = sum(class_counts.values())
     counts = list(class_counts.values())
     imbalance_ratio = (
-        max(counts) / min(counts)
-        if len(counts) >= 2 and min(counts) > 0
-        else None
+        max(counts) / min(counts) if len(counts) >= 2 and min(counts) > 0 else None
     )
     min_class_count = min(counts) if counts else 0
 

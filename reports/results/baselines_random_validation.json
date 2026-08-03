@@ -1,0 +1,103 @@
+{
+  "split": "random",
+  "seed": 42,
+  "train_size": 3995,
+  "validation_size": 857,
+  "models": {
+    "majority_class": {
+      "accuracy": 0.39789964994165694,
+      "macro_f1": 0.18976071229827488,
+      "weighted_f1": 0.22651716298848915,
+      "per_class": {
+        "Bug": {
+          "precision": 0.39789964994165694,
+          "recall": 1.0,
+          "f1": 0.5692821368948247,
+          "predicted_count": 857
+        },
+        "Documentation": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "predicted_count": 0
+        },
+        "Enhancement": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "predicted_count": 0
+        }
+      },
+      "confusion_matrix": [
+        [
+          341,
+          0,
+          0
+        ],
+        [
+          210,
+          0,
+          0
+        ],
+        [
+          306,
+          0,
+          0
+        ]
+      ],
+      "labels": [
+        "Bug",
+        "Documentation",
+        "Enhancement"
+      ],
+      "learned_majority_class": "Bug"
+    },
+    "stratified_random": {
+      "accuracy": 0.3628938156359393,
+      "macro_f1": 0.3471287880702583,
+      "weighted_f1": 0.3609378461771737,
+      "per_class": {
+        "Bug": {
+          "precision": 0.41944444444444445,
+          "recall": 0.44281524926686217,
+          "f1": 0.43081312410841655,
+          "predicted_count": 360
+        },
+        "Documentation": {
+          "precision": 0.2670157068062827,
+          "recall": 0.24285714285714285,
+          "f1": 0.2543640897755611,
+          "predicted_count": 191
+        },
+        "Enhancement": {
+          "precision": 0.3562091503267974,
+          "recall": 0.3562091503267974,
+          "f1": 0.3562091503267974,
+          "predicted_count": 306
+        }
+      },
+      "confusion_matrix": [
+        [
+          151,
+          75,
+          115
+        ],
+        [
+          77,
+          51,
+          82
+        ],
+        [
+          132,
+          65,
+          109
+        ]
+      ],
+      "labels": [
+        "Bug",
+        "Documentation",
+        "Enhancement"
+      ]
+    }
+  }
+}

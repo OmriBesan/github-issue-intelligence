@@ -212,8 +212,7 @@ class GitHubIssueCollector:
         token = _load_token()
         if self.require_token and not token:
             raise MissingTokenError(
-                "GITHUB_TOKEN is not set. "
-                "Copy .env.example to .env and add your token."
+                "GITHUB_TOKEN is not set. Copy .env.example to .env and add your token."
             )
 
         session, authenticated = _build_session(token)
@@ -242,7 +241,14 @@ class GitHubIssueCollector:
         logger.info(
             "Starting collection: %s/%s  state=%s  sort=%s  "
             "direction=%s  since=%s  start_page=%d  max=%d",
-            owner, repo, state, sort, direction, since, start_page, max_issues,
+            owner,
+            repo,
+            state,
+            sort,
+            direction,
+            since,
+            start_page,
+            max_issues,
         )
 
         while len(issues) < max_issues:
@@ -323,9 +329,7 @@ class GitHubIssueCollector:
         )
 
         # Compute date coverage from the collected issues
-        dates = [
-            i["created_at"] for i in issues if i.get("created_at")
-        ]
+        dates = [i["created_at"] for i in issues if i.get("created_at")]
         earliest_created_at = min(dates) if dates else None
         latest_created_at = max(dates) if dates else None
 

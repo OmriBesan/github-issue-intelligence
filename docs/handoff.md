@@ -7,12 +7,12 @@ work at any point and know exactly where to start.
 
 ## Current State
 
-**Completed stages:** Stages 0, 1A-1D, 2A, and 2B
+**Completed stages:** Stages 0, 1A-1D, 2A-2C
 **Date completed:** 2026-08-03
 
 The cleaned dataset has been successfully prepared in Stage 2A, and temporal and stratified
-random splits have been generated in Stage 2B.
-The next step is Stage 2C: creating simple baselines.
+random splits have been generated in Stage 2B. The simple baselines have been evaluated in Stage 2C.
+The next step is Stage 3: Classical NLP Models (TF-IDF).
 
 ---
 
@@ -106,13 +106,18 @@ This produces `data/processed/scikit-learn_issues_model.jsonl` (and `.csv`).
 .venv\Scripts\python scripts\create_splits.py --input data\processed\scikit-learn_issues_model.jsonl --out-dir data\processed\splits
 ```
 
+### 4. Run Baselines (Stage 2C)
+```powershell
+.venv\Scripts\python scripts\run_baselines.py --splits-dir data\processed\splits --results-dir reports\results --figures-dir reports\figures\baselines
+```
+
 ---
 
 ## Exact Next Task
 
-**Stage 2C — Simple Baselines.**
+**Stage 3 — Classical NLP Models (TF-IDF).**
 
 Tell the assistant:
-> "Begin Stage 2C only: implement simple baselines (majority-class and stratified dummy).
-> Evaluate them using macro F1 and class-wise precision/recall on the validation set.
+> "Begin Stage 3: implement and evaluate classical NLP models using TF-IDF features.
+> Compare their performance against the Stage 2C baselines.
 > Read the project constraints and rules carefully."

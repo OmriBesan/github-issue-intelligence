@@ -282,8 +282,10 @@ def main() -> None:
         print(f"    {cls:<18}: {cnt:>5,}  ({pct:.1f}%)  {bar}")
     print()
     print(f"  Imbalance ratio       : {stats['imbalance_ratio']:.3f}:1")
-    print(f"  Title prefixes removed: {stats['prefix_removals']:,}"
-          f"  ({100 * stats['prefix_removals'] / usable:.1f}% of usable)")
+    print(
+        f"  Title prefixes removed: {stats['prefix_removals']:,}"
+        f"  ({100 * stats['prefix_removals'] / usable:.1f}% of usable)"
+    )
     print()
 
     dates = [r["created_at"] for r in records if r.get("created_at")]

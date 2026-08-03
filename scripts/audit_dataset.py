@@ -90,9 +90,9 @@ def build_parser() -> argparse.ArgumentParser:
 # Figure helpers
 # ---------------------------------------------------------------------------
 
-FIG_W = 10   # default figure width (inches)
-FIG_H = 6    # default figure height (inches)
-DPI   = 150  # output resolution
+FIG_W = 10  # default figure width (inches)
+FIG_H = 6  # default figure height (inches)
+DPI = 150  # output resolution
 
 
 def _save(fig: plt.Figure, path: Path, label: str) -> None:
@@ -145,8 +145,10 @@ def make_type_distribution_chart(class_counts: Counter, figures_dir: Path) -> No
         ax.text(
             bar.get_x() + bar.get_width() / 2,
             bar.get_height() + 0.5,
-            f"{count}\n({100*count/total:.1f}%)",
-            ha="center", va="bottom", fontsize=9,
+            f"{count}\n({100 * count / total:.1f}%)",
+            ha="center",
+            va="bottom",
+            fontsize=9,
         )
     ax.set_ylabel("Number of issues")
     ax.set_title("Provisional Issue-Type Distribution (single-type subset)")
@@ -223,8 +225,12 @@ def make_cooccurrence_heatmap(
         for j in range(n):
             if matrix[i, j] > 0:
                 ax.text(
-                    j, i, str(matrix[i, j]),
-                    ha="center", va="center", fontsize=7,
+                    j,
+                    i,
+                    str(matrix[i, j]),
+                    ha="center",
+                    va="center",
+                    fontsize=7,
                     color="white" if matrix[i, j] > matrix.max() * 0.5 else "black",
                 )
     plt.colorbar(im, ax=ax, label="Co-occurrence count")
@@ -266,8 +272,15 @@ def make_label_by_year_chart(
     bottom = [0] * len(years)
     for label, color in zip(type_labels, colors):
         counts = [by_year.get(y, {}).get(label, 0) for y in years]
-        ax.bar(years, counts, bottom=bottom, label=label,
-               color=color, edgecolor="white", linewidth=0.3)
+        ax.bar(
+            years,
+            counts,
+            bottom=bottom,
+            label=label,
+            color=color,
+            edgecolor="white",
+            linewidth=0.3,
+        )
         bottom = [b + c for b, c in zip(bottom, counts)]
     ax.set_xlabel("Year")
     ax.set_ylabel("Single-type issues")
@@ -311,15 +324,15 @@ def print_summary(
     print("=" * 65)
     print(f"  Repository              : {metadata.get('repository')}")
     print(f"  Collection timestamp    : {metadata.get('collection_timestamp')}")
-    sort_val = metadata.get('sort', 'created')
-    dir_val = metadata.get('direction', 'desc')
+    sort_val = metadata.get("sort", "created")
+    dir_val = metadata.get("direction", "desc")
     print(f"  Sort / direction        : {sort_val} / {dir_val}")
     print(f"  State filter            : {metadata.get('state_filter')}")
     print()
     print("  --- Overview ---")
     print(f"  Total issues            : {total}")
     for state, cnt in sorted(state_dist.items()):
-        print(f"  State [{state:<6}]        : {cnt}  ({100*cnt/total:.1f}%)")
+        print(f"  State [{state:<6}]        : {cnt}  ({100 * cnt / total:.1f}%)")
     print()
     print("  --- Date Coverage ---")
     earliest = min(years) if years else "N/A"
@@ -339,9 +352,13 @@ def print_summary(
     print("  --- Labels ---")
     without = total - with_labels
     pct_without = 100 * without / total
-    print(f"  With labels             : {with_labels}  ({100*with_labels/total:.1f}%)")
+    print(
+        f"  With labels             : {with_labels}  ({100 * with_labels / total:.1f}%)"
+    )
     print(f"  Without labels          : {without}  ({pct_without:.1f}%)")
-    print(f"  With multiple labels    : {multi_label}  ({100*multi_label/total:.1f}%)")
+    print(
+        f"  With multiple labels    : {multi_label}  ({100 * multi_label / total:.1f}%)"
+    )
     print(f"  Unique label names      : {len(freq)}")
     print()
     print("  --- Missing Data ---")
@@ -367,9 +384,7 @@ def print_summary(
     print(f"  Excluded (multi-type)   : {subset_result['excluded_multi_type']}")
     print()
     print("  Class counts:")
-    class_items = sorted(
-        subset_result["class_counts"].items(), key=lambda x: -x[1]
-    )
+    class_items = sorted(subset_result["class_counts"].items(), key=lambda x: -x[1])
     usable = subset_result["total_usable"]
     for label, cnt in class_items:
         pct = 100 * cnt / usable if usable else 0
@@ -414,9 +429,7 @@ def print_summary(
         print(f"    Min class count: {stats['min_class_count']}")
         print(f"    Imbalance ratio: {ratio_str}")
         print("    Classes:")
-        for cls, cnt in sorted(
-            stats["class_counts"].items(), key=lambda x: -x[1]
-        ):
+        for cls, cnt in sorted(stats["class_counts"].items(), key=lambda x: -x[1]):
             pct = 100 * cnt / stats["total_usable"] if stats["total_usable"] else 0
             print(f"      {cls:<25} {cnt:>5}  ({pct:.1f}%)")
 
@@ -468,8 +481,16 @@ def main() -> None:
     make_label_by_year_chart(issues, list(PROVISIONAL_TYPE_LABELS), figures_dir)
 
     print_summary(
-        issues, metadata, freq, missing, lengths,
-        state_dist, monthly, leakage, subset_result, categories,
+        issues,
+        metadata,
+        freq,
+        missing,
+        lengths,
+        state_dist,
+        monthly,
+        leakage,
+        subset_result,
+        categories,
     )
 
 

@@ -60,7 +60,7 @@ Audit checks:
 
 **Stage 2A:** Cleaned Modelling Dataset Preparation ✅ (Complete)
 **Stage 2B:** Data Splitting ✅ (Complete)
-**Stage 2C:** Simple Baselines (Next)
+**Stage 2C:** Simple Baselines ✅ (Complete)
 
 Models:
 - Majority-class baseline (always predicts the most frequent class)

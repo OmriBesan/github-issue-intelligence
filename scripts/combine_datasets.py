@@ -114,10 +114,7 @@ def print_summary(
     if gap_info["gaps"]:
         print(f"  [WARN] Coverage gaps detected: {', '.join(gap_info['gaps'])}")
     else:
-        print(
-            f"  [OK] No gaps from {gap_info['min_year']} "
-            f"to {gap_info['max_year']}."
-        )
+        print(f"  [OK] No gaps from {gap_info['min_year']} to {gap_info['max_year']}.")
     print()
     print(f"  Output: {output_path}")
     meta_path = output_path.with_name(output_path.stem + "_metadata.json")

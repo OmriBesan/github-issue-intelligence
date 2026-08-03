@@ -187,9 +187,7 @@ class TestExclusionLogic:
     def test_missing_body_does_not_exclude(self) -> None:
         """None body becomes "" but title alone keeps the issue usable."""
         issues = [
-            _make_issue(
-                labels=["Documentation"], title="Update readme", body=None
-            )
+            _make_issue(labels=["Documentation"], title="Update readme", body=None)
         ]
         records, stats = build_dataset(issues)
         assert len(records) == 1

@@ -150,16 +150,18 @@ def write_review_csv(
         writer.writeheader()
         for label_name, issues in issues_by_label.items():
             for issue in issues:
-                writer.writerow({
-                    "sampled_for_label": label_name,
-                    "issue_id": issue.get("id"),
-                    "issue_number": issue.get("number"),
-                    "created_at": issue.get("created_at"),
-                    "title": issue.get("title", ""),
-                    "body_preview": _body_preview(issue.get("body")),
-                    "labels": "; ".join(issue.get("labels") or []),
-                    "url": issue.get("html_url", ""),
-                })
+                writer.writerow(
+                    {
+                        "sampled_for_label": label_name,
+                        "issue_id": issue.get("id"),
+                        "issue_number": issue.get("number"),
+                        "created_at": issue.get("created_at"),
+                        "title": issue.get("title", ""),
+                        "body_preview": _body_preview(issue.get("body")),
+                        "labels": "; ".join(issue.get("labels") or []),
+                        "url": issue.get("html_url", ""),
+                    }
+                )
                 total_rows += 1
     return total_rows
 
@@ -185,33 +187,30 @@ def print_statistics(
 
     # Co-occurrence with Bug and Documentation
     print("\n  --- Co-occurrence with Bug / Documentation ---")
-    print(f"  {'Label':<22} | {'+ Bug':>7} | {'+ Documentation':>16} |"
-          f" {'Total':>6}")
-    print(f"  {'-'*22}-+-{'-'*7}-+-{'-'*16}-+-{'-'*6}")
+    print(f"  {'Label':<22} | {'+ Bug':>7} | {'+ Documentation':>16} | {'Total':>6}")
+    print(f"  {'-' * 22}-+-{'-' * 7}-+-{'-' * 16}-+-{'-' * 6}")
     for label in REVIEW_LABELS:
         with_target = cooc_stats["issues_with_target"].get(label, 0)
         with_bug = cooc_stats["cooccurrence"].get(label, {}).get("Bug", 0)
         with_doc = cooc_stats["cooccurrence"].get(label, {}).get("Documentation", 0)
-        print(
-            f"  {label:<22} | {with_bug:>7} | {with_doc:>16} | {with_target:>6}"
-        )
+        print(f"  {label:<22} | {with_bug:>7} | {with_doc:>16} | {with_target:>6}")
 
     # Pairwise overlap between the four labels
     print("\n  --- Pairwise Overlap (issues carrying BOTH labels) ---")
     for i, a in enumerate(REVIEW_LABELS):
-        for b in REVIEW_LABELS[i + 1:]:
+        for b in REVIEW_LABELS[i + 1 :]:
             count = sum(
-                1 for iss in issues
-                if a in (iss.get("labels") or [])
-                and b in (iss.get("labels") or [])
+                1
+                for iss in issues
+                if a in (iss.get("labels") or []) and b in (iss.get("labels") or [])
             )
             print(f"    {a:<22} + {b:<22}: {count}")
 
     # Frequency by year
     print("\n  --- Frequency by Year ---")
-    all_four_candidates = [i for i in issues
-                           if any(lb in (i.get("labels") or [])
-                                  for lb in REVIEW_LABELS)]
+    all_four_candidates = [
+        i for i in issues if any(lb in (i.get("labels") or []) for lb in REVIEW_LABELS)
+    ]
     by_year = compute_label_distribution_by_year(all_four_candidates, REVIEW_LABELS)
     years = sorted(by_year.keys())
     header = f"  {'Year':<6}" + "".join(f" | {lb[:10]:>10}" for lb in REVIEW_LABELS)
@@ -226,12 +225,10 @@ def print_statistics(
     # Common additional labels per target label
     print("\n  --- Common Additional Labels (top 10 per label) ---")
     for label in REVIEW_LABELS:
-        label_issues = [
-            i for i in issues if label in (i.get("labels") or [])
-        ]
+        label_issues = [i for i in issues if label in (i.get("labels") or [])]
         other_labels: Counter = Counter()
         for iss in label_issues:
-            for lb in (iss.get("labels") or []):
+            for lb in iss.get("labels") or []:
                 if lb != label:
                     other_labels[lb] += 1
         top = other_labels.most_common(10)
@@ -250,9 +247,7 @@ def print_candidate_scheme_results(
     print("\n  Mapping:")
     for cls, raw_labels in CANDIDATE_SCHEME.items():
         print(f"    {cls:<22}: {raw_labels}")
-    print(
-        "\n  Build / CI is excluded from the type target.\n"
-    )
+    print("\n  Build / CI is excluded from the type target.\n")
 
     stats = build_label_scheme_stats(issues, CANDIDATE_SCHEME)
     usable = stats["total_usable"]
@@ -273,20 +268,22 @@ def print_candidate_scheme_results(
     print("\n  Year distribution per class:")
     for cls, raw_labels in CANDIDATE_SCHEME.items():
         class_issues = [
-            i for i in issues
-            if len([lb for lb in (i.get("labels") or [])
-                    if any(lb in CANDIDATE_SCHEME[c]
-                           for c in CANDIDATE_SCHEME)]) == 1
+            i
+            for i in issues
+            if len(
+                [
+                    lb
+                    for lb in (i.get("labels") or [])
+                    if any(lb in CANDIDATE_SCHEME[c] for c in CANDIDATE_SCHEME)
+                ]
+            )
+            == 1
             and any(lb in raw_labels for lb in (i.get("labels") or []))
         ]
         by_year = Counter(
-            i["created_at"][:4]
-            for i in class_issues
-            if i.get("created_at")
+            i["created_at"][:4] for i in class_issues if i.get("created_at")
         )
-        years_str = ", ".join(
-            f"{y}:{c}" for y, c in sorted(by_year.items())
-        )
+        years_str = ", ".join(f"{y}:{c}" for y, c in sorted(by_year.items()))
         print(f"    {cls:<22}: {years_str}")
 
     # Leakage
@@ -334,10 +331,7 @@ def main() -> None:
         sample = sample_issues_by_label(issues, label, n=args.n, seed=args.seed)
         n_label = sum(1 for i in issues if label in (i.get("labels") or []))
         issues_by_label[label] = sample
-        print(
-            f"  {label:<22}: {len(sample):>3} sampled"
-            f"  (from {n_label} total)"
-        )
+        print(f"  {label:<22}: {len(sample):>3} sampled  (from {n_label} total)")
 
     # Write CSV
     rows = write_review_csv(issues_by_label, output_path)

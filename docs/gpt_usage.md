@@ -379,3 +379,23 @@ by AI and how the output was reviewed, adapted, and integrated.
 - Reviewed the temporal cutoff adjustment logic to ensure no data leakage across dates.
 - Verified that all 11 unit tests in `test_splitting.py` pass.
 - Examined the final CLI output which confirms exactly 70.0% train, 15.0% validation, and 15.0% test distribution for both splits.
+
+---
+
+## Entry 009 — Simple Baselines (Stage 2C)
+
+**Date:** 2026-08-03
+**Tool:** Google Antigravity (AI coding assistant powered by Gemini)
+**Stage:** Stage 2C
+
+### What the AI assisted with
+- Created `src/issue_intelligence/evaluation/metrics.py` to calculate accuracy, macro F1, weighted F1, and class-wise precision/recall, as well as confusion matrices.
+- Implemented `MajorityClassBaseline` and `StratifiedRandomBaseline` wrapper models.
+- Wrote robust tests for metrics and baselines.
+- Created `scripts/run_baselines.py` to load dataset splits, generate CSV/JSON results, and plot confusion matrices.
+- Updated documentation status to reflect baseline completion.
+
+### What the student reviewed and verified
+- Reviewed metric calculations to ensure correct weighting and zero division handling.
+- Verified the reason for the Macro F1 difference between temporal and random splits: the majority class naturally changes depending on the evaluation window.
+- Verified all 192 tests pass successfully and Ruff finds zero errors.

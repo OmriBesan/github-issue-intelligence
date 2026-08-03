@@ -263,9 +263,9 @@ class TestCandidateThreeClassScheme:
             _make_issue(4, labels=["Enhancement"]),
             _make_issue(5, labels=["New Feature"]),
             _make_issue(6, labels=["RFC"]),
-            _make_issue(7, labels=["Build / CI"]),   # excluded (not in scheme)
-            _make_issue(8, labels=["help wanted"]),   # excluded (not in scheme)
-            _make_issue(9, labels=["Bug", "Enhancement"]),   # multi-class
+            _make_issue(7, labels=["Build / CI"]),  # excluded (not in scheme)
+            _make_issue(8, labels=["help wanted"]),  # excluded (not in scheme)
+            _make_issue(9, labels=["Bug", "Enhancement"]),  # multi-class
         ]
 
     def test_build_ci_excluded_from_three_class_scheme(self) -> None:

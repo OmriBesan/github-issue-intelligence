@@ -217,9 +217,7 @@ class TestComputeLabelCooccurrence:
         assert cooc[("Bug", "Needs Triage")] == 2
 
     def test_selected_labels_filter(self) -> None:
-        issues = [
-            _make_issue(1, labels=["Bug", "Needs Triage", "Documentation"])
-        ]
+        issues = [_make_issue(1, labels=["Bug", "Needs Triage", "Documentation"])]
         # Only track Bug and Documentation
         cooc = compute_label_cooccurrence(
             issues, selected_labels=["Bug", "Documentation"]
@@ -282,11 +280,11 @@ class TestBuildProvisionalSubset:
 
     def test_mixed_batch(self) -> None:
         issues = [
-            _make_issue(1, labels=["Bug"]),                    # included
-            _make_issue(2, labels=["Bug", "Documentation"]),   # multi-type
-            _make_issue(3, labels=["Needs Triage"]),           # no type label
-            _make_issue(4, labels=[]),                         # unlabelled
-            _make_issue(5, labels=["New Feature"]),            # included
+            _make_issue(1, labels=["Bug"]),  # included
+            _make_issue(2, labels=["Bug", "Documentation"]),  # multi-type
+            _make_issue(3, labels=["Needs Triage"]),  # no type label
+            _make_issue(4, labels=[]),  # unlabelled
+            _make_issue(5, labels=["New Feature"]),  # included
         ]
         result = build_provisional_subset(issues)
         assert result["total_usable"] == 2
@@ -445,9 +443,9 @@ class TestComputeLabelDistributionByYear:
         labels = ["Bug", "Documentation", "New Feature"]
         by_year = compute_label_distribution_by_year(issues, labels)
         # Issue 6 (Needs Triage, 2021) should not add any count
-        assert sum(
-            by_year.get("2021", {}).values()
-        ) == 1  # only New Feature from issue 4
+        assert (
+            sum(by_year.get("2021", {}).values()) == 1
+        )  # only New Feature from issue 4
 
 
 class TestBuildLabelSchemeStats:

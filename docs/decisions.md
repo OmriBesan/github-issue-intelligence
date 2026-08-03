@@ -263,6 +263,12 @@ The five provisional issue-type labels are:
 - **Test (15.0%):** 2024-05-29 to 2026-07-27
 We also enforced a rule to push forward any exact-day overlap so that issues filed on the boundary day remain together in the earlier split.
 
+## Decision 025 — Macro F1 for Model Evaluation
+**Date:** 2026-08-03
+**Context:** The class distribution is imbalanced (Bug ~40%, Enhancement ~36%, Documentation ~24%). We need a single metric to rank models that doesn't artificially reward ignoring the minority class.
+**Decision:** We will use **Macro F1** as the primary evaluation metric because it computes F1 for each class independently and averages them equally. This forces the model to perform well across *all* classes, not just the majority class.
+
+
 ---
 
 ## Decision 009 — Separate issue-type from component prediction

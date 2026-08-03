@@ -1,0 +1,5 @@
+Split,Model,Accuracy,Macro F1,Weighted F1
+temporal,Majority Class,0.3473,0.1719,0.1791
+temporal,Stratified Random,0.3695,0.3376,0.3792
+random,Majority Class,0.3979,0.1898,0.2265
+random,Stratified Random,0.3629,0.3471,0.3609

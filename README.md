@@ -7,13 +7,12 @@
 
 ## Project Status
 
-**Current Status: Stage 2B Complete, Ready for Baselines**
+**Current Status: Stage 2C Complete, Ready for NLP Baselines**
 
-Stages 0, 1A-1D, 2A, and 2B are ✅ Complete.
-The repository contains a cleaned modelling dataset of 5,710 issues, which have
-now been split into reproducible temporal (primary) and stratified random (secondary)
-train, validation, and test sets.
-Next task is Stage 2C: simple baselines.
+Stages 0, 1A-1D, 2A-2C are ✅ Complete.
+The simple baselines (Majority Class and Stratified Random) have been evaluated.
+The performance floor is established (Temporal Macro F1: ~0.34).
+Next task is Stage 3: Classical NLP Models (TF-IDF).
 
 ---
 

@@ -62,6 +62,7 @@ logger = logging.getLogger(__name__)
 # CLI argument parser
 # ---------------------------------------------------------------------------
 
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="collect_issues.py",
@@ -109,10 +110,7 @@ Environment:
         "--sort",
         choices=["created", "updated", "comments"],
         default="created",
-        help=(
-            "API sort field "
-            "(default: created)."
-        ),
+        help=("API sort field (default: created)."),
     )
     parser.add_argument(
         "--direction",
@@ -173,6 +171,7 @@ Environment:
 # Statistics printer
 # ---------------------------------------------------------------------------
 
+
 def print_statistics(issues: list[dict], metadata: dict) -> None:
     """Print a concise summary of the collected dataset."""
     total = len(issues)
@@ -231,6 +230,7 @@ def print_statistics(issues: list[dict], metadata: dict) -> None:
 # ---------------------------------------------------------------------------
 # Entry point
 # ---------------------------------------------------------------------------
+
 
 def main() -> None:
     parser = build_parser()

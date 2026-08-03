@@ -33,6 +33,7 @@ from issue_intelligence.data.github_client import (
 # Helpers — fake API response data
 # ---------------------------------------------------------------------------
 
+
 def _make_issue(number: int, labels: list[str] | None = None) -> dict[str, Any]:
     """Return a minimal dict that looks like a GitHub API issue object."""
     return {
@@ -55,7 +56,9 @@ def _make_pr(number: int) -> dict[str, Any]:
     """Return a minimal dict that looks like a GitHub API pull request object."""
     pr = _make_issue(number)
     # The GitHub Issues API marks PRs with this key
-    pr["pull_request"] = {"url": f"https://api.github.com/repos/owner/repo/pulls/{number}"}
+    pr["pull_request"] = {
+        "url": f"https://api.github.com/repos/owner/repo/pulls/{number}"
+    }
     pr["html_url"] = f"https://github.com/owner/repo/pull/{number}"
     return pr
 
@@ -87,13 +90,11 @@ class FakeResponse:
 # Tests — _parse_next_page_url
 # ---------------------------------------------------------------------------
 
+
 class TestParseNextPageUrl:
     def test_returns_next_url_when_present(self) -> None:
         base = "https://api.github.com/repos/o/r/issues"
-        link = (
-            f'<{base}?page=2>; rel="next", '
-            f'<{base}?page=10>; rel="last"'
-        )
+        link = f'<{base}?page=2>; rel="next", <{base}?page=10>; rel="last"'
         result = _parse_next_page_url(link)
         assert result == f"{base}?page=2"
 
@@ -109,6 +110,7 @@ class TestParseNextPageUrl:
 # ---------------------------------------------------------------------------
 # Tests — _extract_issue_fields
 # ---------------------------------------------------------------------------
+
 
 class TestExtractIssueFields:
     def test_labels_simplified_to_name_list(self) -> None:
@@ -138,8 +140,8 @@ class TestExtractIssueFields:
 # Tests — GitHubIssueCollector
 # ---------------------------------------------------------------------------
 
-class TestGitHubIssueCollector:
 
+class TestGitHubIssueCollector:
     # ------------------------------------------------------------------
     # 1. Pull requests are excluded
     # ------------------------------------------------------------------
@@ -189,7 +191,7 @@ class TestGitHubIssueCollector:
     # ------------------------------------------------------------------
     def test_pagination_stops_at_max(self) -> None:
         """Collector must stop once max_issues regular issues are collected."""
-        page1 = [_make_issue(i) for i in range(1, 101)]    # 100 issues
+        page1 = [_make_issue(i) for i in range(1, 101)]  # 100 issues
         page2 = [_make_issue(i) for i in range(101, 201)]  # another 100
 
         # The Link header tells the client there is a next page
@@ -462,9 +464,7 @@ class TestGitHubIssueCollector:
         assert len(saved) == 4  # 4 issues, 1 PR excluded
 
     # 14. Output path does not overwrite a different file
-    def test_different_output_paths_are_independent(
-        self, tmp_path: Path
-    ) -> None:
+    def test_different_output_paths_are_independent(self, tmp_path: Path) -> None:
         """Collecting to two different paths must not overwrite each other."""
         page_a = [_make_issue(1)]
         page_b = [_make_issue(999)]
@@ -490,7 +490,6 @@ class TestGitHubIssueCollector:
         assert data_b[0]["number"] == 999
         # The original sample must be untouched
         assert data_a[0]["number"] != data_b[0]["number"]
-
 
     def test_start_page_passed_to_first_api_request(self) -> None:
         """start_page=5 must appear in the first request's query parameters."""
