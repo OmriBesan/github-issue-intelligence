@@ -7,12 +7,12 @@ work at any point and know exactly where to start.
 
 ## Current State
 
-**Completed stages:** Stages 0, 1A-1D, 2A-2C
-**Date completed:** 2026-08-03
+**Completed stages:** Stages 0, 1A-1D, 2A-2C, 3A
+**Date completed:** 2026-08-04
 
-The cleaned dataset has been successfully prepared in Stage 2A, and temporal and stratified
-random splits have been generated in Stage 2B. The simple baselines have been evaluated in Stage 2C.
-The next step is Stage 3: Classical NLP Models (TF-IDF).
+All data stages and classical TF-IDF models are complete.
+Best temporal Macro F1: 0.9077 (SGDClassifier). The performance floor was 0.3376.
+The next step is Stage 3B: model selection, evaluation, and tuning.
 
 ---
 

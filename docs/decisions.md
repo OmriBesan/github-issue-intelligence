@@ -756,3 +756,13 @@ Processed data is gitignored (large, reproducible from the combined raw file).
 ---
 
 *Decisions 001–023 recorded as of Stage 2A.*
+# #   D e c i s i o n   0 2 6   - -   C l a s s   W e i g h t i n g   f o r   C l a s s i c a l   M o d e l s 
+ * * D a t e : * *   2 0 2 6 - 0 8 - 0 4 
+ * * C o n t e x t : * *   T h e   t a r g e t   c l a s s e s   a r e   i m b a l a n c e d   ( B u g   4 0 % % ,   D o c u m e n t a t i o n   2 5 % % ,   E n h a n c e m e n t   3 6 % % ) .   W i t h o u t   c o r r e c t i o n   m o d e l s   m a y   u n d e r - p r e d i c t   t h e   m i n o r i t y   c l a s s . 
+ * * D e c i s i o n : * *   U s e   c l a s s _ w e i g h t = ' b a l a n c e d '   f o r   L R ,   L i n e a r S V C ,   a n d   S G D C l a s s i f i e r .   M u l t i n o m i a l N B   d o e s   n o t   s u p p o r t   c l a s s _ w e i g h t .   B a l a n c e d   w e i g h t i n g   i m p r o v e d   D o c u m e n t a t i o n   r e c a l l   v s   a n   u n w e i g h t e d   r u n . 
+ 
+ # #   D e c i s i o n   0 2 7   - -   S G D   l o g _ l o s s   a s   L i n e a r   T e x t   L o s s 
+ * * D a t e : * *   2 0 2 6 - 0 8 - 0 4 
+ * * C o n t e x t : * *   S G D C l a s s i f i e r   s u p p o r t s   m u l t i p l e   l o s s   f u n c t i o n s .   l o g _ l o s s   g i v e s   c a l i b r a t e d   p r o b a b i l i t i e s   a n d   b e h a v e s   l i k e   o n l i n e   L o g i s t i c   R e g r e s s i o n   f o r   t e x t . 
+ * * D e c i s i o n : * *   U s e   S G D C l a s s i f i e r ( l o s s = ' l o g _ l o s s ' )   s o   a l l   t h r e e   l i n e a r   m o d e l s   a r e   d i r e c t l y   c o m p a r a b l e   i n   t h e i r   o p t i m i s a t i o n   o b j e c t i v e s .  
+ 

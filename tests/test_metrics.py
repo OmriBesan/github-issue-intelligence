@@ -24,8 +24,8 @@ def test_macro_f1_differs_from_weighted_f1_on_imbalanced_data() -> None:
 
     metrics = compute_metrics(y_true, y_pred)
 
-    # Weighted F1 heavily weights the Bug class (which has high F1 because it gets all of them)
-    # Macro F1 averages the F1 of Bug and Enhancement equally (Enhancement F1 is 0)
+    # Weighted F1 heavily weights Bug (high F1 = gets all predictions).
+    # Macro F1 averages Bug and Enhancement equally (Enhancement F1 is 0).
     assert metrics["macro_f1"] < metrics["weighted_f1"]
 
     # Verify Bug class metrics

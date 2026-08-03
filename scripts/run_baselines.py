@@ -100,12 +100,7 @@ def run_split_evaluation(
     maj_model = MajorityClassBaseline()
     maj_model.fit(y_train)
     maj_preds = maj_model.predict(len(y_val))
-
     maj_metrics = compute_metrics(y_val, maj_preds, labels=labels_order)
-    maj_metrics["learned_majority_class"] = maj_model.model.classes_[
-        0
-    ]  # dummy classifier exposes this
-    # Wait, DummyClassifier with most_frequent has classes_ but the predicted value is what we want.
     maj_metrics["learned_majority_class"] = max(set(y_train), key=y_train.count)
 
     results["models"]["majority_class"] = maj_metrics
@@ -234,7 +229,9 @@ def main() -> None:
     print("====================================================================")
     for row in summary_rows:
         print(
-            f"{row['Split'].capitalize():<10} | {row['Model']:<18} | Acc: {row['Accuracy']} | Macro F1: {row['Macro F1']} | W-F1: {row['Weighted F1']}"
+            f"{row['Split'].capitalize():<10} | {row['Model']:<18} | "
+            f"Acc: {row['Accuracy']} | Macro F1: {row['Macro F1']} | "
+            f"W-F1: {row['Weighted F1']}"
         )
 
 

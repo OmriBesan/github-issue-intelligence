@@ -61,6 +61,7 @@ Audit checks:
 **Stage 2A:** Cleaned Modelling Dataset Preparation ✅ (Complete)
 **Stage 2B:** Data Splitting ✅ (Complete)
 **Stage 2C:** Simple Baselines ✅ (Complete)
+**Stage 3A:** Classical TF-IDF Models ✅ (Complete)
 
 Models:
 - Majority-class baseline (always predicts the most frequent class)

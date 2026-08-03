@@ -7,12 +7,12 @@
 
 ## Project Status
 
-**Current Status: Stage 2C Complete, Ready for NLP Baselines**
+**Current Status: Stage 3A Complete**
 
-Stages 0, 1A-1D, 2A-2C are ✅ Complete.
-The simple baselines (Majority Class and Stratified Random) have been evaluated.
-The performance floor is established (Temporal Macro F1: ~0.34).
-Next task is Stage 3: Classical NLP Models (TF-IDF).
+Stages 0, 1A-1D, 2A-2C, and 3A are ✅ Complete.
+TF-IDF classical NLP models have been trained and evaluated. The best model
+(SGDClassifier) achieves Temporal Macro F1: **0.9077** — a +0.57 gain over the
+0.3376 baseline. Next: Stage 3B model selection and tuning.
 
 ---
 
