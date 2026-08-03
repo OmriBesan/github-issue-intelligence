@@ -1,0 +1,95 @@
+{
+  "SGDClassifier": {
+    "config_id": "SGD_p2_ng(1, 2)_mindf5_maxfNone",
+    "clf_params": {
+      "loss": "hinge",
+      "alpha": 0.001,
+      "class_weight": "balanced"
+    },
+    "tfidf_params": {
+      "ngram_range": [
+        1,
+        2
+      ],
+      "min_df": 5,
+      "max_features": null
+    },
+    "inner_fold_mean_macro_f1": 0.8199041728820802,
+    "inner_fold_std_macro_f1": 0.0645768709592306,
+    "temporal_val_macro_f1": 0.9054579291985195,
+    "temporal_val_accuracy": 0.9125874125874126,
+    "temporal_val_weighted_f1": 0.9120249371973808,
+    "temporal_val_per_class": {
+      "Bug": {
+        "precision": 0.8826185101580135,
+        "recall": 0.9630541871921182,
+        "f1": 0.9210836277974087,
+        "predicted_count": 443
+      },
+      "Documentation": {
+        "precision": 0.9473684210526315,
+        "recall": 0.8181818181818182,
+        "f1": 0.8780487804878049,
+        "predicted_count": 133
+      },
+      "Enhancement": {
+        "precision": 0.9432624113475178,
+        "recall": 0.8926174496644296,
+        "f1": 0.9172413793103448,
+        "predicted_count": 282
+      }
+    },
+    "random_val_macro_f1": 0.9138342920140866,
+    "vocabulary_size": 20473,
+    "training_time_s": 2.5833020210266113,
+    "prediction_time_s": 0.5168545246124268,
+    "untuned_temporal_f1": 0.9077,
+    "delta": -0.0022420708014804225
+  },
+  "LinearSVC": {
+    "config_id": "LSVC_p2_ng(1, 2)_mindf5_maxfNone",
+    "clf_params": {
+      "C": 0.3,
+      "class_weight": "balanced"
+    },
+    "tfidf_params": {
+      "ngram_range": [
+        1,
+        2
+      ],
+      "min_df": 5,
+      "max_features": null
+    },
+    "inner_fold_mean_macro_f1": 0.821926148662179,
+    "inner_fold_std_macro_f1": 0.06673856850639961,
+    "temporal_val_macro_f1": 0.9087400173463257,
+    "temporal_val_accuracy": 0.9172494172494172,
+    "temporal_val_weighted_f1": 0.9166584940238214,
+    "temporal_val_per_class": {
+      "Bug": {
+        "precision": 0.8929384965831435,
+        "recall": 0.9655172413793104,
+        "f1": 0.927810650887574,
+        "predicted_count": 439
+      },
+      "Documentation": {
+        "precision": 0.9338235294117647,
+        "recall": 0.8246753246753247,
+        "f1": 0.8758620689655172,
+        "predicted_count": 136
+      },
+      "Enhancement": {
+        "precision": 0.9469964664310954,
+        "recall": 0.8993288590604027,
+        "f1": 0.9225473321858864,
+        "predicted_count": 283
+      }
+    },
+    "random_val_macro_f1": 0.9545103703224355,
+    "vocabulary_size": 20473,
+    "training_time_s": 1.9396560192108154,
+    "prediction_time_s": 0.3914363384246826,
+    "untuned_temporal_f1": 0.906,
+    "delta": 0.002740017346325674
+  }
+}

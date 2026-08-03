@@ -7,12 +7,12 @@ work at any point and know exactly where to start.
 
 ## Current State
 
-**Completed stages:** Stages 0, 1A-1D, 2A-2C, 3A, 3B
+**Completed stages:** Stages 0, 1A-1D, 2A-2C, 3A, 3B, 3C
 **Date completed:** 2026-08-04
 
-All 10 robustness checks pass. Zero near-duplicates. Label-word masking drops
-Macro F1 by only 0.003. The 0.90+ result is credible.
-The next step is Stage 3C: targeted hyperparameter tuning.
+Best classical candidate: LinearSVC (C=0.3, balanced, bigrams, min_df=5).
+Temporal val Macro F1: 0.9087. Vocabulary: 20,473 terms (70% smaller than untuned).
+The next step is Stage 4: transformer model or final model comparison on the test set.
 
 ---
 

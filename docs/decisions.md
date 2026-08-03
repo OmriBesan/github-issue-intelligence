@@ -791,3 +791,38 @@ including the most recent noisier issues, making the learned representation slig
 The temporal validation set (2022-2024) is a coherent temporal slice, while the random validation
 set is a mixed-year sample. This means temporal evaluation is a stricter, more realistic assessment
 of how the model will perform on future issues.
+
+
+## Decision 030 -- Best Classical Candidate: LinearSVC (C=0.3, min_df=5, bigrams)
+**Date:** 2026-08-04
+**Context:** Stage 3C targeted tuning of SGDClassifier and LinearSVC using 3-fold expanding-window
+temporal cross-validation on the training split only.
+**Inner fold results:**
+- Best SGD: hinge, alpha=0.001, balanced, ngram=(1,2), min_df=5 → mean F1=0.8199, std=0.0646
+- Best LinearSVC: C=0.3, balanced, ngram=(1,2), min_df=5 → mean F1=0.8219, std=0.0667
+**External validation:**
+- SGD temporal val: 0.9055 (delta=-0.0022 vs untuned 0.9077)
+- LinearSVC temporal val: 0.9087 (delta=+0.0027 vs untuned 0.9060)
+**Decision:** LinearSVC with C=0.3, balanced weighting, bigrams (1,2), min_df=5 is named the
+best classical candidate. Vocabulary shrinks from 67,838 to 20,473 terms (70% reduction) with
+no meaningful loss in accuracy.
+This is NOT the final project model. It will be compared with future transformer models.
+
+## Decision 031 -- Tuning Improvement is Not Practically Meaningful
+**Date:** 2026-08-04
+**Context:** The best LinearSVC configuration improved temporal Macro F1 by +0.0027.
+The best SGD configuration degraded by -0.0022.
+**Decision:** The Stage 3A untuned models were already very well-configured. The tuning search
+confirmed that the original settings (balanced weighting, bigrams, min_df=2) were nearly optimal.
+The only meaningfully actionable finding is that min_df=5 shrinks the vocabulary by 70% with
+negligible performance cost, making the model faster to fit and inspect.
+
+## Decision 032 -- Inner Fold F1 (~0.82) Substantially Lower Than External Val (~0.91)
+**Date:** 2026-08-04
+**Context:** Inner expanding-window folds (training 1000-2999 records, validating on the next
+period) produce mean Macro F1 ~0.82, while external validation (training on full 3996 records)
+produces ~0.91.
+**Explanation:** (1) Fold 1 trains on only 1000 records — insufficient for full TF-IDF coverage.
+(2) The inner folds are harder: fold 1 validates on 2015-2018 data with only pre-2015 training.
+(3) The full training set has 3× more data (3996 vs ~1000-2999). The gap is expected and not
+evidence of leakage; it shows the model benefits from more training data.

@@ -7,13 +7,12 @@
 
 ## Project Status
 
-**Current Status: Stage 3B Complete — Models Validated**
+**Current Status: Stage 3C Complete — Best Classical Model Selected**
 
-Stages 0, 1A-1D, 2A-2C, 3A, and 3B are ✅ Complete.
-All 10 robustness checks completed on SGDClassifier and LinearSVC.
-Key finding: **0 near-duplicates at any threshold**; label-word masking drops Macro F1 by only 0.003.
-The 0.90+ Macro F1 result is credible and not inflated by leakage.
-Next: Stage 3C — targeted hyperparameter tuning.
+Stages 0, 1A-1D, 2A-2C, 3A, 3B, and 3C are ✅ Complete.
+Best classical candidate: **LinearSVC (C=0.3, balanced, bigrams, min_df=5)**.
+Temporal Macro F1: **0.9087** (+0.0027 over untuned). Vocabulary: 20,473 terms.
+Next: Stage 4 — transformer model or final model comparison.
 
 ---
 

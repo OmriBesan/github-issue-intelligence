@@ -1,0 +1,3 @@
+model,config_id,untuned_temporal_f1,tuned_inner_mean_f1,tuned_temporal_val_f1,tuned_random_val_f1,delta_temporal,vocab_size,train_time_s
+SGDClassifier,"SGD_p2_ng(1, 2)_mindf5_maxfNone",0.9077,0.8199,0.9055,0.9138,-0.0022,20473,2.58
+LinearSVC,"LSVC_p2_ng(1, 2)_mindf5_maxfNone",0.9060,0.8219,0.9087,0.9545,+0.0027,20473,1.94

@@ -1,0 +1,100 @@
+model,config_id,fold,macro_f1,weighted_f1,accuracy,train_time_s,vocab_size
+SGDClassifier,SGD_p1_log_loss_a1e-05_balanced,1,0.7638,0.7658,0.7680,0.31,14755
+SGDClassifier,SGD_p1_log_loss_a1e-05_balanced,2,0.7923,0.7943,0.7958,0.58,30111
+SGDClassifier,SGD_p1_log_loss_a1e-05_balanced,3,0.8872,0.8900,0.8897,0.97,47849
+SGDClassifier,SGD_p1_log_loss_a0.0001_balanced,1,0.7642,0.7660,0.7680,0.23,14755
+SGDClassifier,SGD_p1_log_loss_a0.0001_balanced,2,0.7926,0.7948,0.7968,0.62,30111
+SGDClassifier,SGD_p1_log_loss_a0.0001_balanced,3,0.8929,0.8949,0.8947,0.97,47849
+SGDClassifier,SGD_p1_log_loss_a0.001_balanced,1,0.7470,0.7489,0.7520,0.25,14755
+SGDClassifier,SGD_p1_log_loss_a0.001_balanced,2,0.7696,0.7718,0.7748,0.69,30111
+SGDClassifier,SGD_p1_log_loss_a0.001_balanced,3,0.8797,0.8817,0.8816,1.26,47849
+SGDClassifier,SGD_p1_modified_huber_a1e-05_balanced,1,0.7518,0.7543,0.7570,0.49,14755
+SGDClassifier,SGD_p1_modified_huber_a1e-05_balanced,2,0.7774,0.7796,0.7808,1.22,30111
+SGDClassifier,SGD_p1_modified_huber_a1e-05_balanced,3,0.8786,0.8811,0.8806,1.51,47849
+SGDClassifier,SGD_p1_modified_huber_a0.0001_balanced,1,0.7568,0.7595,0.7620,0.48,14755
+SGDClassifier,SGD_p1_modified_huber_a0.0001_balanced,2,0.7839,0.7859,0.7878,1.11,30111
+SGDClassifier,SGD_p1_modified_huber_a0.0001_balanced,3,0.8827,0.8849,0.8847,1.54,47849
+SGDClassifier,SGD_p1_modified_huber_a0.001_balanced,1,0.7632,0.7655,0.7670,0.28,14755
+SGDClassifier,SGD_p1_modified_huber_a0.001_balanced,2,0.7976,0.7999,0.8018,0.63,30111
+SGDClassifier,SGD_p1_modified_huber_a0.001_balanced,3,0.8949,0.8969,0.8967,1.16,47849
+SGDClassifier,SGD_p1_hinge_a1e-05_balanced,1,0.7721,0.7743,0.7760,0.36,14755
+SGDClassifier,SGD_p1_hinge_a1e-05_balanced,2,0.7763,0.7787,0.7808,1.04,30111
+SGDClassifier,SGD_p1_hinge_a1e-05_balanced,3,0.8784,0.8800,0.8796,1.66,47849
+SGDClassifier,SGD_p1_hinge_a0.0001_balanced,1,0.7631,0.7657,0.7670,0.39,14755
+SGDClassifier,SGD_p1_hinge_a0.0001_balanced,2,0.7902,0.7923,0.7938,1.24,30111
+SGDClassifier,SGD_p1_hinge_a0.0001_balanced,3,0.8848,0.8869,0.8867,2.52,47849
+SGDClassifier,SGD_p1_hinge_a0.001_balanced,1,0.7738,0.7763,0.7780,0.39,14755
+SGDClassifier,SGD_p1_hinge_a0.001_balanced,2,0.7900,0.7912,0.7928,0.80,30111
+SGDClassifier,SGD_p1_hinge_a0.001_balanced,3,0.8925,0.8939,0.8937,1.45,47849
+SGDClassifier,SGD_p1_log_a0.0001_unweighted,1,0.7377,0.7390,0.7450,0.34,14755
+SGDClassifier,SGD_p1_log_a0.0001_unweighted,2,0.7871,0.7894,0.7918,0.95,30111
+SGDClassifier,SGD_p1_log_a0.0001_unweighted,3,0.8961,0.8979,0.8977,1.50,47849
+SGDClassifier,SGD_p1_log_a0.001_unweighted,1,0.6479,0.6473,0.6750,0.30,14755
+SGDClassifier,SGD_p1_log_a0.001_unweighted,2,0.7522,0.7571,0.7638,0.70,30111
+SGDClassifier,SGD_p1_log_a0.001_unweighted,3,0.8695,0.8739,0.8746,1.41,47849
+SGDClassifier,"SGD_p2_ng(1, 1)_mindf2_maxfNone",1,0.7728,0.7755,0.7770,0.18,4526
+SGDClassifier,"SGD_p2_ng(1, 1)_mindf2_maxfNone",2,0.7941,0.7952,0.7968,0.33,7359
+SGDClassifier,"SGD_p2_ng(1, 1)_mindf2_maxfNone",3,0.8865,0.8889,0.8887,0.58,9917
+SGDClassifier,"SGD_p2_ng(1, 2)_mindf2_maxfNone",1,0.7738,0.7763,0.7780,0.36,14755
+SGDClassifier,"SGD_p2_ng(1, 2)_mindf2_maxfNone",2,0.7900,0.7912,0.7928,0.75,30111
+SGDClassifier,"SGD_p2_ng(1, 2)_mindf2_maxfNone",3,0.8925,0.8939,0.8937,1.10,47849
+SGDClassifier,"SGD_p2_ng(1, 2)_mindf3_maxfNone",1,0.7692,0.7717,0.7730,0.31,7886
+SGDClassifier,"SGD_p2_ng(1, 2)_mindf3_maxfNone",2,0.7878,0.7891,0.7908,0.62,16438
+SGDClassifier,"SGD_p2_ng(1, 2)_mindf3_maxfNone",3,0.8922,0.8939,0.8937,1.16,26694
+SGDClassifier,"SGD_p2_ng(1, 2)_mindf5_maxfNone",1,0.7735,0.7759,0.7770,0.30,3957
+SGDClassifier,"SGD_p2_ng(1, 2)_mindf5_maxfNone",2,0.7926,0.7934,0.7948,0.64,8729
+SGDClassifier,"SGD_p2_ng(1, 2)_mindf5_maxfNone",3,0.8936,0.8950,0.8947,1.36,14164
+SGDClassifier,"SGD_p2_ng(1, 2)_mindf2_maxf40000",1,0.7738,0.7763,0.7780,0.41,14755
+SGDClassifier,"SGD_p2_ng(1, 2)_mindf2_maxf40000",2,0.7900,0.7912,0.7928,0.90,30111
+SGDClassifier,"SGD_p2_ng(1, 2)_mindf2_maxf40000",3,0.8922,0.8939,0.8937,1.78,40000
+SGDClassifier,"SGD_p2_ng(1, 2)_mindf2_maxf80000",1,0.7738,0.7763,0.7780,0.45,14755
+SGDClassifier,"SGD_p2_ng(1, 2)_mindf2_maxf80000",2,0.7900,0.7912,0.7928,1.10,30111
+SGDClassifier,"SGD_p2_ng(1, 2)_mindf2_maxf80000",3,0.8925,0.8939,0.8937,2.67,47849
+SGDClassifier,"SGD_p2_ng(1, 3)_mindf2_maxfNone",1,0.7741,0.7764,0.7780,0.77,20782
+SGDClassifier,"SGD_p2_ng(1, 3)_mindf2_maxfNone",2,0.7868,0.7880,0.7898,1.27,45023
+SGDClassifier,"SGD_p2_ng(1, 3)_mindf2_maxfNone",3,0.8893,0.8910,0.8907,2.51,75287
+SGDClassifier,"SGD_p2_ng(1, 3)_mindf3_maxf80000",1,0.7723,0.7747,0.7760,0.70,10099
+SGDClassifier,"SGD_p2_ng(1, 3)_mindf3_maxf80000",2,0.7873,0.7883,0.7898,1.52,22362
+SGDClassifier,"SGD_p2_ng(1, 3)_mindf3_maxf80000",3,0.8879,0.8899,0.8897,3.41,37994
+LinearSVC,LSVC_p1_C0.1_balanced,1,0.7504,0.7524,0.7550,0.28,14755
+LinearSVC,LSVC_p1_C0.1_balanced,2,0.7805,0.7824,0.7848,0.68,30111
+LinearSVC,LSVC_p1_C0.1_balanced,3,0.8941,0.8959,0.8957,1.46,47849
+LinearSVC,LSVC_p1_C0.3_balanced,1,0.7647,0.7668,0.7690,0.36,14755
+LinearSVC,LSVC_p1_C0.3_balanced,2,0.7864,0.7886,0.7908,0.70,30111
+LinearSVC,LSVC_p1_C0.3_balanced,3,0.8971,0.8989,0.8987,1.19,47849
+LinearSVC,LSVC_p1_C1.0_balanced,1,0.7634,0.7657,0.7680,0.32,14755
+LinearSVC,LSVC_p1_C1.0_balanced,2,0.7919,0.7942,0.7958,0.86,30111
+LinearSVC,LSVC_p1_C1.0_balanced,3,0.8921,0.8940,0.8937,1.46,47849
+LinearSVC,LSVC_p1_C3.0_balanced,1,0.7630,0.7651,0.7680,0.52,14755
+LinearSVC,LSVC_p1_C3.0_balanced,2,0.7945,0.7971,0.7988,0.90,30111
+LinearSVC,LSVC_p1_C3.0_balanced,3,0.8885,0.8909,0.8907,1.85,47849
+LinearSVC,LSVC_p1_C0.3_unweighted,1,0.7301,0.7314,0.7390,0.39,14755
+LinearSVC,LSVC_p1_C0.3_unweighted,2,0.7839,0.7862,0.7888,0.85,30111
+LinearSVC,LSVC_p1_C0.3_unweighted,3,0.8970,0.8989,0.8987,1.55,47849
+LinearSVC,LSVC_p1_C1.0_unweighted,1,0.7480,0.7499,0.7540,0.42,14755
+LinearSVC,LSVC_p1_C1.0_unweighted,2,0.7894,0.7919,0.7938,0.99,30111
+LinearSVC,LSVC_p1_C1.0_unweighted,3,0.8896,0.8919,0.8917,1.60,47849
+LinearSVC,"LSVC_p2_ng(1, 1)_mindf2_maxfNone",1,0.7694,0.7717,0.7730,0.13,4526
+LinearSVC,"LSVC_p2_ng(1, 1)_mindf2_maxfNone",2,0.7951,0.7970,0.7988,0.29,7359
+LinearSVC,"LSVC_p2_ng(1, 1)_mindf2_maxfNone",3,0.8934,0.8950,0.8947,0.43,9917
+LinearSVC,"LSVC_p2_ng(1, 2)_mindf2_maxfNone",1,0.7647,0.7668,0.7690,0.34,14755
+LinearSVC,"LSVC_p2_ng(1, 2)_mindf2_maxfNone",2,0.7864,0.7886,0.7908,0.88,30111
+LinearSVC,"LSVC_p2_ng(1, 2)_mindf2_maxfNone",3,0.8971,0.8989,0.8987,1.72,47849
+LinearSVC,"LSVC_p2_ng(1, 2)_mindf3_maxfNone",1,0.7639,0.7661,0.7680,0.32,7886
+LinearSVC,"LSVC_p2_ng(1, 2)_mindf3_maxfNone",2,0.7885,0.7902,0.7918,0.73,16438
+LinearSVC,"LSVC_p2_ng(1, 2)_mindf3_maxfNone",3,0.8946,0.8969,0.8967,1.54,26694
+LinearSVC,"LSVC_p2_ng(1, 2)_mindf5_maxfNone",1,0.7698,0.7719,0.7730,0.34,3957
+LinearSVC,"LSVC_p2_ng(1, 2)_mindf5_maxfNone",2,0.7989,0.8005,0.8018,0.88,8729
+LinearSVC,"LSVC_p2_ng(1, 2)_mindf5_maxfNone",3,0.8971,0.8990,0.8987,1.58,14164
+LinearSVC,"LSVC_p2_ng(1, 2)_mindf2_maxf40000",1,0.7647,0.7668,0.7690,0.58,14755
+LinearSVC,"LSVC_p2_ng(1, 2)_mindf2_maxf40000",2,0.7864,0.7886,0.7908,1.11,30111
+LinearSVC,"LSVC_p2_ng(1, 2)_mindf2_maxf40000",3,0.8959,0.8979,0.8977,1.96,40000
+LinearSVC,"LSVC_p2_ng(1, 2)_mindf2_maxf80000",1,0.7647,0.7668,0.7690,0.44,14755
+LinearSVC,"LSVC_p2_ng(1, 2)_mindf2_maxf80000",2,0.7864,0.7886,0.7908,0.92,30111
+LinearSVC,"LSVC_p2_ng(1, 2)_mindf2_maxf80000",3,0.8971,0.8989,0.8987,1.84,47849
+LinearSVC,"LSVC_p2_ng(1, 3)_mindf2_maxfNone",1,0.7574,0.7595,0.7620,0.56,20782
+LinearSVC,"LSVC_p2_ng(1, 3)_mindf2_maxfNone",2,0.7827,0.7844,0.7868,1.13,45023
+LinearSVC,"LSVC_p2_ng(1, 3)_mindf2_maxfNone",3,0.8982,0.8999,0.8997,1.89,75287
+LinearSVC,"LSVC_p2_ng(1, 3)_mindf3_maxf80000",1,0.7650,0.7671,0.7690,0.69,10099
+LinearSVC,"LSVC_p2_ng(1, 3)_mindf3_maxf80000",2,0.7836,0.7849,0.7868,1.63,22362
+LinearSVC,"LSVC_p2_ng(1, 3)_mindf3_maxf80000",3,0.8948,0.8969,0.8967,2.80,37994

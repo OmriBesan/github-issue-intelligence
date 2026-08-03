@@ -441,3 +441,26 @@ by AI and how the output was reviewed, adapted, and integrated.
 - Verified label-word masking only reduces Macro F1 by 0.003 (SGD: 0.9077 to 0.9051).
 - Confirmed performance is consistent across years 2022-2024 (no cliff or collapse).
 - Reviewed misclassified examples CSV and influential term CSV for suspicious patterns.
+
+
+---
+
+## Entry 012 -- Hyperparameter Tuning (Stage 3C)
+
+**Date:** 2026-08-04
+**Tool:** Google Antigravity (AI coding assistant powered by Gemini)
+**Stage:** Stage 3C
+
+### What the AI assisted with
+- Created `src/issue_intelligence/evaluation/temporal_cv.py` with expanding-window fold generator.
+- Created `src/issue_intelligence/models/tuning.py` with candidate definitions and selection logic.
+- Created `scripts/tune_classical_models.py` running full Phase 1 + Phase 2 search.
+- Created `tests/test_temporal_cv.py` (8 tests) and `tests/test_tuning.py` (11 tests). All 258 pass.
+- Generated 4 output files: fold_results.csv, all_candidates.csv, best.json, validation_comparison.csv.
+- Generated 6 figures in reports/figures/tuning/.
+
+### What the student reviewed and verified
+- Confirmed inner fold boundaries are strictly chronological (2010→2015, 2015→2018, 2018→2020, 2020→2022).
+- Verified that LinearSVC temporal val improved by +0.0027 and noted this is not practically meaningful.
+- Confirmed min_df=5 reduces vocabulary from 67,838 to 20,473 terms (70%) with negligible F1 loss.
+- Confirmed test split was never accessed.

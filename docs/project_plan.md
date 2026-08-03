@@ -63,6 +63,7 @@ Audit checks:
 **Stage 2C:** Simple Baselines ✅ (Complete)
 **Stage 3A:** Classical TF-IDF Models ✅ (Complete)
 **Stage 3B:** Robustness Validation ✅ (Complete)
+**Stage 3C:** Hyperparameter Tuning ✅ (Complete)
 
 Models:
 - Majority-class baseline (always predicts the most frequent class)
