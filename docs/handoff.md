@@ -7,12 +7,12 @@ work at any point and know exactly where to start.
 
 ## Current State
 
-**Completed stages:** Stages 0, 1A-1D, 2A-2C, 3A
+**Completed stages:** Stages 0, 1A-1D, 2A-2C, 3A, 3B
 **Date completed:** 2026-08-04
 
-All data stages and classical TF-IDF models are complete.
-Best temporal Macro F1: 0.9077 (SGDClassifier). The performance floor was 0.3376.
-The next step is Stage 3B: model selection, evaluation, and tuning.
+All 10 robustness checks pass. Zero near-duplicates. Label-word masking drops
+Macro F1 by only 0.003. The 0.90+ result is credible.
+The next step is Stage 3C: targeted hyperparameter tuning.
 
 ---
 

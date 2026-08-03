@@ -1,0 +1,455 @@
+{
+  "variant_results": {
+    "combined (repro)": {
+      "SGDClassifier": {
+        "macro_f1": 0.9077223889655434,
+        "accuracy": 0.916083916083916,
+        "per_class": {
+          "Bug": {
+            "precision": 0.8888888888888888,
+            "recall": 0.9655172413793104,
+            "f1": 0.9256198347107438,
+            "predicted_count": 441
+          },
+          "Documentation": {
+            "precision": 0.9402985074626866,
+            "recall": 0.8181818181818182,
+            "f1": 0.875,
+            "predicted_count": 134
+          },
+          "Enhancement": {
+            "precision": 0.9469964664310954,
+            "recall": 0.8993288590604027,
+            "f1": 0.9225473321858864,
+            "predicted_count": 283
+          }
+        }
+      },
+      "LinearSVC": {
+        "macro_f1": 0.9059820633001071,
+        "accuracy": 0.9137529137529138,
+        "per_class": {
+          "Bug": {
+            "precision": 0.8866213151927438,
+            "recall": 0.9630541871921182,
+            "f1": 0.9232585596221959,
+            "predicted_count": 441
+          },
+          "Documentation": {
+            "precision": 0.9338235294117647,
+            "recall": 0.8246753246753247,
+            "f1": 0.8758620689655172,
+            "predicted_count": 136
+          },
+          "Enhancement": {
+            "precision": 0.9466192170818505,
+            "recall": 0.8926174496644296,
+            "f1": 0.918825561312608,
+            "predicted_count": 281
+          }
+        }
+      }
+    },
+    "title_only": {
+      "SGDClassifier": {
+        "macro_f1": 0.7614795513757991,
+        "accuracy": 0.7773892773892774,
+        "per_class": {
+          "Bug": {
+            "precision": 0.8156565656565656,
+            "recall": 0.7955665024630542,
+            "f1": 0.8054862842892768,
+            "predicted_count": 396
+          },
+          "Documentation": {
+            "precision": 0.7593984962406015,
+            "recall": 0.6558441558441559,
+            "f1": 0.7038327526132404,
+            "predicted_count": 133
+          },
+          "Enhancement": {
+            "precision": 0.7386018237082067,
+            "recall": 0.8154362416107382,
+            "f1": 0.7751196172248804,
+            "predicted_count": 329
+          }
+        }
+      },
+      "LinearSVC": {
+        "macro_f1": 0.7501627019549288,
+        "accuracy": 0.7622377622377622,
+        "per_class": {
+          "Bug": {
+            "precision": 0.8087855297157622,
+            "recall": 0.770935960591133,
+            "f1": 0.7894073139974779,
+            "predicted_count": 387
+          },
+          "Documentation": {
+            "precision": 0.726027397260274,
+            "recall": 0.6883116883116883,
+            "f1": 0.7066666666666667,
+            "predicted_count": 146
+          },
+          "Enhancement": {
+            "precision": 0.7230769230769231,
+            "recall": 0.7885906040268457,
+            "f1": 0.7544141252006421,
+            "predicted_count": 325
+          }
+        }
+      }
+    },
+    "body_only": {
+      "SGDClassifier": {
+        "macro_f1": 0.9029286780763011,
+        "accuracy": 0.9114219114219114,
+        "per_class": {
+          "Bug": {
+            "precision": 0.8831460674157303,
+            "recall": 0.9679802955665024,
+            "f1": 0.9236192714453584,
+            "predicted_count": 445
+          },
+          "Documentation": {
+            "precision": 0.9333333333333333,
+            "recall": 0.8181818181818182,
+            "f1": 0.8719723183391004,
+            "predicted_count": 135
+          },
+          "Enhancement": {
+            "precision": 0.9460431654676259,
+            "recall": 0.8825503355704698,
+            "f1": 0.9131944444444444,
+            "predicted_count": 278
+          }
+        }
+      },
+      "LinearSVC": {
+        "macro_f1": 0.8963141537669475,
+        "accuracy": 0.9055944055944056,
+        "per_class": {
+          "Bug": {
+            "precision": 0.8803611738148984,
+            "recall": 0.9605911330049262,
+            "f1": 0.9187279151943463,
+            "predicted_count": 443
+          },
+          "Documentation": {
+            "precision": 0.9191176470588235,
+            "recall": 0.8116883116883117,
+            "f1": 0.8620689655172413,
+            "predicted_count": 136
+          },
+          "Enhancement": {
+            "precision": 0.9390681003584229,
+            "recall": 0.8791946308724832,
+            "f1": 0.9081455805892548,
+            "predicted_count": 279
+          }
+        }
+      }
+    },
+    "label_masked": {
+      "SGDClassifier": {
+        "macro_f1": 0.9051423971766462,
+        "accuracy": 0.9137529137529138,
+        "per_class": {
+          "Bug": {
+            "precision": 0.8886363636363637,
+            "recall": 0.9630541871921182,
+            "f1": 0.9243498817966903,
+            "predicted_count": 440
+          },
+          "Documentation": {
+            "precision": 0.9333333333333333,
+            "recall": 0.8181818181818182,
+            "f1": 0.8719723183391004,
+            "predicted_count": 135
+          },
+          "Enhancement": {
+            "precision": 0.9434628975265018,
+            "recall": 0.8959731543624161,
+            "f1": 0.919104991394148,
+            "predicted_count": 283
+          }
+        }
+      },
+      "LinearSVC": {
+        "macro_f1": 0.9015814787641641,
+        "accuracy": 0.9102564102564102,
+        "per_class": {
+          "Bug": {
+            "precision": 0.8863636363636364,
+            "recall": 0.9605911330049262,
+            "f1": 0.9219858156028369,
+            "predicted_count": 440
+          },
+          "Documentation": {
+            "precision": 0.9264705882352942,
+            "recall": 0.8181818181818182,
+            "f1": 0.8689655172413793,
+            "predicted_count": 136
+          },
+          "Enhancement": {
+            "precision": 0.9397163120567376,
+            "recall": 0.889261744966443,
+            "f1": 0.9137931034482759,
+            "predicted_count": 282
+          }
+        }
+      }
+    }
+  },
+  "prefix_free_results": {
+    "SGDClassifier": {
+      "macro_f1": 0.9051019365486074,
+      "per_class": {
+        "Bug": {
+          "precision": 0.8864734299516909,
+          "recall": 0.9657894736842105,
+          "f1": 0.924433249370277,
+          "predicted_count": 414
+        },
+        "Documentation": {
+          "precision": 0.9416666666666667,
+          "recall": 0.8071428571428572,
+          "f1": 0.8692307692307693,
+          "predicted_count": 120
+        },
+        "Enhancement": {
+          "precision": 0.946360153256705,
+          "recall": 0.8981818181818182,
+          "f1": 0.9216417910447762,
+          "predicted_count": 261
+        }
+      }
+    },
+    "LinearSVC": {
+      "macro_f1": 0.9032487871902962,
+      "per_class": {
+        "Bug": {
+          "precision": 0.8840579710144928,
+          "recall": 0.9631578947368421,
+          "f1": 0.9219143576826196,
+          "predicted_count": 414
+        },
+        "Documentation": {
+          "precision": 0.9344262295081968,
+          "recall": 0.8142857142857143,
+          "f1": 0.8702290076335878,
+          "predicted_count": 122
+        },
+        "Enhancement": {
+          "precision": 0.9459459459459459,
+          "recall": 0.8909090909090909,
+          "f1": 0.9176029962546817,
+          "predicted_count": 259
+        }
+      }
+    }
+  },
+  "year_results": {
+    "2022": {
+      "SGDClassifier": {
+        "macro_f1": 0.8870845466590147,
+        "per_class": {
+          "Bug": {
+            "precision": 0.8928571428571429,
+            "recall": 0.9259259259259259,
+            "f1": 0.9090909090909091,
+            "predicted_count": 56
+          },
+          "Documentation": {
+            "precision": 0.9090909090909091,
+            "recall": 0.8,
+            "f1": 0.851063829787234,
+            "predicted_count": 22
+          },
+          "Enhancement": {
+            "precision": 0.8913043478260869,
+            "recall": 0.9111111111111111,
+            "f1": 0.9010989010989011,
+            "predicted_count": 46
+          }
+        }
+      },
+      "LinearSVC": {
+        "macro_f1": 0.8793196577672404,
+        "per_class": {
+          "Bug": {
+            "precision": 0.8909090909090909,
+            "recall": 0.9074074074074074,
+            "f1": 0.8990825688073395,
+            "predicted_count": 55
+          },
+          "Documentation": {
+            "precision": 0.84,
+            "recall": 0.84,
+            "f1": 0.84,
+            "predicted_count": 25
+          },
+          "Enhancement": {
+            "precision": 0.9090909090909091,
+            "recall": 0.8888888888888888,
+            "f1": 0.898876404494382,
+            "predicted_count": 44
+          }
+        }
+      }
+    },
+    "2023": {
+      "SGDClassifier": {
+        "macro_f1": 0.9193522086603848,
+        "per_class": {
+          "Bug": {
+            "precision": 0.895910780669145,
+            "recall": 0.9678714859437751,
+            "f1": 0.9305019305019305,
+            "predicted_count": 269
+          },
+          "Documentation": {
+            "precision": 0.9594594594594594,
+            "recall": 0.8352941176470589,
+            "f1": 0.8930817610062893,
+            "predicted_count": 74
+          },
+          "Enhancement": {
+            "precision": 0.9590643274853801,
+            "recall": 0.9111111111111111,
+            "f1": 0.9344729344729344,
+            "predicted_count": 171
+          }
+        }
+      },
+      "LinearSVC": {
+        "macro_f1": 0.916165872140715,
+        "per_class": {
+          "Bug": {
+            "precision": 0.8921933085501859,
+            "recall": 0.963855421686747,
+            "f1": 0.9266409266409267,
+            "predicted_count": 269
+          },
+          "Documentation": {
+            "precision": 0.9594594594594594,
+            "recall": 0.8352941176470589,
+            "f1": 0.8930817610062893,
+            "predicted_count": 74
+          },
+          "Enhancement": {
+            "precision": 0.9532163742690059,
+            "recall": 0.9055555555555556,
+            "f1": 0.9287749287749287,
+            "predicted_count": 171
+          }
+        }
+      }
+    },
+    "2024": {
+      "SGDClassifier": {
+        "macro_f1": 0.8941692619843317,
+        "per_class": {
+          "Bug": {
+            "precision": 0.8706896551724138,
+            "recall": 0.9805825242718447,
+            "f1": 0.9223744292237442,
+            "predicted_count": 116
+          },
+          "Documentation": {
+            "precision": 0.9210526315789473,
+            "recall": 0.7954545454545454,
+            "f1": 0.8536585365853658,
+            "predicted_count": 38
+          },
+          "Enhancement": {
+            "precision": 0.9545454545454546,
+            "recall": 0.863013698630137,
+            "f1": 0.9064748201438849,
+            "predicted_count": 66
+          }
+        }
+      },
+      "LinearSVC": {
+        "macro_f1": 0.8993150260936033,
+        "per_class": {
+          "Bug": {
+            "precision": 0.8717948717948718,
+            "recall": 0.9902912621359223,
+            "f1": 0.9272727272727272,
+            "predicted_count": 117
+          },
+          "Documentation": {
+            "precision": 0.9459459459459459,
+            "recall": 0.7954545454545454,
+            "f1": 0.8641975308641975,
+            "predicted_count": 37
+          },
+          "Enhancement": {
+            "precision": 0.9545454545454546,
+            "recall": 0.863013698630137,
+            "f1": 0.9064748201438849,
+            "predicted_count": 66
+          }
+        }
+      }
+    }
+  },
+  "length_bucket_results": {
+    "medium": {
+      "SGDClassifier": {
+        "macro_f1": 0.918315476285981,
+        "n": 190
+      },
+      "LinearSVC": {
+        "macro_f1": 0.9305102670668632,
+        "n": 190
+      }
+    },
+    "very_long": {
+      "SGDClassifier": {
+        "macro_f1": 0.8359788359788359,
+        "n": 99
+      },
+      "LinearSVC": {
+        "macro_f1": 0.8118781503396888,
+        "n": 99
+      }
+    },
+    "long": {
+      "SGDClassifier": {
+        "macro_f1": 0.8781507117670105,
+        "n": 551
+      },
+      "LinearSVC": {
+        "macro_f1": 0.8710101129034369,
+        "n": 551
+      }
+    },
+    "short": {
+      "SGDClassifier": {
+        "macro_f1": 1.0,
+        "n": 18
+      },
+      "LinearSVC": {
+        "macro_f1": 1.0,
+        "n": 18
+      }
+    }
+  },
+  "near_duplicates": {
+    "exact_count": 0,
+    "near_dup_counts": {
+      "0.9": 0,
+      "0.95": 0,
+      "0.99": 0
+    }
+  },
+  "max_train_similarities": {
+    "mean": 0.2623489635010772,
+    "median": 0.2337937572258085,
+    "p90": 0.4091751185350456,
+    "p95": 0.4534118983668419,
+    "p99": 0.6507910546327508
+  }
+}

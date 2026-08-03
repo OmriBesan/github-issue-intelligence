@@ -1,0 +1,90 @@
+model,issue_id,true_label,predicted_label,margin,clean_title,combined_length,created_at
+SGDClassifier,1465412854,Bug,Enhancement,4.736321261261331,"IterativeImputer has no parameter ""fill_value""",1448,2022-11-27T11:37:29Z
+SGDClassifier,1558485638,Bug,Enhancement,3.5836589454294403,Enable feature selectors to pass pandas DataFrame to estimator,2216,2023-01-26T17:11:58Z
+SGDClassifier,2045227397,Bug,Enhancement,3.4119974164935902,Bug in utils/multiclass.py/_ovr_decision_function,1563,2023-12-17T13:50:59Z
+SGDClassifier,1419851360,Bug,Enhancement,2.8689520295459827,Improvement for Gaussian NB by rethinking the variance smoothing,4766,2022-10-23T16:36:23Z
+SGDClassifier,1467855975,Bug,Documentation,2.6307131110799107,`KMeans.predict` wrongly exposes a `sample_weight` argument,1077,2022-11-29T10:54:42Z
+SGDClassifier,2144768825,Bug,Enhancement,2.2259885139227453,permutation_importance with polars warns on invalid feature names,2542,2024-02-20T16:22:18Z
+SGDClassifier,1572514411,Bug,Documentation,1.4252463873098822,OneHotEncoder `drop_idx_` attribute description in presence of infrequent categories,3346,2023-02-06T12:51:12Z
+SGDClassifier,1522383309,Bug,Enhancement,1.3061502806179197,Inconsistency between liac-arff and pandas parser in fetch_openml,939,2023-01-06T11:01:34Z
+SGDClassifier,1635131195,Bug,Enhancement,0.8913124154158015,Potentially unsafe cast in sklearn.utils.multiclass.type_of_target,942,2023-03-22T06:16:30Z
+SGDClassifier,1907543264,Bug,Enhancement,0.8348003614864486,`distance_threshold` Behavior with Cosine Metric in AgglomerativeClustering,1400,2023-09-21T18:32:27Z
+SGDClassifier,2275097191,Bug,Documentation,0.8292799888545151,BUG internal indexing tools trigger error with pandas < 2.0.0,334,2024-05-02T09:58:49Z
+SGDClassifier,1630841190,Bug,Enhancement,0.7257799163088561,Use sample_weight when validating LogisticRegressionCV,606,2023-03-19T08:45:42Z
+SGDClassifier,1739230613,Bug,Documentation,0.6346106770371654,Wrong grad computation for RBF Gaussian Process Regression,1056,2023-06-03T06:57:25Z
+SGDClassifier,1407755995,Bug,Documentation,0.40811618857607623,Full documentation build fails since set_output('pandas') was merged,710,2022-10-13T12:57:04Z
+SGDClassifier,2315278367,Documentation,Bug,5.448748118289779,"When a Pipeline step is changed via set_params, the set_output state is cleared",2357,2024-05-24T12:21:46Z
+SGDClassifier,1970911857,Documentation,Bug,5.433504273842304,DecisionTreeClassifier does not support 'auto' as an option for max_features,4454,2023-10-31T17:06:11Z
+SGDClassifier,2233146163,Documentation,Bug,5.207964201312521,Unexpected behavior of sklearn.feature_selection.mutual_info_regression if copy=False,2709,2024-04-09T10:42:42Z
+SGDClassifier,1782621918,Documentation,Bug,4.909256447605705,`set_output` API no longer changing the name of the output columns,2608,2023-06-30T14:22:57Z
+SGDClassifier,1582174502,Documentation,Bug,4.908024035855061,Unsupported multioutput stacking regressor,3388,2023-02-13T11:27:59Z
+SGDClassifier,1657932561,Documentation,Bug,4.8772816913255035,ElasticNet does not support sparse matrices,4245,2023-04-06T19:26:53Z
+SGDClassifier,1442474300,Documentation,Bug,4.687084097545669,Inconsistency Between GridSearchCV/Lasso and LassoCV MSE Curve & Optimal Alpha,3089,2022-11-09T17:24:44Z
+SGDClassifier,1883666782,Documentation,Bug,4.416351178847483,I can not achieve inplace scaling by using sklearn.preprocessing.minmax_scale,1116,2023-09-06T09:57:49Z
+SGDClassifier,1446082920,Documentation,Bug,4.2284165471824116,Inconsistent results with HalvingGridSearchCV,814,2022-11-11T23:04:00Z
+SGDClassifier,2290222608,Documentation,Bug,4.18048795473293,"StratifiedShuffleSplit requires three copies of a lower class, rather than 2",2738,2024-05-10T18:38:17Z
+SGDClassifier,1654220453,Documentation,Bug,4.180363527300209,Integers vs floats in categorical features in HistGradientBoostingRegressor,3391,2023-04-04T16:41:11Z
+SGDClassifier,1894801550,Documentation,Bug,4.122488244201214,`make_sparse_spd_matrix` does not return sparse matrix,1584,2023-09-13T15:43:11Z
+SGDClassifier,1518947978,Documentation,Bug,4.031745035187524,`transform_output` set in `config_context` not preserved in the Transformer object?,3124,2023-01-04T13:06:00Z
+SGDClassifier,1415579966,Documentation,Enhancement,3.8515291603386563,Create a classification report using a confusion matrix as input,1942,2022-10-19T21:00:59Z
+SGDClassifier,1536796138,Documentation,Bug,3.792493199204584,``ColumnTransformer`` not honoring passthrough on `transform` with pandas when passthroughs not present in `fit` data,3542,2023-01-17T17:50:54Z
+SGDClassifier,1892640983,Enhancement,Bug,7.358355485849598,SimpleImputer fails for columns with pandas string type,3006,2023-09-12T14:25:14Z
+SGDClassifier,1992455071,Enhancement,Bug,6.720616196833377,check_regressor_multioutput does not allow np.float32 predictions,3035,2023-11-14T10:32:31Z
+SGDClassifier,2010677366,Enhancement,Bug,6.103057359002364,set_output doesn't work for inverse_transform method,2719,2023-11-25T14:22:35Z
+SGDClassifier,1907980174,Enhancement,Bug,5.85310785348222,Misleading error message for HDBSCAN exception,4272,2023-09-22T00:50:34Z
+SGDClassifier,2286612164,Enhancement,Bug,5.2702860665563716,Add zero_division for single class prediction in MCC,2071,2024-05-08T22:57:25Z
+SGDClassifier,2034449999,Enhancement,Bug,5.1508776656361075,"PR proposal to solve ""Bunch object returns a regular dict when calling `copy` method on it""",2918,2023-12-10T16:55:32Z
+SGDClassifier,1581038447,Enhancement,Bug,4.8170282914291285,"set_config(transform_output=""pandas"") does not act on inverse_transform",2789,2023-02-11T22:33:50Z
+SGDClassifier,1437158179,Enhancement,Bug,4.758862246726213,OrdinalEncoder becomes slow in presence of numerous `nan` values,2592,2022-11-05T19:18:55Z
+SGDClassifier,1896864864,Enhancement,Bug,4.609921315289124,QuantileTransformer's default subsampling introduces artefacts for unbounded distributions,4888,2023-09-14T15:52:36Z
+SGDClassifier,1918993129,Enhancement,Bug,4.315017374335337,`check_array` error on Pandas series is confusing,2649,2023-09-29T10:12:31Z
+SGDClassifier,1766061762,Enhancement,Bug,4.190624607335702,ArrayAPI: `isdtype` improper comparison to set,867,2023-06-20T19:56:42Z
+SGDClassifier,2154412826,Enhancement,Bug,4.1744814174532,ValidationCurveDisplay can't handle categorical/string parameters,5240,2024-02-26T15:09:31Z
+SGDClassifier,1982038253,Enhancement,Bug,3.698428369577936,Make an instance of ColumnTransformer pass the common test,2140,2023-11-07T19:07:23Z
+SGDClassifier,1674621490,Enhancement,Bug,3.3591085207079865,RFC Memory usage of tests,9073,2023-04-19T10:25:29Z
+SGDClassifier,2273489046,Enhancement,Bug,3.272576714030948,Allow to use prefitted SelectFromModel in ColumnTransformer,8100,2024-05-01T13:18:14Z
+LinearSVC,1465412854,Bug,Enhancement,1.6940031556941055,"IterativeImputer has no parameter ""fill_value""",1448,2022-11-27T11:37:29Z
+LinearSVC,1558485638,Bug,Enhancement,1.4085268018260613,Enable feature selectors to pass pandas DataFrame to estimator,2216,2023-01-26T17:11:58Z
+LinearSVC,1467855975,Bug,Documentation,0.9671170786062767,`KMeans.predict` wrongly exposes a `sample_weight` argument,1077,2022-11-29T10:54:42Z
+LinearSVC,2045227397,Bug,Enhancement,0.8907766190344577,Bug in utils/multiclass.py/_ovr_decision_function,1563,2023-12-17T13:50:59Z
+LinearSVC,2144768825,Bug,Enhancement,0.7397535683635197,permutation_importance with polars warns on invalid feature names,2542,2024-02-20T16:22:18Z
+LinearSVC,1635131195,Bug,Enhancement,0.7251839957853785,Potentially unsafe cast in sklearn.utils.multiclass.type_of_target,942,2023-03-22T06:16:30Z
+LinearSVC,1419851360,Bug,Enhancement,0.7231045470841386,Improvement for Gaussian NB by rethinking the variance smoothing,4766,2022-10-23T16:36:23Z
+LinearSVC,1522383309,Bug,Enhancement,0.5053769533524177,Inconsistency between liac-arff and pandas parser in fetch_openml,939,2023-01-06T11:01:34Z
+LinearSVC,1572514411,Bug,Documentation,0.4135511541271697,OneHotEncoder `drop_idx_` attribute description in presence of infrequent categories,3346,2023-02-06T12:51:12Z
+LinearSVC,1739230613,Bug,Documentation,0.37886729247926204,Wrong grad computation for RBF Gaussian Process Regression,1056,2023-06-03T06:57:25Z
+LinearSVC,1907543264,Bug,Enhancement,0.3088579589380236,`distance_threshold` Behavior with Cosine Metric in AgglomerativeClustering,1400,2023-09-21T18:32:27Z
+LinearSVC,1742431568,Bug,Enhancement,0.2819239397649317,Bug in the decision function of AdaBoost SAMME,2210,2023-06-05T19:15:44Z
+LinearSVC,1630841190,Bug,Enhancement,0.25112650783543544,Use sample_weight when validating LogisticRegressionCV,606,2023-03-19T08:45:42Z
+LinearSVC,1428226454,Bug,Documentation,0.13928135491431232,Gaussian process `log_marginal_likelihood()` `theta` parameter: pass as `log(theta)`?,3822,2022-10-29T11:43:20Z
+LinearSVC,1407755995,Bug,Documentation,0.03910074527770019,Full documentation build fails since set_output('pandas') was merged,710,2022-10-13T12:57:04Z
+LinearSVC,2315278367,Documentation,Bug,2.1399703298904758,"When a Pipeline step is changed via set_params, the set_output state is cleared",2357,2024-05-24T12:21:46Z
+LinearSVC,1970911857,Documentation,Bug,1.9192260443158269,DecisionTreeClassifier does not support 'auto' as an option for max_features,4454,2023-10-31T17:06:11Z
+LinearSVC,2233146163,Documentation,Bug,1.800624238680043,Unexpected behavior of sklearn.feature_selection.mutual_info_regression if copy=False,2709,2024-04-09T10:42:42Z
+LinearSVC,1657932561,Documentation,Bug,1.7522634563086763,ElasticNet does not support sparse matrices,4245,2023-04-06T19:26:53Z
+LinearSVC,1894386835,Documentation,Bug,1.6383474760341115,Building from source fails using conda instructions,812,2023-09-13T12:06:38Z
+LinearSVC,1582174502,Documentation,Bug,1.5534237690046744,Unsupported multioutput stacking regressor,3388,2023-02-13T11:27:59Z
+LinearSVC,1883666782,Documentation,Bug,1.5480062038883418,I can not achieve inplace scaling by using sklearn.preprocessing.minmax_scale,1116,2023-09-06T09:57:49Z
+LinearSVC,1894801550,Documentation,Bug,1.5003495052174334,`make_sparse_spd_matrix` does not return sparse matrix,1584,2023-09-13T15:43:11Z
+LinearSVC,1442474300,Documentation,Bug,1.494143037741998,Inconsistency Between GridSearchCV/Lasso and LassoCV MSE Curve & Optimal Alpha,3089,2022-11-09T17:24:44Z
+LinearSVC,1782621918,Documentation,Bug,1.4713258124318151,`set_output` API no longer changing the name of the output columns,2608,2023-06-30T14:22:57Z
+LinearSVC,1415579966,Documentation,Enhancement,1.4046021444970258,Create a classification report using a confusion matrix as input,1942,2022-10-19T21:00:59Z
+LinearSVC,2282281175,Documentation,Bug,1.3988239710937953,Is it intention to drop `check_estimator_sparse_data` in 1.5?,1369,2024-05-07T05:02:25Z
+LinearSVC,1518947978,Documentation,Bug,1.3907135732600155,`transform_output` set in `config_context` not preserved in the Transformer object?,3124,2023-01-04T13:06:00Z
+LinearSVC,1446082920,Documentation,Bug,1.3615684185704513,Inconsistent results with HalvingGridSearchCV,814,2022-11-11T23:04:00Z
+LinearSVC,1536796138,Documentation,Bug,1.3058484677751316,``ColumnTransformer`` not honoring passthrough on `transform` with pandas when passthroughs not present in `fit` data,3542,2023-01-17T17:50:54Z
+LinearSVC,1892640983,Enhancement,Bug,2.3630333475673586,SimpleImputer fails for columns with pandas string type,3006,2023-09-12T14:25:14Z
+LinearSVC,1907980174,Enhancement,Bug,2.3349500349521692,Misleading error message for HDBSCAN exception,4272,2023-09-22T00:50:34Z
+LinearSVC,1992455071,Enhancement,Bug,2.2078350432121843,check_regressor_multioutput does not allow np.float32 predictions,3035,2023-11-14T10:32:31Z
+LinearSVC,2010677366,Enhancement,Bug,2.085426848739144,set_output doesn't work for inverse_transform method,2719,2023-11-25T14:22:35Z
+LinearSVC,2286612164,Enhancement,Bug,2.006695550620969,Add zero_division for single class prediction in MCC,2071,2024-05-08T22:57:25Z
+LinearSVC,1766061762,Enhancement,Bug,1.765070649083873,ArrayAPI: `isdtype` improper comparison to set,867,2023-06-20T19:56:42Z
+LinearSVC,1437158179,Enhancement,Bug,1.7250036474904256,OrdinalEncoder becomes slow in presence of numerous `nan` values,2592,2022-11-05T19:18:55Z
+LinearSVC,1896864864,Enhancement,Bug,1.675417410401777,QuantileTransformer's default subsampling introduces artefacts for unbounded distributions,4888,2023-09-14T15:52:36Z
+LinearSVC,2034449999,Enhancement,Bug,1.5531893345881902,"PR proposal to solve ""Bunch object returns a regular dict when calling `copy` method on it""",2918,2023-12-10T16:55:32Z
+LinearSVC,1581038447,Enhancement,Bug,1.4970778028067613,"set_config(transform_output=""pandas"") does not act on inverse_transform",2789,2023-02-11T22:33:50Z
+LinearSVC,1982038253,Enhancement,Bug,1.409761081707404,Make an instance of ColumnTransformer pass the common test,2140,2023-11-07T19:07:23Z
+LinearSVC,2154412826,Enhancement,Bug,1.2486120553999607,ValidationCurveDisplay can't handle categorical/string parameters,5240,2024-02-26T15:09:31Z
+LinearSVC,1674621490,Enhancement,Bug,1.228214068425149,RFC Memory usage of tests,9073,2023-04-19T10:25:29Z
+LinearSVC,1918993129,Enhancement,Bug,1.201232943781964,`check_array` error on Pandas series is confusing,2649,2023-09-29T10:12:31Z
+LinearSVC,1422339511,Enhancement,Bug,1.1215876989575957,Fix scaling of LogisticRegression objective for LBFGS,6029,2022-10-25T11:52:49Z

@@ -262,7 +262,9 @@ def main() -> None:
     print("====================================================================")
     for row in summary_rows:
         print(
-            f"{row['Split'].capitalize():<10} | {row['Model']:<18} | Acc: {row['Accuracy']} | Macro F1: {row['Macro F1']} | W-F1: {row['Weighted F1']}"
+            f"{row['Split'].capitalize():<10} | {row['Model']:<18} | "
+            f"Acc: {row['Accuracy']} | Macro F1: {row['Macro F1']} | "
+            f"W-F1: {row['Weighted F1']}"
         )
 
 

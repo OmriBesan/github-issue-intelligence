@@ -1,0 +1,121 @@
+model,class,rank,term,coefficient
+SGDClassifier,Bug,1,bug,4.5514
+SGDClassifier,Bug,2,self,3.1351
+SGDClassifier,Bug,3,error,3.1016
+SGDClassifier,Bug,4,import,2.8589
+SGDClassifier,Bug,5,np,2.5736
+SGDClassifier,Bug,6,with,2.5641
+SGDClassifier,Bug,7,bug in,2.5430
+SGDClassifier,Bug,8,true,2.5073
+SGDClassifier,Bug,9,results,2.4106
+SGDClassifier,Bug,10,tests,2.2062
+SGDClassifier,Bug,11,problem,2.1793
+SGDClassifier,Bug,12,py,2.1702
+SGDClassifier,Bug,13,line,2.1096
+SGDClassifier,Bug,14,when,2.0941
+SGDClassifier,Bug,15,array,2.0932
+SGDClassifier,Bug,16,broken,1.9774
+SGDClassifier,Bug,17,from sklearn,1.9265
+SGDClassifier,Bug,18,sklearn,1.8834
+SGDClassifier,Bug,19,py line,1.8333
+SGDClassifier,Bug,20,reproduce,1.7802
+SGDClassifier,Documentation,1,documentation,9.7949
+SGDClassifier,Documentation,2,doc,5.7056
+SGDClassifier,Documentation,3,the documentation,5.3106
+SGDClassifier,Documentation,4,docstring,5.1112
+SGDClassifier,Documentation,5,document,4.6997
+SGDClassifier,Documentation,6,docs,4.4571
+SGDClassifier,Documentation,7,example,3.6740
+SGDClassifier,Documentation,8,examples,3.4073
+SGDClassifier,Documentation,9,guide,3.1574
+SGDClassifier,Documentation,10,rst,3.0698
+SGDClassifier,Documentation,11,learn org,3.0220
+SGDClassifier,Documentation,12,user guide,3.0164
+SGDClassifier,Documentation,13,http scikit,2.8306
+SGDClassifier,Documentation,14,linked to,2.7925
+SGDClassifier,Documentation,15,documented,2.7733
+SGDClassifier,Documentation,16,link,2.7571
+SGDClassifier,Documentation,17,linked,2.6978
+SGDClassifier,Documentation,18,html,2.6704
+SGDClassifier,Documentation,19,issue linked,2.6564
+SGDClassifier,Documentation,20,page,2.6349
+SGDClassifier,Enhancement,1,support,4.1942
+SGDClassifier,Enhancement,2,would,4.1934
+SGDClassifier,Enhancement,3,add,3.8806
+SGDClassifier,Enhancement,4,implement,3.7494
+SGDClassifier,Enhancement,5,feature,2.9611
+SGDClassifier,Enhancement,6,to,2.9221
+SGDClassifier,Enhancement,7,currently,2.8208
+SGDClassifier,Enhancement,8,proposed,2.5940
+SGDClassifier,Enhancement,9,want to,2.4883
+SGDClassifier,Enhancement,10,enable,2.4794
+SGDClassifier,Enhancement,11,could,2.4265
+SGDClassifier,Enhancement,12,for,2.4199
+SGDClassifier,Enhancement,13,would be,2.3408
+SGDClassifier,Enhancement,14,to enable,2.3173
+SGDClassifier,Enhancement,15,want,2.3123
+SGDClassifier,Enhancement,16,implementation,2.1887
+SGDClassifier,Enhancement,17,be,2.1551
+SGDClassifier,Enhancement,18,the workflow,2.1435
+SGDClassifier,Enhancement,19,workflow you,2.1333
+SGDClassifier,Enhancement,20,workflow,2.0821
+LinearSVC,Bug,1,bug,2.7930
+LinearSVC,Bug,2,bug in,1.7092
+LinearSVC,Bug,3,self,1.5316
+LinearSVC,Bug,4,error,1.4352
+LinearSVC,Bug,5,with,1.3830
+LinearSVC,Bug,6,true,1.3444
+LinearSVC,Bug,7,import,1.2955
+LinearSVC,Bug,8,problem,1.2043
+LinearSVC,Bug,9,broken,1.2037
+LinearSVC,Bug,10,tests,1.0790
+LinearSVC,Bug,11,gridsearchcv,1.0681
+LinearSVC,Bug,12,results,1.0357
+LinearSVC,Bug,13,check,1.0219
+LinearSVC,Bug,14,fails,0.9841
+LinearSVC,Bug,15,an error,0.9552
+LinearSVC,Bug,16,wrong,0.9514
+LinearSVC,Bug,17,failure,0.9479
+LinearSVC,Bug,18,inconsistent,0.9347
+LinearSVC,Bug,19,when,0.9326
+LinearSVC,Bug,20,fail,0.9216
+LinearSVC,Documentation,1,documentation,4.8348
+LinearSVC,Documentation,2,doc,2.9493
+LinearSVC,Documentation,3,document,2.7703
+LinearSVC,Documentation,4,docstring,2.6510
+LinearSVC,Documentation,5,docs,2.1983
+LinearSVC,Documentation,6,the documentation,2.1726
+LinearSVC,Documentation,7,example,1.8076
+LinearSVC,Documentation,8,examples,1.6705
+LinearSVC,Documentation,9,documented,1.5231
+LinearSVC,Documentation,10,rst,1.5029
+LinearSVC,Documentation,11,http scikit,1.4929
+LinearSVC,Documentation,12,guide,1.4908
+LinearSVC,Documentation,13,user guide,1.4719
+LinearSVC,Documentation,14,page,1.3781
+LinearSVC,Documentation,15,says,1.3591
+LinearSVC,Documentation,16,section,1.3032
+LinearSVC,Documentation,17,what,1.2639
+LinearSVC,Documentation,18,link,1.2587
+LinearSVC,Documentation,19,learn org,1.2416
+LinearSVC,Documentation,20,how,1.2381
+LinearSVC,Enhancement,1,support,2.1312
+LinearSVC,Enhancement,2,implement,2.0833
+LinearSVC,Enhancement,3,would,1.8769
+LinearSVC,Enhancement,4,add,1.8592
+LinearSVC,Enhancement,5,currently,1.5077
+LinearSVC,Enhancement,6,feature,1.4443
+LinearSVC,Enhancement,7,to,1.3876
+LinearSVC,Enhancement,8,could,1.2553
+LinearSVC,Enhancement,9,easily,1.2172
+LinearSVC,Enhancement,10,proposed,1.2063
+LinearSVC,Enhancement,11,implementation,1.1983
+LinearSVC,Enhancement,12,enable,1.0974
+LinearSVC,Enhancement,13,for,1.0770
+LinearSVC,Enhancement,14,interface,1.0714
+LinearSVC,Enhancement,15,adding,1.0696
+LinearSVC,Enhancement,16,possible,1.0250
+LinearSVC,Enhancement,17,allow,1.0129
+LinearSVC,Enhancement,18,implemented,1.0036
+LinearSVC,Enhancement,19,way to,1.0006
+LinearSVC,Enhancement,20,to enable,0.9990

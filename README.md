@@ -7,12 +7,13 @@
 
 ## Project Status
 
-**Current Status: Stage 3A Complete**
+**Current Status: Stage 3B Complete — Models Validated**
 
-Stages 0, 1A-1D, 2A-2C, and 3A are ✅ Complete.
-TF-IDF classical NLP models have been trained and evaluated. The best model
-(SGDClassifier) achieves Temporal Macro F1: **0.9077** — a +0.57 gain over the
-0.3376 baseline. Next: Stage 3B model selection and tuning.
+Stages 0, 1A-1D, 2A-2C, 3A, and 3B are ✅ Complete.
+All 10 robustness checks completed on SGDClassifier and LinearSVC.
+Key finding: **0 near-duplicates at any threshold**; label-word masking drops Macro F1 by only 0.003.
+The 0.90+ Macro F1 result is credible and not inflated by leakage.
+Next: Stage 3C — targeted hyperparameter tuning.
 
 ---
 

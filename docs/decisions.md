@@ -766,3 +766,28 @@ Processed data is gitignored (large, reproducible from the combined raw file).
  * * C o n t e x t : * *   S G D C l a s s i f i e r   s u p p o r t s   m u l t i p l e   l o s s   f u n c t i o n s .   l o g _ l o s s   g i v e s   c a l i b r a t e d   p r o b a b i l i t i e s   a n d   b e h a v e s   l i k e   o n l i n e   L o g i s t i c   R e g r e s s i o n   f o r   t e x t . 
  * * D e c i s i o n : * *   U s e   S G D C l a s s i f i e r ( l o s s = ' l o g _ l o s s ' )   s o   a l l   t h r e e   l i n e a r   m o d e l s   a r e   d i r e c t l y   c o m p a r a b l e   i n   t h e i r   o p t i m i s a t i o n   o b j e c t i v e s .  
  
+
+## Decision 028 -- 0.90+ Macro F1 is Credible After Robustness Checks
+**Date:** 2026-08-04
+**Context:** A Temporal Macro F1 of 0.9077 is unusually high and required validation before being trusted.
+**Evidence:**
+- Zero exact or near-duplicate train/val pairs at any cosine threshold (0.90, 0.95, 0.99).
+- Max p99 train-val cosine similarity is only 0.65 — well below any near-duplicate threshold.
+- Label-word masking (bug, docs, enhancement, feature, RFC) dropped Macro F1 by only 0.003.
+- Performance is consistent across all three validation years: 0.8871 (2022), 0.9194 (2023), 0.8942 (2024).
+- Body-only features score 0.9029 vs full combined 0.9077 — issue bodies carry genuine semantic information.
+- Prefix-free subset (records without category prefixes) scores 0.9051 — nearly identical to full set.
+**Decision:** The 0.90+ Macro F1 result is credible. No data leakage or shortcut learning was detected.
+The model learns substantive textual patterns, not label shortcuts.
+
+## Decision 029 -- Why Temporal Performance Exceeds Random Performance
+**Date:** 2026-08-04
+**Context:** Temporal Macro F1 (SGD 0.9077) exceeds Random Macro F1 (SGD 0.8745).
+Training set sizes are essentially equal (3996 vs 3995). The original explanation that the temporal
+training set was larger was incorrect.
+**Correct explanation:** The temporal training set covers 2010-2022, a period with more mature and
+consistently-labelled scikit-learn issues. The random training set mixes issues from all years,
+including the most recent noisier issues, making the learned representation slightly less consistent.
+The temporal validation set (2022-2024) is a coherent temporal slice, while the random validation
+set is a mixed-year sample. This means temporal evaluation is a stricter, more realistic assessment
+of how the model will perform on future issues.

@@ -1,0 +1,25 @@
+experiment,model,macro_f1,accuracy,n_val
+input_variant:combined (repro),SGDClassifier,0.9077,0.9161,858
+input_variant:combined (repro),LinearSVC,0.9060,0.9138,858
+input_variant:title_only,SGDClassifier,0.7615,0.7774,858
+input_variant:title_only,LinearSVC,0.7502,0.7622,858
+input_variant:body_only,SGDClassifier,0.9029,0.9114,858
+input_variant:body_only,LinearSVC,0.8963,0.9056,858
+input_variant:label_masked,SGDClassifier,0.9051,0.9138,858
+input_variant:label_masked,LinearSVC,0.9016,0.9103,858
+prefix_free_subset,SGDClassifier,0.9051,0.9145,795
+prefix_free_subset,LinearSVC,0.9032,0.9119,795
+year:2022,SGDClassifier,0.8871,0.8952,124
+year:2022,LinearSVC,0.8793,0.8871,124
+year:2023,SGDClassifier,0.9194,0.9261,514
+year:2023,LinearSVC,0.9162,0.9222,514
+year:2024,SGDClassifier,0.8942,0.9045,220
+year:2024,LinearSVC,0.8993,0.9091,220
+length_bucket:medium,SGDClassifier,0.9183,0.9316,190
+length_bucket:medium,LinearSVC,0.9305,0.9421,190
+length_bucket:very_long,SGDClassifier,0.8360,0.9192,99
+length_bucket:very_long,LinearSVC,0.8119,0.9091,99
+length_bucket:long,SGDClassifier,0.8782,0.9074,551
+length_bucket:long,LinearSVC,0.8710,0.9020,551
+length_bucket:short,SGDClassifier,1.0000,1.0000,18
+length_bucket:short,LinearSVC,1.0000,1.0000,18

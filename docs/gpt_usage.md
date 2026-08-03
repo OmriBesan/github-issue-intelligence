@@ -419,3 +419,25 @@ by AI and how the output was reviewed, adapted, and integrated.
  -   C o n f i r m e d   S G D C l a s s i f i e r   a c h i e v e s   b e s t   t e m p o r a l   M a c r o   F 1   ( 0 . 9 0 7 7 ) .  
  -   C o n f i r m e d   t e m p o r a l   s c o r e s   e x c e e d   r a n d o m   s c o r e s ,   e v i d e n c i n g   d i s t r i b u t i o n   s h i f t .  
  
+
+---
+
+## Entry 011 -- Robustness Validation (Stage 3B)
+
+**Date:** 2026-08-04
+**Tool:** Google Antigravity (AI coding assistant powered by Gemini)
+**Stage:** Stage 3B
+
+### What the AI assisted with
+- Created `src/issue_intelligence/evaluation/robustness.py` with 10 experiment utilities.
+- Created `scripts/run_robustness_checks.py` running all experiments in one pass.
+- Created `tests/test_robustness.py` (28 tests). All 237 project tests pass.
+- Generated 8 figures: variant comparison, year performance, length buckets, margin distributions, near-dup histogram.
+- Generated 5 output files: robustness_summary.csv, robustness_details.json, misclassified_examples.csv, near_duplicate_review.csv, influential_term_review.csv.
+- Corrected the earlier wrong explanation for temporal vs random performance gap.
+
+### What the student reviewed and verified
+- Confirmed zero near-duplicates at cosine thresholds 0.90, 0.95, and 0.99.
+- Verified label-word masking only reduces Macro F1 by 0.003 (SGD: 0.9077 to 0.9051).
+- Confirmed performance is consistent across years 2022-2024 (no cliff or collapse).
+- Reviewed misclassified examples CSV and influential term CSV for suspicious patterns.

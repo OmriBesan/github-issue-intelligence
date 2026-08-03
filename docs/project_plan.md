@@ -62,6 +62,7 @@ Audit checks:
 **Stage 2B:** Data Splitting ✅ (Complete)
 **Stage 2C:** Simple Baselines ✅ (Complete)
 **Stage 3A:** Classical TF-IDF Models ✅ (Complete)
+**Stage 3B:** Robustness Validation ✅ (Complete)
 
 Models:
 - Majority-class baseline (always predicts the most frequent class)
