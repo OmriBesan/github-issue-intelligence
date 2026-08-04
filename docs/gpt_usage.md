@@ -524,3 +524,5 @@ by AI and how the output was reviewed, adapted, and integrated.
 - Used `TestClient` and a synthetic pipeline to rigorously test the API layer without relying on the true test set.
 
 - Stage 5B: Used to implement a TF-IDF similar-issue retrieval service (`/similar`), enforcing strict corpus separation and correct scientific terminology.
+
+- Stage 5C: Used to implement the local Streamlit demonstration interface (`src/issue_intelligence/ui/`). The assistant built a two-module architecture (API client in `client.py`, rendering in `app.py`), wrote 29 unit tests for the client using mocked httpx responses, and verified that no model artifacts or datasets are loaded by the UI layer. Decision score terminology was reviewed to ensure no probability or confidence language was introduced.

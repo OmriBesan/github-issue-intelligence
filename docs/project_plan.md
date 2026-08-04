@@ -190,6 +190,39 @@ Endpoints (planned):
 
 ---
 
+## Stage 5B — TF-IDF Similar-Issue Retrieval ✅
+
+**Goal:** Build a lightweight lexical similar-issue retrieval feature using
+historical scikit-learn issue data via TF-IDF cosine similarity.
+
+**Deliverables:**
+- `src/issue_intelligence/retrieval/index.py` — index builder
+- `src/issue_intelligence/retrieval/service.py` — search service
+- `scripts/build_retrieval_index.py` — CLI build script
+- `tests/test_retrieval.py`, `tests/test_retrieval_api.py`
+
+---
+
+## Stage 5C — Local Streamlit Demonstration Interface ✅
+
+**Goal:** Provide a local Streamlit UI over the FastAPI backend for
+demonstration and exploratory use.
+
+**Architecture:**
+- `src/issue_intelligence/ui/client.py` — httpx API client (testable)
+- `src/issue_intelligence/ui/app.py` — Streamlit rendering layer
+- `tests/test_ui_client.py` — 29 unit tests (mocked HTTP, no browser)
+
+**Start both services:**
+```powershell
+# Terminal 1
+.venv\Scripts\python -m uvicorn issue_intelligence.api.app:app --reload
+# Terminal 2
+.venv\Scripts\python -m streamlit run src/issue_intelligence/ui/app.py
+```
+
+---
+
 ## Stage 9 — Final Report and GitHub Presentation
 
 **Goal:** Document the full project for the course submission and as a

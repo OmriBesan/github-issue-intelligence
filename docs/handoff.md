@@ -115,6 +115,22 @@ This produces `data/processed/scikit-learn_issues_model.jsonl` (and `.csv`).
 
 ## Exact Next Task
 
-**Stage 5B — Semantic Retrieval or UI.**
+**Stage 5C is complete.** The local Streamlit demonstration interface is built.
 
-Tell the assistant to proceed to the next stage.
+Current state (branch `omri-final`):
+- 341 tests pass, ruff clean on all new files
+- API: `src/issue_intelligence/api/` — `/health`, `/model-info`, `/predict`, `/similar`
+- Retrieval: `src/issue_intelligence/retrieval/` — TF-IDF index (4,854 issues)
+- UI: `src/issue_intelligence/ui/` — Streamlit app + httpx client
+
+**To start both services locally:**
+```powershell
+# Terminal 1
+.venv\Scripts\python -m uvicorn issue_intelligence.api.app:app --reload
+# Terminal 2
+.venv\Scripts\python -m streamlit run src/issue_intelligence/ui/app.py
+```
+
+**Recommended final audit:** Review commit history, confirm no test set leakage,
+verify Stage 4B metrics are unchanged (Macro F1 = 0.9300), and prepare Stage 9
+final report.

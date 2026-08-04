@@ -28,3 +28,6 @@ fastapi
 uvicorn
 httpx
 pydantic
+
+# Stage 5C: Streamlit local demonstration interface (added 2026-08-04)
+streamlit>=1.35,<2

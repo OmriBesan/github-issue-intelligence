@@ -887,3 +887,13 @@ a future stage if compute becomes available.
 - **TF-IDF Cosine Method**: We reused the exact TF-IDF vectorizer fitted on the training split to construct a TF-IDF index of the retrieval corpus. Exact cosine similarity (dot product of L2-normalized sparse vectors) provides a fast and robust TF-IDF similar-issue retrieval method without introducing heavy external dependencies (like vector databases or embeddings).
 - **Not Duplicate Detection**: The retrieved results are provided purely based on cosine similarity (cosine scores). These scores are not probabilities, not confidence scores, and do not make quantitative claims about issues being duplicates.
 - **Robust API Loading**: The API loads the retrieval artifact via `ISSUE_RETRIEVAL_PATH` during application startup. If the artifact is missing, `/similar` cleanly returns a 503 while preserving full uptime for `/predict`.
+
+### Stage 5C: Local Streamlit Demonstration Interface
+
+- **UI–API separation**: The Streamlit app (`src/issue_intelligence/ui/app.py`) communicates exclusively via HTTP through the `client.py` module. It does not import, instantiate, or load any model artifact, retrieval index, or dataset directly. This keeps the rendering layer fully decoupled from the ML code.
+- **httpx as HTTP client**: `httpx` was already installed for the FastAPI test client, so no new HTTP library was needed.
+- **ISSUE_API_URL environment variable**: The backend address is controlled via this variable (default `http://127.0.0.1:8000`). No personal paths or absolute paths are embedded.
+- **Independent failure handling**: `predict()` and `get_similar()` in the client are separate, isolated calls. A 503 from the retrieval endpoint does not suppress the classification result, and vice versa.
+- **No softmax or probability conversion**: Decision scores are displayed exactly as returned by the API. The UI explicitly states they are raw LinearSVC decision scores, not probabilities.
+- **Streamlit form**: A `st.form` ensures the API is only called after the user clicks "Analyze issue", preventing repeated requests on every widget interaction.
+- **Limitations disclosure**: A collapsible section at the bottom of the page discloses all known limitations (training domain, uncalibrated scores, lexical retrieval, non-duplicate nature of results).

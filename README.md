@@ -7,12 +7,11 @@
 
 ## Project Status
 
-**Current Status: Stage 5A Complete — FastAPI Inference Service Built**
+**Current Status: Stage 5C Complete — Local Streamlit Demonstration Interface Built**
 
-Stages 0, 1A-1D, 2A-2C, 3A, 3B, 3C, 4A, 4B, and 5A are ✅ Complete.
+Stages 0, 1A-1D, 2A-2C, 3A, 3B, 3C, 4A, 4B, 5A, 5B, and 5C are ✅ Complete.
 BERT-Tiny (4.4M params) Temporal Macro F1: **0.8550** — 5.4 pp below tuned LinearSVC (0.9087).
 LinearSVC advances to final test-set evaluation. Transformer does not.
-Next: Stage 5B — Optional UI or Semantic Retrieval pipeline.
 **Note:** Evaluated once on a held-out temporal test set (2024-2026). No post-test tuning occurred.
 
 ---
@@ -178,17 +177,16 @@ If the model file is missing, the API will start but will report not-ready and r
 }
 ```
 
-**Example Response:**
 ```json
 {
   "results": [
     {
-      "issue_id": 14613,
+      "issue_number": 14613,
       "title": "EllipticEnvelope does not work with a sparse matrix",
       "target_label": "Documentation",
       "created_at": "2019-08-09T13:17:27Z",
       "url": "https://github.com/scikit-learn/scikit-learn/issues/14613",
-      "similarity_score": 0.21400409717343596
+      "similarity_score": 0.214
     }
   ],
   "retrieval_method": "tfidf_cosine",
@@ -196,7 +194,30 @@ If the model file is missing, the API will start but will report not-ready and r
 }
 ```
 
-> **Note:** Similarity scores are purely cosine similarity metrics, not probabilities or proof of duplicate issues.
+> **Note:** Similarity scores are raw TF-IDF cosine similarity values, not
+> probabilities and not proof of duplicate issues.
+
+## Stage 5C — Local Streamlit Demonstration Interface
+
+A local Streamlit UI sits on top of the FastAPI backend.
+It communicates exclusively via HTTP — it does not load model artifacts directly.
+
+### Running both services (two terminals)
+
+**Terminal 1 — API backend:**
+```powershell
+.venv\Scripts\python -m uvicorn issue_intelligence.api.app:app --reload
+```
+
+**Terminal 2 — Streamlit frontend:**
+```powershell
+.venv\Scripts\python -m streamlit run src/issue_intelligence/ui/app.py
+```
+
+The UI defaults to `http://127.0.0.1:8000`. Override with:
+```powershell
+$env:ISSUE_API_URL="http://127.0.0.1:8000"
+```
 
 ## Configuration
 
