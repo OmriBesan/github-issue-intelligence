@@ -38,13 +38,41 @@ def synthetic_data_files(tmp_path):
 
     # Train has 2 records, one is duplicate with Val
     train_data = [
-        {"issue_number": 1001, "issue_id": 1, "raw_title": "hello bug", "raw_body": "world", "target": "Bug", "created_at": "2010-10-20T08:00:57Z"},
-        {"issue_number": 1002, "issue_id": 2, "raw_title": "another", "raw_body": "issue", "target": "Enhancement", "created_at": "2011-10-20T08:00:57Z"},
+        {
+            "issue_number": 1001,
+            "issue_id": 1,
+            "raw_title": "hello bug",
+            "raw_body": "world",
+            "target": "Bug",
+            "created_at": "2010-10-20T08:00:57Z",
+        },
+        {
+            "issue_number": 1002,
+            "issue_id": 2,
+            "raw_title": "another",
+            "raw_body": "issue",
+            "target": "Enhancement",
+            "created_at": "2011-10-20T08:00:57Z",
+        },
     ]
     # Val has 2 records, ID 1 is a duplicate and should be ignored
     val_data = [
-        {"issue_number": 1001, "issue_id": 1, "raw_title": "hello bug", "raw_body": "world", "target": "Bug", "created_at": "2010-10-20T08:00:57Z"},
-        {"issue_number": 1003, "issue_id": 3, "raw_title": "OOV", "raw_body": "OOV", "target": "Documentation", "created_at": "2012-10-20T08:00:57Z"},
+        {
+            "issue_number": 1001,
+            "issue_id": 1,
+            "raw_title": "hello bug",
+            "raw_body": "world",
+            "target": "Bug",
+            "created_at": "2010-10-20T08:00:57Z",
+        },
+        {
+            "issue_number": 1003,
+            "issue_id": 3,
+            "raw_title": "OOV",
+            "raw_body": "OOV",
+            "target": "Documentation",
+            "created_at": "2012-10-20T08:00:57Z",
+        },
     ]
 
     with open(train_path, "w") as f:
@@ -83,7 +111,14 @@ def test_build_index_missing_date(tmp_path):
     train_path = tmp_path / "train.jsonl"
     val_path = tmp_path / "val.jsonl"
     with open(train_path, "w") as f:
-        f.write(json.dumps({"issue_number": 1, "issue_id": 1, "raw_title": "test", "raw_body": "test", "target": "Bug"}) + "\n")
+        record = {
+            "issue_number": 1,
+            "issue_id": 1,
+            "raw_title": "test",
+            "raw_body": "test",
+            "target": "Bug",
+        }
+        f.write(json.dumps(record) + "\n")
     with open(val_path, "w") as f:
         f.write("")
 
@@ -95,7 +130,15 @@ def test_build_index_invalid_min_date(tmp_path):
     train_path = tmp_path / "train.jsonl"
     val_path = tmp_path / "val.jsonl"
     with open(train_path, "w") as f:
-        f.write(json.dumps({"issue_number": 1, "issue_id": 1, "raw_title": "test", "raw_body": "test", "target": "Bug", "created_at": "2009-01-01T00:00:00Z"}) + "\n")
+        record = {
+            "issue_number": 1,
+            "issue_id": 1,
+            "raw_title": "test",
+            "raw_body": "test",
+            "target": "Bug",
+            "created_at": "2009-01-01T00:00:00Z",
+        }
+        f.write(json.dumps(record) + "\n")
     with open(val_path, "w") as f:
         f.write("")
 

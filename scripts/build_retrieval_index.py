@@ -14,7 +14,9 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 def main():
-    parser = argparse.ArgumentParser(description="Build TF-IDF similar-issue retrieval artifact.")
+    parser = argparse.ArgumentParser(
+        description="Build TF-IDF similar-issue retrieval artifact."
+    )
     parser.add_argument(
         "--train-file",
         type=Path,
@@ -53,7 +55,11 @@ def main():
         train_path=args.train_file,
         val_path=args.val_file,
         vectorizer=vectorizer,
-        expected_class_distribution={"Bug": 1873, "Enhancement": 1790, "Documentation": 1191}
+        expected_class_distribution={
+            "Bug": 1873,
+            "Enhancement": 1790,
+            "Documentation": 1191,
+        }
     )
 
     args.output_path.parent.mkdir(parents=True, exist_ok=True)

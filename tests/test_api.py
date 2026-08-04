@@ -33,12 +33,19 @@ def dummy_pipeline_path():
 
 def test_health_model_missing():
     """Test health endpoint when model does not exist."""
-    app = create_app(model_path=Path("non_existent.joblib"), retrieval_path=Path("non_existent.joblib"))
+    app = create_app(
+        model_path=Path("non_existent.joblib"),
+        retrieval_path=Path("non_existent.joblib"),
+    )
     # We must explicitly call startup for tests if not using TestClient context manager
     with TestClient(app) as client:
         response = client.get("/health")
         assert response.status_code == 200
-        assert response.json() == {"status": "not_ready", "model_loaded": False, "retrieval_loaded": False}
+        assert response.json() == {
+            "status": "not_ready",
+            "model_loaded": False,
+            "retrieval_loaded": False,
+        }
 
 
 def test_predict_model_missing():
@@ -64,11 +71,18 @@ def test_model_info_missing():
 
 def test_health_model_loaded(dummy_pipeline_path):
     """Test health endpoint with loaded model."""
-    app = create_app(model_path=dummy_pipeline_path, retrieval_path=Path("non_existent.joblib"))
+    app = create_app(
+        model_path=dummy_pipeline_path,
+        retrieval_path=Path("non_existent.joblib"),
+    )
     with TestClient(app) as client:
         response = client.get("/health")
         assert response.status_code == 200
-        assert response.json() == {"status": "ok", "model_loaded": True, "retrieval_loaded": False}
+        assert response.json() == {
+            "status": "ok",
+            "model_loaded": True,
+            "retrieval_loaded": False,
+        }
 
 
 def test_model_info_loaded(dummy_pipeline_path):

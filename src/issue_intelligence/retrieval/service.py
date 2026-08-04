@@ -13,7 +13,7 @@ from issue_intelligence.data.preprocessing import (
 logger = logging.getLogger(__name__)
 
 class RetrievalService:
-    """Service to load retrieval artifact and execute TF-IDF cosine similarity search."""
+    """Load retrieval artifact and execute TF-IDF cosine similarity search."""
 
     def __init__(self, artifact_path: Path):
         self.artifact_path = artifact_path
@@ -55,15 +55,23 @@ class RetrievalService:
 
             # Check required fields exist in first item
             if expected_count > 0:
-                req_fields = {"issue_number", "title", "target_label", "created_at", "url"}
+                req_fields = {
+                    "issue_number", "title", "target_label", "created_at", "url"
+                }
                 if not req_fields.issubset(self.metadata_list[0].keys()):
                     raise ValueError("Metadata items are missing required fields.")
 
             self.is_ready = True
-            logger.info(f"Retrieval artifact loaded successfully. {expected_count} issues indexed.")
+            logger.info(
+                f"Retrieval artifact loaded successfully. "
+                f"{expected_count} issues indexed."
+            )
 
         except Exception as e:
-            logger.error(f"Failed to load corrupt retrieval artifact from {self.artifact_path}: {e}")
+            logger.error(
+                f"Failed to load corrupt retrieval artifact "
+                f"from {self.artifact_path}: {e}"
+            )
             self.is_ready = False
             self.vectorizer = None
             self.matrix = None
@@ -109,10 +117,14 @@ class RetrievalService:
             if label_filter and meta.get("target_label") != label_filter:
                 continue
 
-            if exclude_issue_id is not None and meta.get("issue_id") == exclude_issue_id:
+            if (
+                exclude_issue_id is not None
+                and meta.get("issue_id") == exclude_issue_id
+            ):
                 continue
 
-            # Allow items with zero score? The user said: "If OOV, return empty. Do not return arbitrary zero-similarity issues."
+            # OOV guard: if all terms are out-of-vocabulary, similarity is 0.
+            # Return empty list rather than arbitrary zero-similarity issues.
             if score == 0.0:
                 continue
 

@@ -25,7 +25,9 @@ DEFAULT_MODEL_PATH = Path("models/classical/final_linear_svc.joblib")
 DEFAULT_RETRIEVAL_PATH = Path("models/retrieval/similar_issues.joblib")
 
 
-def create_app(model_path: Path | None = None, retrieval_path: Path | None = None) -> FastAPI:
+def create_app(
+    model_path: Path | None = None, retrieval_path: Path | None = None
+) -> FastAPI:
     """Application factory for testing and production."""
 
     # Resolve the model path
@@ -141,7 +143,9 @@ def create_app(model_path: Path | None = None, retrieval_path: Path | None = Non
             )
 
             # The count from metadata
-            indexed_count = retrieval_service.artifact_metadata.get("indexed_issue_count", 0)
+            indexed_count = retrieval_service.artifact_metadata.get(
+                "indexed_issue_count", 0
+            )
 
             return {
                 "results": results,

@@ -28,13 +28,13 @@ def build_index(
     expected_class_distribution: dict[str, int] | None = None,
 ) -> dict[str, Any]:
     """Build the retrieval index using train and validation records.
-    
+
     Args:
         train_path: Path to the training split JSONL.
         val_path: Path to the validation split JSONL.
         vectorizer: The fitted TF-IDF vectorizer.
         expected_class_distribution: Optional dict to validate exact class counts.
-        
+
     Returns:
         A dictionary containing the artifact payload to be saved.
     """
@@ -71,7 +71,9 @@ def build_index(
 
         c_at = r.get("created_at")
         if not c_at:
-            raise ValueError(f"Missing required created_at date for issue_id {r.get('issue_id')}")
+            raise ValueError(
+                f"Missing required created_at date for issue_id {r.get('issue_id')}"
+            )
         dates.append(c_at)
 
         metadata_list.append({
@@ -86,7 +88,9 @@ def build_index(
     logger.info("Transforming texts into TF-IDF sparse matrix...")
     sparse_matrix = vectorizer.transform(combined_texts)
 
-    vocab_size = len(vectorizer.vocabulary_) if hasattr(vectorizer, "vocabulary_") else 0
+    vocab_size = (
+        len(vectorizer.vocabulary_) if hasattr(vectorizer, "vocabulary_") else 0
+    )
 
     dates.sort()
     corpus_min = dates[0] if dates else None
@@ -95,9 +99,13 @@ def build_index(
     if corpus_min and corpus_min < "2010-10-19T08:00:57Z":
         raise ValueError(f"Invalid dataset minimum date: {corpus_min}")
 
-    if expected_class_distribution is not None and class_counts != expected_class_distribution:
+    if (
+        expected_class_distribution is not None
+        and class_counts != expected_class_distribution
+    ):
         raise ValueError(
-            f"Class distribution mismatch. Expected {expected_class_distribution}, got {class_counts}."
+            f"Class distribution mismatch. "
+            f"Expected {expected_class_distribution}, got {class_counts}."
         )
 
     artifact_metadata = {
