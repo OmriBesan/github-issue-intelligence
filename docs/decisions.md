@@ -881,3 +881,9 @@ a future stage if compute becomes available.
 - **Rationale:** SVM decision boundaries (from `decision_function`) produce raw decision scores. Applying Platt scaling or softmax post-hoc is not natively calibrated for this pipeline. Reporting raw LinearSVC decision scores prevents misleading the user with pseudo-probabilities.
 - **Decision:** Missing model raises HTTP 503 on `POST /predict` but allows the app to start (HTTP 200 on `/health` with `status: not_ready`).
 - **Rationale:** Kubernetes or container orchestrators prefer services to start and report readiness clearly, rather than crashing in an infinite restart loop if the model volume is delayed.
+
+### Stage 5B: Similar-Issue Retrieval
+- **Retrieval Corpus Composition**: The retrieval artifact is built strictly from the train and validation sets (4,854 records). The held-out temporal test set (856 records) remains completely excluded by construction to protect the integrity of final scientific evaluation.
+- **TF-IDF Cosine Method**: We reused the exact TF-IDF vectorizer fitted on the training split to construct a lexical index of the retrieval corpus. Exact cosine similarity (dot product of L2-normalized sparse vectors) provides a fast and robust lexical retrieval method without introducing heavy external dependencies (like vector databases or embeddings).
+- **Not Duplicate Detection**: The retrieved results are provided purely based on lexical similarity (cosine scores). These scores are not probabilities, not confidence scores, and do not make quantitative claims about issues being duplicates.
+- **Robust API Loading**: The API loads the retrieval artifact via `ISSUE_RETRIEVAL_PATH` during application startup. If the artifact is missing, `/similar` cleanly returns a 503 while preserving full uptime for `/predict`.

@@ -38,7 +38,7 @@ def test_health_model_missing():
     with TestClient(app) as client:
         response = client.get("/health")
         assert response.status_code == 200
-        assert response.json() == {"status": "not_ready", "model_loaded": False}
+        assert response.json() == {"status": "not_ready", "model_loaded": False, "retrieval_loaded": False}
 
 
 def test_predict_model_missing():
@@ -68,7 +68,7 @@ def test_health_model_loaded(dummy_pipeline_path):
     with TestClient(app) as client:
         response = client.get("/health")
         assert response.status_code == 200
-        assert response.json() == {"status": "ok", "model_loaded": True}
+        assert response.json() == {"status": "ok", "model_loaded": True, "retrieval_loaded": False}
 
 
 def test_model_info_loaded(dummy_pipeline_path):

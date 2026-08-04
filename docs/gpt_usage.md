@@ -522,3 +522,5 @@ by AI and how the output was reviewed, adapted, and integrated.
 - Prompted GPT to build `src/issue_intelligence/api` with endpoints for health, model info, and prediction.
 - GPT successfully implemented Pydantic validation (requiring at least one non-blank field) and extracted correct SVM `decision_function` raw margins without defaulting to softmax probabilities.
 - Used `TestClient` and a synthetic pipeline to rigorously test the API layer without relying on the true test set.
+
+- Stage 5B: Used to implement a TF-IDF similar-issue retrieval service (`/similar`), enforcing strict corpus separation and correct scientific terminology.

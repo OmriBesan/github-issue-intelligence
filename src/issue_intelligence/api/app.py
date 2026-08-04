@@ -12,16 +12,20 @@ from issue_intelligence.api.schemas import (
     ModelInfoResponse,
     PredictRequest,
     PredictResponse,
+    SimilarRequest,
+    SimilarResponse,
 )
 from issue_intelligence.api.service import InferenceService
+from issue_intelligence.retrieval.service import RetrievalService
 
 logger = logging.getLogger(__name__)
 
-# Default model path relative to project root
+# Default paths relative to project root
 DEFAULT_MODEL_PATH = Path("models/classical/final_linear_svc.joblib")
+DEFAULT_RETRIEVAL_PATH = Path("models/retrieval/similar_issues.joblib")
 
 
-def create_app(model_path: Path | None = None) -> FastAPI:
+def create_app(model_path: Path | None = None, retrieval_path: Path | None = None) -> FastAPI:
     """Application factory for testing and production."""
 
     # Resolve the model path
@@ -34,12 +38,23 @@ def create_app(model_path: Path | None = None) -> FastAPI:
     else:
         resolved_path = model_path
 
+    if retrieval_path is None:
+        env_retrieval_path = os.environ.get("ISSUE_RETRIEVAL_PATH")
+        if env_retrieval_path:
+            resolved_retrieval_path = Path(env_retrieval_path)
+        else:
+            resolved_retrieval_path = DEFAULT_RETRIEVAL_PATH
+    else:
+        resolved_retrieval_path = retrieval_path
+
     service = InferenceService(resolved_path)
+    retrieval_service = RetrievalService(resolved_retrieval_path)
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
         # Startup
         service.load_model()
+        retrieval_service.load_artifact()
         yield
         # Shutdown
         pass
@@ -54,9 +69,14 @@ def create_app(model_path: Path | None = None) -> FastAPI:
     @app.get("/health", response_model=HealthResponse)
     async def health():
         """Health check endpoint."""
+        resp = {
+            "status": "not_ready",
+            "model_loaded": service.is_ready,
+            "retrieval_loaded": retrieval_service.is_ready
+        }
         if service.is_ready:
-            return {"status": "ok", "model_loaded": True}
-        return {"status": "not_ready", "model_loaded": False}
+            resp["status"] = "ok"
+        return resp
 
     @app.get("/model-info", response_model=ModelInfoResponse)
     async def model_info():
@@ -101,6 +121,39 @@ def create_app(model_path: Path | None = None) -> FastAPI:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="Internal server error during prediction."
+            )
+
+    @app.post("/similar", response_model=SimilarResponse)
+    async def similar(request: SimilarRequest):
+        """Retrieve similar issues based on title and body."""
+        if not retrieval_service.is_ready:
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail="Retrieval artifact is not loaded or unavailable."
+            )
+
+        try:
+            results = retrieval_service.search(
+                title=request.title,
+                body=request.body,
+                top_k=request.top_k,
+                label_filter=request.label_filter,
+                exclude_issue_id=request.exclude_issue_id
+            )
+            
+            # The count from metadata
+            indexed_count = retrieval_service.artifact_metadata.get("indexed_issue_count", 0)
+            
+            return {
+                "results": results,
+                "retrieval_method": "tfidf_cosine",
+                "indexed_issue_count": indexed_count
+            }
+        except Exception as e:
+            logger.error(f"Retrieval error: {e}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Internal server error during retrieval."
             )
 
     return app

@@ -167,6 +167,37 @@ If the model file is missing, the API will start but will report not-ready and r
 
 > **Note:** The `decision_scores` are raw LinearSVC decision scores. They are NOT probabilities or calibrated confidence metrics. `decision_margin` represents the gap between the top prediction and the runner-up.
 
+- `POST /similar` : Retrieves similar historical issues using lexical TF-IDF cosine similarity.
+
+**Example Request:**
+```json
+{
+  "title": "RandomForestClassifier raises an error when fitting sparse input",
+  "body": "Calling fit with a sparse matrix produces an unexpected ValueError.",
+  "top_k": 5
+}
+```
+
+**Example Response:**
+```json
+{
+  "results": [
+    {
+      "issue_id": 14613,
+      "title": "EllipticEnvelope does not work with a sparse matrix",
+      "target_label": "Documentation",
+      "created_at": "2019-08-09T13:17:27Z",
+      "url": "https://github.com/scikit-learn/scikit-learn/issues/14613",
+      "similarity_score": 0.21400409717343596
+    }
+  ],
+  "retrieval_method": "tfidf_cosine",
+  "indexed_issue_count": 4854
+}
+```
+
+> **Note:** Similarity scores are purely lexical distance metrics, not probabilities or proof of duplicate issues.
+
 ## Configuration
 
 All secrets and environment-specific settings are stored in `.env` (not
