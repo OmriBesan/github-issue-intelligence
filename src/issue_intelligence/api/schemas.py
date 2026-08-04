@@ -55,7 +55,6 @@ class SimilarRequest(BaseModel):
     body: str | None = None
     top_k: int = 5
     label_filter: str | None = None
-    exclude_issue_id: int | None = None
 
     @model_validator(mode="after")
     def check_non_empty(self) -> "SimilarRequest":
@@ -69,7 +68,7 @@ class SimilarRequest(BaseModel):
             raise ValueError("Title exceeds maximum length of 2000 characters")
         if len(self.body or "") > 100000:
             raise ValueError("Body exceeds maximum length of 100,000 characters")
-            
+
         if not (1 <= self.top_k <= 10):
             raise ValueError("top_k must be between 1 and 10")
 
@@ -78,7 +77,8 @@ class SimilarRequest(BaseModel):
 
 class SimilarIssueItem(BaseModel):
     """A single similar issue result."""
-    issue_id: int
+    issue_number: int
+    issue_id: int | None = None
     title: str
     target_label: str | None = None
     created_at: str | None = None

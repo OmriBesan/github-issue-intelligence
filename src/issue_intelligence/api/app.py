@@ -137,13 +137,12 @@ def create_app(model_path: Path | None = None, retrieval_path: Path | None = Non
                 title=request.title,
                 body=request.body,
                 top_k=request.top_k,
-                label_filter=request.label_filter,
-                exclude_issue_id=request.exclude_issue_id
+                label_filter=request.label_filter
             )
-            
+
             # The count from metadata
             indexed_count = retrieval_service.artifact_metadata.get("indexed_issue_count", 0)
-            
+
             return {
                 "results": results,
                 "retrieval_method": "tfidf_cosine",

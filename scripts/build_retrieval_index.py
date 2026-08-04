@@ -1,7 +1,8 @@
 import argparse
-import joblib
 import logging
 from pathlib import Path
+
+import joblib
 
 from issue_intelligence.retrieval.index import build_index
 
@@ -34,37 +35,31 @@ def main():
         type=Path,
         default=Path("models/retrieval/similar_issues.joblib")
     )
-    parser.add_argument(
-        "--expected-count",
-        type=int,
-        default=4854,
-        help="Expected total number of deduplicated unique issues."
-    )
-    
+
     args = parser.parse_args()
-    
+
     if not args.model_path.exists():
         raise FileNotFoundError(f"Final model not found: {args.model_path}")
-        
+
     logger.info(f"Loading final model from {args.model_path}")
     pipeline = joblib.load(args.model_path)
-    
+
     vectorizer = pipeline.named_steps.get("tfidf")
     if not vectorizer:
         raise ValueError("Could not find 'tfidf' step in the final model pipeline.")
-        
+
     logger.info("Building index...")
     artifact_payload = build_index(
         train_path=args.train_file,
         val_path=args.val_file,
         vectorizer=vectorizer,
-        expected_count=args.expected_count
+        expected_class_distribution={"Bug": 1873, "Enhancement": 1790, "Documentation": 1191}
     )
-    
+
     args.output_path.parent.mkdir(parents=True, exist_ok=True)
     logger.info(f"Saving artifact to {args.output_path}")
     joblib.dump(artifact_payload, args.output_path)
-    
+
     logger.info("Retrieval artifact build complete.")
 
 if __name__ == "__main__":

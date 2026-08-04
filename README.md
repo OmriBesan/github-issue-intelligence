@@ -167,7 +167,7 @@ If the model file is missing, the API will start but will report not-ready and r
 
 > **Note:** The `decision_scores` are raw LinearSVC decision scores. They are NOT probabilities or calibrated confidence metrics. `decision_margin` represents the gap between the top prediction and the runner-up.
 
-- `POST /similar` : Retrieves similar historical issues using lexical TF-IDF cosine similarity.
+- `POST /similar` : Retrieves similar historical issues using TF-IDF similar-issue retrieval with exact cosine similarity.
 
 **Example Request:**
 ```json
@@ -196,7 +196,7 @@ If the model file is missing, the API will start but will report not-ready and r
 }
 ```
 
-> **Note:** Similarity scores are purely lexical distance metrics, not probabilities or proof of duplicate issues.
+> **Note:** Similarity scores are purely cosine similarity metrics, not probabilities or proof of duplicate issues.
 
 ## Configuration
 

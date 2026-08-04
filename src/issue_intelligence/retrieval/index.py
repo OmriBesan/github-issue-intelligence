@@ -4,7 +4,11 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from issue_intelligence.data.preprocessing import build_combined_text, clean_body, clean_title
+from issue_intelligence.data.preprocessing import (
+    build_combined_text,
+    clean_body,
+    clean_title,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +25,7 @@ def build_index(
     train_path: Path,
     val_path: Path,
     vectorizer: Any,
-    expected_count: int | None = None,
+    expected_class_distribution: dict[str, int] | None = None,
 ) -> dict[str, Any]:
     """Build the retrieval index using train and validation records.
     
@@ -29,7 +33,7 @@ def build_index(
         train_path: Path to the training split JSONL.
         val_path: Path to the validation split JSONL.
         vectorizer: The fitted TF-IDF vectorizer.
-        expected_count: Optional integer to validate the final deduplicated count.
+        expected_class_distribution: Optional dict to validate exact class counts.
         
     Returns:
         A dictionary containing the artifact payload to be saved.
@@ -37,7 +41,7 @@ def build_index(
     logger.info("Loading training and validation records...")
     train_records = load_jsonl(train_path)
     val_records = load_jsonl(val_path)
-    
+
     # Deduplicate by issue_id to prevent any internal leakage or overlaps
     seen_ids = set()
     unique_records = []
@@ -46,52 +50,56 @@ def build_index(
         if issue_id not in seen_ids:
             seen_ids.add(issue_id)
             unique_records.append(r)
-            
+
     total_indexed = len(unique_records)
     logger.info(f"Indexed {total_indexed} unique records.")
-    
-    if expected_count is not None and total_indexed != expected_count:
-        raise ValueError(
-            f"Corpus size mismatch. Expected {expected_count}, got {total_indexed}."
-        )
-        
     logger.info("Preprocessing text and collecting metadata...")
     combined_texts = []
     metadata_list = []
     class_counts: dict[str, int] = {}
-    
+
     dates = []
-    
+
     for r in unique_records:
         t, _ = clean_title(r.get("raw_title"))
         b = clean_body(r.get("raw_body"))
         combined = build_combined_text(t, b)
         combined_texts.append(combined)
-        
+
         target = r.get("target")
         class_counts[target] = class_counts.get(target, 0) + 1
-        
+
         c_at = r.get("created_at")
-        if c_at:
-            dates.append(c_at)
-            
+        if not c_at:
+            raise ValueError(f"Missing required created_at date for issue_id {r.get('issue_id')}")
+        dates.append(c_at)
+
         metadata_list.append({
-            "issue_id": r["issue_id"],
+            "issue_number": r["issue_number"],
+            "issue_id": r.get("issue_id"),
             "title": r.get("raw_title", ""),
             "target_label": target,
             "created_at": c_at,
             "url": r.get("html_url")
         })
-        
+
     logger.info("Transforming texts into TF-IDF sparse matrix...")
     sparse_matrix = vectorizer.transform(combined_texts)
-    
+
     vocab_size = len(vectorizer.vocabulary_) if hasattr(vectorizer, "vocabulary_") else 0
-    
+
     dates.sort()
     corpus_min = dates[0] if dates else None
     corpus_max = dates[-1] if dates else None
-    
+
+    if corpus_min and corpus_min < "2010-10-19T08:00:57Z":
+        raise ValueError(f"Invalid dataset minimum date: {corpus_min}")
+
+    if expected_class_distribution is not None and class_counts != expected_class_distribution:
+        raise ValueError(
+            f"Class distribution mismatch. Expected {expected_class_distribution}, got {class_counts}."
+        )
+
     artifact_metadata = {
         "artifact_version": "1.0",
         "indexed_issue_count": total_indexed,
@@ -103,7 +111,7 @@ def build_index(
         "source_splits": [train_path.name, val_path.name],
         "build_timestamp": datetime.utcnow().isoformat() + "Z"
     }
-    
+
     return {
         "vectorizer": vectorizer,
         "matrix": sparse_matrix,
