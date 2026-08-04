@@ -22,3 +22,21 @@ pytest
 
 # Linting and formatting
 ruff
+
+# Deep Learning / Transformers
+torch
+transformers
+datasets
+evaluate
+accelerate
+sentence-transformers
+
+# API Backend
+fastapi
+uvicorn[standard]
+joblib
+pydantic
+
+# UI Frontend
+streamlit
+requests

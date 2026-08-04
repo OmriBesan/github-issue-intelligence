@@ -359,3 +359,18 @@ by AI and how the output was reviewed, adapted, and integrated.
 - Verified there was no partial Stage 2B work (the working tree was clean).
 - Rewrote `docs/handoff.md` to clearly reflect that Stage 2A was complete and Stage 2B is the next step.
 - Updated `README.md` and `docs/project_plan.md` to indicate Stage 2A completion.
+
+## Entry 008 — Stages 2B to 9 (Completion)
+
+**Date:** 2026-08-04
+**Tool:** Google Antigravity (AI coding assistant powered by Gemini)
+**Stage:** 2B through 9
+
+### What the AI assisted with
+- Implemented data splitting (test_split.py, split_dataset.py)
+- Implemented and evaluated classical NLP baselines (Logistic Regression, SVC, Naive Bayes) with TF-IDF.
+- Fine-tuned distilbert-base-uncased using Hugging Face Transformers.
+- Implemented Semantic Search using sentence-transformers for duplicate issue detection.
+- Built a REST API backend with FastAPI and a frontend with Streamlit.
+- Configured deployment plans and finalized reports.
+- Ensured 100% test coverage with pytest and code formatting with ruff.

@@ -67,3 +67,5 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+docs/hebrew_guide.md
+notebooks/results/
