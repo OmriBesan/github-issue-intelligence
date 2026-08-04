@@ -734,3 +734,25 @@ Processed data is gitignored (large, reproducible from the combined raw file).
 ---
 
 *Decisions 001–023 recorded as of Stage 2A.*
+
+## Decision 024 — Streamlit for Frontend, FastAPI for Backend
+**Date:** 2026-08-04
+**Stage:** 8
+**Status:** Accepted
+
+### Decision
+We use FastAPI to serve the ML models and Streamlit to create an interactive UI.
+
+### Rationale
+Streamlit allows rapid prototyping of ML web applications in Python without needing to write Javascript. FastAPI provides an asynchronous, high-performance backend ideal for serving ML models and integrating with GitHub webhooks.
+
+## Decision 025 — DistilBERT over BERT for text classification
+**Date:** 2026-08-04
+**Stage:** 5
+**Status:** Accepted
+
+### Decision
+We use distilbert-base-uncased rather than a full ert-base model.
+
+### Rationale
+DistilBERT retains 97% of BERT's language understanding while being 40% smaller and 60% faster. This reduces memory footprint and inference latency, which is critical for a real-time webhook API.

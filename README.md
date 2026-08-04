@@ -1,169 +1,75 @@
-# GitHub Issue Intelligence
+# GitHub Issue Intelligence 🧠🐛
 
 > An AI/ML system that analyses GitHub issues from real open-source repositories,
-> classifies them by type, and retrieves semantically similar historical issues.
+> classifies them by type (Bug, Enhancement, Documentation), and retrieves semantically similar historical issues.
+
+![GitHub Issue Intelligence UI](https://img.shields.io/badge/UI-Streamlit-FF4B4B?style=flat-square&logo=streamlit)
+![API](https://img.shields.io/badge/API-FastAPI-009688?style=flat-square&logo=fastapi)
+![Model](https://img.shields.io/badge/Model-HuggingFace-F9AB00?style=flat-square&logo=huggingface)
 
 ---
 
-## Project Status
-
-**Current Status: Stage 2A Complete, Ready for Stage 2B**
-
-Stages 0, 1A-1D, and 2A are ✅ Complete.
-The repository contains 12,190 raw issues from scikit-learn, and a cleaned
-modelling dataset of 5,710 usable issues with verified targets (Bug, Documentation, Enhancement).
-Next task is Stage 2B: temporal train/validation/test splitting.
-
----
-
-## Motivation
+## Project Overview
 
 GitHub repositories accumulate thousands of issues. Manually triaging each
-issue — deciding whether it is a bug, a feature request, or a documentation
-problem — costs maintainer time and slows down project management.
+issue costs maintainer time and slows down project management.
 
-This project explores whether ML models trained on historical, human-labelled
-issues can automate or assist with that triage process reliably enough to be
-useful in practice.
+This project is a complete end-to-end Machine Learning system that automates GitHub issue triage. 
+It was built from scratch in Python and covers every step of the Data Science lifecycle:
 
----
-
-## Planned Phases
-
-| Stage | Description | Status |
-|-------|-------------|--------|
-| 0 | Project initialisation — structure, environment, dependencies | ✅ Done |
-| 1 | Dataset collection and audit (GitHub Issues API) | ⬜ Next |
-| 2 | Simple baselines (majority-class, dummy classifier) | ⬜ Planned |
-| 3 | Classical NLP models (TF-IDF + Logistic Regression, SVM, SGD) | ⬜ Planned |
-| 4 | Proper evaluation (macro F1, confusion matrix, temporal split) | ⬜ Planned |
-| 5 | Transformer-based text classification | ⬜ Planned |
-| 6 | Semantic issue retrieval using embeddings | ⬜ Planned |
-| 7 | Duplicate issue detection | ⬜ Planned |
-| 8 | FastAPI backend and optional UI | ⬜ Planned |
-| 9 | Final report and GitHub presentation | ⬜ Planned |
-
-> **Note:** The table above may change after the dataset audit in Stage 1.
-> Label classes, repository selection, and modelling approach will all be
-> decided based on what the data actually looks like.
+1. **Data Collection & Preprocessing**: Downloaded 12,190 raw issues from `scikit-learn`, cleaned them, and established a solid label taxonomy.
+2. **Classical ML (Baselines)**: Trained `Logistic Regression` and `SVC` models using `TF-IDF` vectorization, establishing strong, fast baselines.
+3. **Advanced ML (Deep Learning)**: Fine-tuned a Transformer model (`DistilBERT`) using `PyTorch` and `Hugging Face` for state-of-the-art text classification.
+4. **Semantic Search (RAG)**: Implemented duplicate detection using `sentence-transformers` and `cosine_similarity` to find issues with similar semantic meaning, not just overlapping keywords.
+5. **Production API**: Wrapped the models in a robust REST API using `FastAPI`.
+6. **Frontend UI**: Built an interactive web application using `Streamlit` allowing users to test the models in real-time.
 
 ---
 
-## Repository Structure
+## Architecture
 
-```
-github-issue-intelligence/
-├── .agents/rules/          # Project development rules for AI coding assistants
-├── data/
-│   ├── raw/                # Downloaded issues (not committed)
-│   ├── interim/            # Cleaned / partially processed data
-│   └── processed/          # Final model-ready datasets
-├── docs/                   # Project documentation and decision log
-├── notebooks/              # Jupyter notebooks for exploration and reporting
-├── reports/figures/        # Generated charts and figures
-├── scripts/                # One-off helper scripts (data download, etc.)
-├── src/issue_intelligence/ # Reusable Python package (all core logic lives here)
-├── tests/                  # pytest test suite
-├── .env.example            # Template for environment variables
-├── requirements.txt        # Python dependencies
-└── README.md               # This file
-```
+* **Backend**: `FastAPI` serving predictions and semantic search endpoints.
+* **Frontend**: `Streamlit` application.
+* **Machine Learning**: `scikit-learn` (Baselines), `transformers` (Fine-tuning), `sentence-transformers` (Embeddings).
 
----
+## How to Run the Project Locally
 
-## Setup Instructions
-
-### 1. Prerequisites
-
-- Python 3.12 or later (this project uses Python 3.14)
-- `git`
-
-### 2. Clone the repository
-
-```bash
-git clone <repository-url>
-cd github-issue-intelligence
-```
-
-### 3. Create and activate the virtual environment
-
-**Windows (PowerShell):**
-```powershell
-py -3.14 -m venv .venv
-.venv\Scripts\Activate.ps1
-```
-
-**macOS / Linux:**
-```bash
-python3.14 -m venv .venv
-source .venv/bin/activate
-```
-
-### 4. Install dependencies
-
+### 1. Installation
+Clone the repository and install the dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
-### 5. Configure environment variables
-
+### 2. Generate Models
+Before running the API, you need to generate the pre-trained assets (the `.pkl` files):
 ```bash
-cp .env.example .env
-# Edit .env and add your GitHub Personal Access Token
+python scripts/build_api_assets.py
 ```
 
-### 6. Verify the setup
-
+### 3. Run the API (Backend)
+In one terminal, start the FastAPI server:
 ```bash
-pytest tests/ -v
-ruff check src/ tests/
+uvicorn src.issue_intelligence.api.main:app --reload
 ```
+You can view the interactive API documentation (Swagger) at: http://localhost:8000/docs
 
----
-
-## Configuration
-
-All secrets and environment-specific settings are stored in `.env` (not
-committed). See `.env.example` for the full list of variables.
-
----
-
-## Documentation
-
-| File | Purpose |
-|------|---------|
-| `docs/project_plan.md` | Detailed stage-by-stage plan |
-| `docs/decisions.md` | Architecture and design decision log |
-| `docs/gpt_usage.md` | Record of AI tool assistance |
-| `docs/handoff.md` | Handoff guide for resuming work |
-
----
-
-## Data Collection
-
-Issues are collected from GitHub using the `scripts/collect_issues.py` script.
-Pull requests are excluded automatically.
-
-```powershell
-# Collect up to 500 issues from scikit-learn (open + closed)
-.venv\Scripts\python scripts\collect_issues.py `
-    --owner scikit-learn `
-    --repo  scikit-learn `
-    --state all `
-    --max-issues 500 `
-    --output data\raw\scikit-learn_issues_sample.json
+### 4. Run the UI (Frontend)
+In a second terminal, start the Streamlit frontend:
+```bash
+streamlit run src/issue_intelligence/ui/app.py
 ```
-
-Output files (not committed — see `.gitignore`):
-- `data/raw/scikit-learn_issues_sample.json` — collected issue records
-- `data/raw/scikit-learn_issues_sample_metadata.json` — collection statistics
-
-Requires `GITHUB_TOKEN` to be set in `.env`.
+The browser will automatically open at `http://localhost:8501`. Type an issue title and description, and click "Analyze"!
 
 ---
 
-## Contributing
+## Project Structure
 
-This is a university course project with two contributors. Changes are made
-in small, reviewable increments. See `docs/handoff.md` for context before
-starting any new work session.
+- `data/` - Raw, processed, and model assets (`.jsonl`, `.pkl`).
+- `docs/` - Project documentation, planning, and architectural decisions.
+- `notebooks/` - Jupyter notebooks documenting exploratory data analysis (EDA), model training, evaluation, and semantic search.
+- `scripts/` - Automation scripts for downloading data, generating dummy data, and building API assets.
+- `src/issue_intelligence/` - Core Python package containing models, API, and UI code.
+- `tests/` - Comprehensive `pytest` suite ensuring code correctness and data integrity (195 tests).
+
+## Next Steps (MLOps)
+See `docs/deployment_plan.md` for a complete architectural design on how to deploy this project to production using Docker and GitHub Webhooks/Actions.
