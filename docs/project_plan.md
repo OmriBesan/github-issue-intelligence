@@ -145,32 +145,24 @@ Model capacity, regularisation, and the bias-variance tradeoff.
 
 ---
 
-## Stage 6 — Semantic Issue Retrieval
+## Stage 6 — TF-IDF Similar-Issue Retrieval
 
-**Goal:** Given a new issue, retrieve the most semantically similar historical issues.
+**Goal:** Given a new issue, retrieve the most lexically similar historical scikit-learn issues using TF-IDF cosine similarity.
 
 Approach:
-- Compute issue embeddings using a sentence transformer
-- Store embeddings in a vector index (e.g. FAISS or a simple cosine similarity search)
-- Query index at inference time
+- Compute TF-IDF vectors for historical issues
+- Store vectors and metadata in a retrieval index artifact
+- Query index at inference time using cosine similarity
 
 **Deliverables:**
-- `src/issue_intelligence/retrieval.py`
-- `notebooks/04_retrieval.ipynb`
+- `src/issue_intelligence/retrieval/index.py`
+- `src/issue_intelligence/retrieval/service.py`
 
 ---
 
-## Stage 7 — Duplicate Issue Detection
+## Stage 7 — Duplicate Issue Detection (Removed / Out of Scope)
 
-**Goal:** Detect when a newly submitted issue is likely a duplicate of an
-existing open issue.
-
-Approach:
-- Use embedding similarity from Stage 6
-- Threshold tuning using precision-recall curves
-
-**Deliverables:**
-- `src/issue_intelligence/duplicates.py`
+**Goal:** Removed from scope. (The implemented TF-IDF retrieval system computes lexical cosine similarity and does not perform duplicate classification or threshold-based duplicate detection.)
 
 ---
 
@@ -223,7 +215,7 @@ demonstration and exploratory use.
 
 ---
 
-## Stage 9 — Final Report and GitHub Presentation
+## Finalization — Repository Audit, Report, and Presentation
 
 **Goal:** Document the full project for the course submission and as a
 portfolio piece.

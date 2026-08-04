@@ -7,18 +7,18 @@ work at any point and know exactly where to start.
 
 ## Current State
 
-**Completed stages:** Stages 0, 1A-1D, 2A-2C, 3A, 3B, 3C, 4A, 4B, 5A
+**Completed stages:** Stages 0, 1A-1D, 2A-2C, 3A, 3B, 3C, 4A, 4B, 5A, 5B, 5C
 **Date completed:** 2026-08-04
 
 Best classical candidate: LinearSVC (C=0.3, balanced, bigrams, min_df=5).
-Temporal val Macro F1: 0.9087. Vocabulary: 20,473 terms (70% smaller than untuned).
+Temporal val Macro F1: 0.9087. Vocabulary: 20,473 terms on temporal train split (70% smaller than untuned); 27,129 terms on final combined train+validation model.
 Stage 4B (Final Evaluation) complete. Test Macro F1: 0.9300. BERT-Tiny (0.8550) did not beat LinearSVC (0.9087) so only LinearSVC advances.
 
 ---
 
 ## Project Purpose
 An AI/ML system that analyses GitHub issues from real open-source repositories,
-classifies them by type, and retrieves semantically similar historical issues.
+classifies them by type, and retrieves lexically similar historical scikit-learn issues using TF-IDF cosine similarity.
 
 ---
 
@@ -63,7 +63,7 @@ source .venv/bin/activate
 
 ## How to Verify Current State
 
-**Run Tests (Expected: 171 tests passing)**
+**Run Tests (Expected: 341 tests passing)**
 ```bash
 pytest tests/ -v
 ```
@@ -132,5 +132,4 @@ Current state (branch `omri-final`):
 ```
 
 **Recommended final audit:** Review commit history, confirm no test set leakage,
-verify Stage 4B metrics are unchanged (Macro F1 = 0.9300), and prepare Stage 9
-final report.
+verify Stage 4B metrics are unchanged (Macro F1 = 0.9300), and prepare Finalization — repository audit, report, and presentation.

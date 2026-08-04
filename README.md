@@ -1,7 +1,7 @@
 # GitHub Issue Intelligence
 
 > An AI/ML system that analyses GitHub issues from real open-source repositories,
-> classifies them by type, and retrieves semantically similar historical issues.
+> classifies them by type, and retrieves lexically similar historical scikit-learn issues using TF-IDF cosine similarity.
 
 ---
 
@@ -33,15 +33,15 @@ useful in practice.
 | Stage | Description | Status |
 |-------|-------------|--------|
 | 0 | Project initialisation — structure, environment, dependencies | ✅ Done |
-| 1 | Dataset collection and audit (GitHub Issues API) | ⬜ Next |
-| 2 | Simple baselines (majority-class, dummy classifier) | ⬜ Planned |
-| 3 | Classical NLP models (TF-IDF + Logistic Regression, SVM, SGD) | ⬜ Planned |
-| 4 | Proper evaluation (macro F1, confusion matrix, temporal split) | ⬜ Planned |
-| 5 | Transformer-based text classification | ⬜ Planned |
-| 6 | Semantic issue retrieval using embeddings | ⬜ Planned |
-| 7 | Duplicate issue detection | ⬜ Planned |
-| 8 | FastAPI backend and optional UI | ⬜ Planned |
-| 9 | Final report and GitHub presentation | ⬜ Planned |
+| 1 | Dataset collection and audit (GitHub Issues API) | ✅ Done |
+| 2 | Simple baselines (majority-class, dummy classifier) | ✅ Done |
+| 3 | Classical NLP models (TF-IDF + Logistic Regression, SVM, SGD) | ✅ Done |
+| 4 | Proper evaluation (macro F1, confusion matrix, temporal split) | ✅ Done |
+| 5A | FastAPI backend inference service | ✅ Done |
+| 5B | TF-IDF similar-issue retrieval | ✅ Done |
+| 5C | Local Streamlit demonstration interface | ✅ Done |
+| — | Duplicate detection — removed from scope | ❌ Removed |
+| — | Finalization — repository audit, report, and presentation | ⬜ Next |
 
 > **Note:** The table above may change after the dataset audit in Stage 1.
 > Label classes, repository selection, and modelling approach will all be

@@ -781,17 +781,11 @@ Processed data is gitignored (large, reproducible from the combined raw file).
 **Decision:** The 0.90+ Macro F1 result is credible. No data leakage or shortcut learning was detected.
 The model learns substantive textual patterns, not label shortcuts.
 
-## Decision 029 -- Why Temporal Performance Exceeds Random Performance
+## Decision 029 -- Temporal vs Random Validation Performance
 **Date:** 2026-08-04
-**Context:** Temporal Macro F1 (SGD 0.9077) exceeds Random Macro F1 (SGD 0.8745).
-Training set sizes are essentially equal (3996 vs 3995). The original explanation that the temporal
-training set was larger was incorrect.
-**Correct explanation:** The temporal training set covers 2010-2022, a period with more mature and
-consistently-labelled scikit-learn issues. The random training set mixes issues from all years,
-including the most recent noisier issues, making the learned representation slightly less consistent.
-The temporal validation set (2022-2024) is a coherent temporal slice, while the random validation
-set is a mixed-year sample. This means temporal evaluation is a stricter, more realistic assessment
-of how the model will perform on future issues.
+**Context:** Temporal Macro F1 (LinearSVC 0.9087) exceeds Random Macro F1 (LinearSVC 0.8773).
+Training set sizes are essentially equal (3996 vs 3995).
+**Cautious explanation:** The tuned LinearSVC achieved Macro F1 0.9087 on temporal validation and 0.8773 on random validation. In this dataset, the later temporal slice was not empirically harder than the random mixed-year split. The difference may reflect changes in class balance, annotation consistency, vocabulary, or issue composition, so no single causal explanation is claimed. Temporal splitting remains the primary evaluation strategy because it more closely represents prediction on future issues, not because it produced a lower score.
 
 
 ## Decision 030 -- Best Classical Candidate: LinearSVC (C=0.3, min_df=5, bigrams)
