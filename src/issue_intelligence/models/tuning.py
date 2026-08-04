@@ -6,12 +6,10 @@ import statistics
 from dataclasses import dataclass, field
 from typing import Any
 
-import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import SGDClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.svm import LinearSVC
-
 
 # ---------------------------------------------------------------------------
 # TF-IDF base configuration (Stage 3A default)
@@ -176,7 +174,9 @@ def get_phase1_candidates(model_type: str) -> list[Candidate]:
     raise ValueError(f"Unknown model type: {model_type}")
 
 
-def get_phase2_candidates(model_type: str, best_clf_params: dict[str, Any]) -> list[Candidate]:
+def get_phase2_candidates(
+    model_type: str, best_clf_params: dict[str, Any]
+) -> list[Candidate]:
     if model_type == "SGDClassifier":
         return _sgd_phase2(best_clf_params)
     if model_type == "LinearSVC":
@@ -226,7 +226,9 @@ def aggregate_fold_results(
         mean_weighted_f1=statistics.mean(fr.weighted_f1 for fr in fold_results),
         mean_accuracy=statistics.mean(fr.accuracy for fr in fold_results),
         mean_training_time_s=statistics.mean(fr.training_time_s for fr in fold_results),
-        mean_prediction_time_s=statistics.mean(fr.prediction_time_s for fr in fold_results),
+        mean_prediction_time_s=statistics.mean(
+            fr.prediction_time_s for fr in fold_results
+        ),
         mean_vocabulary_size=statistics.mean(fr.vocabulary_size for fr in fold_results),
         fold_results=fold_results,
     )
@@ -246,7 +248,9 @@ def select_best(results: list[AggregatedResult]) -> AggregatedResult:
 
     def sort_key(r: AggregatedResult) -> tuple:
         # Complexity proxy: bigrams more complex than unigrams; phase 2 tfidf variants
-        ng_range = r.candidate.tfidf_params.get("ngram_range", BASE_TFIDF["ngram_range"])
+        ng_range = r.candidate.tfidf_params.get(
+            "ngram_range", BASE_TFIDF["ngram_range"]
+        )
         tfidf_complexity = ng_range[1]  # 1 for unigrams, 2 for bigrams, 3 for trigrams
         return (
             -round(r.mean_macro_f1, 4),  # primary: higher is better (negated)

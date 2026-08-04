@@ -18,9 +18,9 @@ class MajorityClassBaseline:
         """Fit the baseline model on training labels."""
         if not y:
             raise ValueError("Training labels cannot be empty")
-            
-        # DummyClassifier requires an X array, but most_frequent strategy ignores its contents.
-        # Provide a dummy 2D array of the same length as y.
+
+        # DummyClassifier requires an X array, but most_frequent strategy ignores
+        # its contents. Provide a dummy 2D array of the same length as y.
         X = np.zeros((len(y), 1))
         self.model.fit(X, y)
         self.is_fitted = True
@@ -28,16 +28,16 @@ class MajorityClassBaseline:
 
     def predict(self, n_samples: int) -> list[str]:
         """Predict the majority class for n_samples.
-        
+
         We accept `n_samples` rather than a feature array since the baseline
         doesn't use features.
         """
         if not self.is_fitted:
             raise RuntimeError("Model is not fitted yet")
-            
+
         if n_samples <= 0:
             return []
-            
+
         X = np.zeros((n_samples, 1))
         return self.model.predict(X).tolist()
 
@@ -54,7 +54,7 @@ class StratifiedRandomBaseline:
         """Fit the baseline model to calculate class probabilities."""
         if not y:
             raise ValueError("Training labels cannot be empty")
-            
+
         X = np.zeros((len(y), 1))
         self.model.fit(X, y)
         self.is_fitted = True
@@ -64,9 +64,9 @@ class StratifiedRandomBaseline:
         """Predict classes based on training distribution."""
         if not self.is_fitted:
             raise RuntimeError("Model is not fitted yet")
-            
+
         if n_samples <= 0:
             return []
-            
+
         X = np.zeros((n_samples, 1))
         return self.model.predict(X).tolist()
