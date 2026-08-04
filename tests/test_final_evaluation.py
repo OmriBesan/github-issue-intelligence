@@ -235,7 +235,8 @@ def test_unknown_label_handling():
     y_true = ["Bug", "UnknownClass"]
     y_pred = ["Bug", "Bug"]
 
-    # Passing labels=LABELS should ignore the 'UnknownClass' true label for matrix creation
+    # Passing labels=LABELS should ignore the 'UnknownClass' true label
+    # for matrix creation
     cm = confusion_matrix(y_true, y_pred, labels=LABELS)
     assert cm.shape == (3, 3)
     assert cm[0, 0] == 1  # Bug->Bug

@@ -22,3 +22,9 @@ pytest
 
 # Linting and formatting
 ruff
+
+# Stage 5A: FastAPI Inference Service (added 2026-08-04)
+fastapi
+uvicorn
+httpx
+pydantic

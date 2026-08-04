@@ -7,7 +7,7 @@ work at any point and know exactly where to start.
 
 ## Current State
 
-**Completed stages:** Stages 0, 1A-1D, 2A-2C, 3A, 3B, 3C, 4A, 4B
+**Completed stages:** Stages 0, 1A-1D, 2A-2C, 3A, 3B, 3C, 4A, 4B, 5A
 **Date completed:** 2026-08-04
 
 Best classical candidate: LinearSVC (C=0.3, balanced, bigrams, min_df=5).
@@ -115,6 +115,6 @@ This produces `data/processed/scikit-learn_issues_model.jsonl` (and `.csv`).
 
 ## Exact Next Task
 
-**Stage 5 — (Upcoming Feature / API).**
+**Stage 5B — Semantic Retrieval or UI.**
 
 Tell the assistant to proceed to the next stage.

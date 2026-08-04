@@ -517,3 +517,8 @@ by AI and how the output was reviewed, adapted, and integrated.
 ### Stage 4B: Final Test Set Evaluation
 - Prompted GPT to implement the final evaluation script exactly as specified using the locked LinearSVC configuration.
 - GPT fixed dataset paths and classification_report parameter mismatches based on the synthetic test suite.
+
+### Stage 5A: FastAPI Inference Service
+- Prompted GPT to build `src/issue_intelligence/api` with endpoints for health, model info, and prediction.
+- GPT successfully implemented Pydantic validation (requiring at least one non-blank field) and extracted correct SVM `decision_function` raw margins without defaulting to softmax probabilities.
+- Used `TestClient` and a synthetic pipeline to rigorously test the API layer without relying on the true test set.

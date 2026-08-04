@@ -875,3 +875,9 @@ a future stage if compute becomes available.
 - **Decision:** The locked LinearSVC configuration was evaluated exactly once on the held-out temporal test set.
 - **Rationale:** Strict separation of test data to prevent information leak. 
 - **Result:** The model achieved a Macro F1 of 0.9300 and Accuracy of 0.9369. The test set was accessed exactly once and no hyperparameter modifications were made after observing the results.
+
+## Stage 5A - FastAPI Inference Service
+- **Decision:** API returns raw LinearSVC decision scores and margins.
+- **Rationale:** SVM decision boundaries (from `decision_function`) produce raw decision scores. Applying Platt scaling or softmax post-hoc is not natively calibrated for this pipeline. Reporting raw LinearSVC decision scores prevents misleading the user with pseudo-probabilities.
+- **Decision:** Missing model raises HTTP 503 on `POST /predict` but allows the app to start (HTTP 200 on `/health` with `status: not_ready`).
+- **Rationale:** Kubernetes or container orchestrators prefer services to start and report readiness clearly, rather than crashing in an infinite restart loop if the model volume is delayed.

@@ -21,7 +21,9 @@ from sklearn.pipeline import Pipeline
 from sklearn.svm import LinearSVC
 
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s %(levelname)-8s %(message)s", datefmt="%H:%M:%S"
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)-8s %(message)s",
+    datefmt="%H:%M:%S",
 )
 logger = logging.getLogger(__name__)
 
@@ -86,7 +88,9 @@ def plot_confusion_matrix(y_true, y_pred, output_path: Path):
     plt.close()
 
 
-def plot_validation_vs_test(val_macro_f1: float, test_macro_f1: float, output_path: Path):
+def plot_validation_vs_test(
+    val_macro_f1: float, test_macro_f1: float, output_path: Path
+):
     """Plot temporal validation vs test Macro F1."""
     plt.figure(figsize=(6, 5))
     bars = plt.bar(
@@ -117,7 +121,9 @@ def plot_validation_vs_test(val_macro_f1: float, test_macro_f1: float, output_pa
 
 def main():
     parser = argparse.ArgumentParser(description="Evaluate final model on test set.")
-    parser.add_argument("--splits-dir", type=Path, default=Path("data/processed/splits"))
+    parser.add_argument(
+        "--splits-dir", type=Path, default=Path("data/processed/splits")
+    )
     parser.add_argument("--models-dir", type=Path, default=Path("models/classical"))
     parser.add_argument("--results-dir", type=Path, default=Path("reports/results"))
     parser.add_argument("--figures-dir", type=Path, default=Path("reports/figures"))
@@ -130,7 +136,10 @@ def main():
 
     # 3. Combine train and val
     final_train_df = pd.concat([train_df, val_df], ignore_index=True)
-    logger.info(f"Combined train ({len(train_df)}) + val ({len(val_df)}) = {len(final_train_df)} records")
+    logger.info(
+        f"Combined train ({len(train_df)}) + val ({len(val_df)}) "
+        f"= {len(final_train_df)} records"
+    )
 
     # 4. Verify no duplicates in combined train
     if final_train_df["issue_id"].duplicated().any():
@@ -147,7 +156,9 @@ def main():
     test_ids = set(test_df["issue_id"])
     overlap = train_ids.intersection(test_ids)
     if overlap:
-        raise ValueError(f"Found {len(overlap)} issue_ids overlapping between train and test!")
+        raise ValueError(
+            f"Found {len(overlap)} issue_ids overlapping between train and test!"
+        )
 
     # Prep data
     X_train = final_train_df["combined_text"].fillna("").tolist()
@@ -168,7 +179,10 @@ def main():
     X_train_mat = pipeline.named_steps["tfidf"].transform(X_train)
     n_samples, n_features = X_train_mat.shape
 
-    logger.info(f"Fitted in {train_time:.2f}s (vocab={vocab_size:,}, shape={n_samples}x{n_features})")
+    logger.info(
+        f"Fitted in {train_time:.2f}s "
+        f"(vocab={vocab_size:,}, shape={n_samples}x{n_features})"
+    )
 
     # 8. Generate test predictions
     logger.info("Generating test predictions...")
@@ -227,7 +241,9 @@ def main():
 
     # 10. Save outputs
     args.results_dir.mkdir(parents=True, exist_ok=True)
-    with open(args.results_dir / "final_temporal_test.json", "w", encoding="utf-8") as f:
+    with open(
+        args.results_dir / "final_temporal_test.json", "w", encoding="utf-8"
+    ) as f:
         json.dump(results, f, indent=2)
 
     # Save CSV summary
@@ -244,8 +260,12 @@ def main():
     summary.to_csv(args.results_dir / "final_model_summary.csv", index=False)
 
     # Generate plots
-    plot_confusion_matrix(y_test, y_pred, args.figures_dir / "final_test_confusion_matrix.png")
-    plot_validation_vs_test(0.9087, macro_f1, args.figures_dir / "final_validation_vs_test.png")
+    plot_confusion_matrix(
+        y_test, y_pred, args.figures_dir / "final_test_confusion_matrix.png"
+    )
+    plot_validation_vs_test(
+        0.9087, macro_f1, args.figures_dir / "final_validation_vs_test.png"
+    )
 
     logger.info(f"Test Macro F1: {macro_f1:.4f}")
     logger.info(f"Test Accuracy: {accuracy:.4f}")

@@ -7,12 +7,12 @@
 
 ## Project Status
 
-**Current Status: Stage 4A Complete — Transformer Evaluated; LinearSVC Wins**
+**Current Status: Stage 5A Complete — FastAPI Inference Service Built**
 
-Stages 0, 1A-1D, 2A-2C, 3A, 3B, 3C, and 4A are ✅ Complete.
+Stages 0, 1A-1D, 2A-2C, 3A, 3B, 3C, 4A, 4B, and 5A are ✅ Complete.
 BERT-Tiny (4.4M params) Temporal Macro F1: **0.8550** — 5.4 pp below tuned LinearSVC (0.9087).
 LinearSVC advances to final test-set evaluation. Transformer does not.
-Next: Stage 4B — final model evaluation on held-out test set.
+Next: Stage 5B — Optional UI or Semantic Retrieval pipeline.
 **Note:** Evaluated once on a held-out temporal test set (2024-2026). No post-test tuning occurred.
 
 ---
@@ -121,6 +121,51 @@ ruff check src/ tests/
 ```
 
 ---
+
+## API Usage
+
+A FastAPI service is available to run inferences against the final tuned LinearSVC model.
+
+### Starting the Server
+```powershell
+.venv\Scripts\python -m uvicorn issue_intelligence.api.app:app --reload
+```
+
+Optionally set the model path via environment variable:
+```powershell
+$env:ISSUE_MODEL_PATH="models/classical/final_linear_svc.joblib"
+```
+If the model file is missing, the API will start but will report not-ready and return 503s for predictions. You must run Stage 3A/3C scripts to build a model, or provide a saved pipeline.
+
+### Endpoints
+
+- `GET /health` : Returns readiness status.
+- `GET /model-info` : Returns model labels, expected inputs, and configuration.
+- `POST /predict` : Submits an issue title and body.
+
+**Example Request:**
+```json
+{
+  "title": "RandomForestClassifier raises an error when fitting sparse input",
+  "body": "Calling fit with a sparse matrix produces an unexpected ValueError."
+}
+```
+
+**Example Response:**
+```json
+{
+  "predicted_label": "Bug",
+  "decision_scores": {
+    "Bug": 0.5218,
+    "Documentation": -0.8881,
+    "Enhancement": -0.6790
+  },
+  "decision_margin": 1.2008,
+  "model_name": "LinearSVC"
+}
+```
+
+> **Note:** The `decision_scores` are raw LinearSVC decision scores. They are NOT probabilities or calibrated confidence metrics. `decision_margin` represents the gap between the top prediction and the runner-up.
 
 ## Configuration
 

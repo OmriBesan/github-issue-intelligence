@@ -174,13 +174,13 @@ Approach:
 
 ---
 
-## Stage 8 — FastAPI Backend
+## Stage 5A — FastAPI Backend ✅
 
 **Goal:** Expose the trained models through a REST API.
 
 Endpoints (planned):
-- `POST /classify` — predict issue type from title + description
-- `GET /similar` — retrieve similar historical issues
+- `POST /predict` — predict issue type from title + description
+- `GET /model-info` — retrieve model info
 - `GET /health` — health check
 
 **Deliverables:**
