@@ -41,6 +41,16 @@ Decision scores are **not probabilities** and are not displayed as confidence pe
 
 Retrieved issues are ranked by **TF-IDF cosine similarity**. Similar issues are not necessarily duplicates.
 
+## Interface Preview
+
+### Issue input
+
+![Streamlit issue input interface](docs/images/streamlit-input.png)
+
+### Classification and similar-issue results
+
+![Streamlit classification and retrieval results](docs/images/streamlit-results.png)
+
 ---
 
 ## Project Pipeline
