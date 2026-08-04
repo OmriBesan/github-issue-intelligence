@@ -399,25 +399,44 @@ by AI and how the output was reviewed, adapted, and integrated.
 - Reviewed metric calculations to ensure correct weighting and zero division handling.
 - Verified the reason for the Macro F1 difference between temporal and random splits: the majority class naturally changes depending on the evaluation window.
 - Verified all 192 tests pass successfully and Ruff finds zero errors.
- 
- - - -  
-  
- # #   E n t r y   0 1 0   - -   C l a s s i c a l   T F - I D F   M o d e l s   ( S t a g e   3 A )  
-  
- * * D a t e : * *   2 0 2 6 - 0 8 - 0 4  
- * * T o o l : * *   G o o g l e   A n t i g r a v i t y   ( A I   c o d i n g   a s s i s t a n t   p o w e r e d   b y   G e m i n i )  
- * * S t a g e : * *   S t a g e   3 A  
-  
- # # #   W h a t   t h e   A I   a s s i s t e d   w i t h  
- -   C r e a t e d   s r c / i s s u e _ i n t e l l i g e n c e / m o d e l s / c l a s s i c a l . p y   w i t h   L R ,   L i n e a r S V C ,   S G D ,   M u l t i n o m i a l N B   p i p e l i n e s .  
- -   C r e a t e d   s r c / i s s u e _ i n t e l l i g e n c e / m o d e l s / m o d e l _ r e g i s t r y . p y .  
- -   C r e a t e d   s c r i p t s / r u n _ c l a s s i c a l _ m o d e l s . p y   w i t h   t i m i n g ,   v o c a b   s t a t s ,   t o p - f e a t u r e   e x t r a c t i o n .  
- -   C r e a t e d   t e s t s / t e s t _ c l a s s i c a l _ m o d e l s . p y   ( 1 7   t e s t s ) .   A l l   2 0 9   p a s s .  
-  
- # # #   W h a t   t h e   s t u d e n t   r e v i e w e d   a n d   v e r i f i e d  
- -   V e r i f i e d   t h a t   T F - I D F   i s   o n l y   f i t t e d   o n   t r a i n i n g   d a t a .  
- -   C o n f i r m e d   S G D C l a s s i f i e r   a c h i e v e s   b e s t   t e m p o r a l   M a c r o   F 1   ( 0 . 9 0 7 7 ) .  
- -   C o n f i r m e d   t e m p o r a l   s c o r e s   e x c e e d   r a n d o m   s c o r e s ,   e v i d e n c i n g   d i s t r i b u t i o n   s h i f t .  
+
+ 
+ - - - 
+ 
+ 
+ 
+ # #   E n t r y   0 1 0   - -   C l a s s i c a l   T F - I D F   M o d e l s   ( S t a g e   3 A ) 
+ 
+ 
+ 
+ * * D a t e : * *   2 0 2 6 - 0 8 - 0 4 
+ 
+ * * T o o l : * *   G o o g l e   A n t i g r a v i t y   ( A I   c o d i n g   a s s i s t a n t   p o w e r e d   b y   G e m i n i ) 
+ 
+ * * S t a g e : * *   S t a g e   3 A 
+ 
+ 
+ 
+ # # #   W h a t   t h e   A I   a s s i s t e d   w i t h 
+ 
+ -   C r e a t e d   s r c / i s s u e _ i n t e l l i g e n c e / m o d e l s / c l a s s i c a l . p y   w i t h   L R ,   L i n e a r S V C ,   S G D ,   M u l t i n o m i a l N B   p i p e l i n e s . 
+ 
+ -   C r e a t e d   s r c / i s s u e _ i n t e l l i g e n c e / m o d e l s / m o d e l _ r e g i s t r y . p y . 
+ 
+ -   C r e a t e d   s c r i p t s / r u n _ c l a s s i c a l _ m o d e l s . p y   w i t h   t i m i n g ,   v o c a b   s t a t s ,   t o p - f e a t u r e   e x t r a c t i o n . 
+ 
+ -   C r e a t e d   t e s t s / t e s t _ c l a s s i c a l _ m o d e l s . p y   ( 1 7   t e s t s ) .   A l l   2 0 9   p a s s . 
+ 
+ 
+ 
+ # # #   W h a t   t h e   s t u d e n t   r e v i e w e d   a n d   v e r i f i e d 
+ 
+ -   V e r i f i e d   t h a t   T F - I D F   i s   o n l y   f i t t e d   o n   t r a i n i n g   d a t a . 
+ 
+ -   C o n f i r m e d   S G D C l a s s i f i e r   a c h i e v e s   b e s t   t e m p o r a l   M a c r o   F 1   ( 0 . 9 0 7 7 ) . 
+ 
+ -   C o n f i r m e d   t e m p o r a l   s c o r e s   e x c e e d   r a n d o m   s c o r e s ,   e v i d e n c i n g   d i s t r i b u t i o n   s h i f t . 
+ 
  
 
 ---
@@ -494,3 +513,7 @@ by AI and how the output was reviewed, adapted, and integrated.
 - Confirmed BERT-Tiny Macro F1 = 0.8550, substantially below LinearSVC 0.9087 (delta=-0.054).
 - Confirmed 49.9% truncation rate is a structural disadvantage for transformers.
 - Confirmed LinearSVC is the correct model to advance to final test evaluation.
+
+### Stage 4B: Final Test Set Evaluation
+- Prompted GPT to implement the final evaluation script exactly as specified using the locked LinearSVC configuration.
+- GPT fixed dataset paths and classification_report parameter mismatches based on the synthetic test suite.

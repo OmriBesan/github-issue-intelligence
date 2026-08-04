@@ -764,7 +764,8 @@ Processed data is gitignored (large, reproducible from the combined raw file).
  # #   D e c i s i o n   0 2 7   - -   S G D   l o g _ l o s s   a s   L i n e a r   T e x t   L o s s 
  * * D a t e : * *   2 0 2 6 - 0 8 - 0 4 
  * * C o n t e x t : * *   S G D C l a s s i f i e r   s u p p o r t s   m u l t i p l e   l o s s   f u n c t i o n s .   l o g _ l o s s   g i v e s   c a l i b r a t e d   p r o b a b i l i t i e s   a n d   b e h a v e s   l i k e   o n l i n e   L o g i s t i c   R e g r e s s i o n   f o r   t e x t . 
- * * D e c i s i o n : * *   U s e   S G D C l a s s i f i e r ( l o s s = ' l o g _ l o s s ' )   s o   a l l   t h r e e   l i n e a r   m o d e l s   a r e   d i r e c t l y   c o m p a r a b l e   i n   t h e i r   o p t i m i s a t i o n   o b j e c t i v e s .  
+ * * D e c i s i o n : * *   U s e   S G D C l a s s i f i e r ( l o s s = ' l o g _ l o s s ' )   s o   a l l   t h r e e   l i n e a r   m o d e l s   a r e   d i r e c t l y   c o m p a r a b l e   i n   t h e i r   o p t i m i s a t i o n   o b j e c t i v e s . 
+ 
  
 
 ## Decision 028 -- 0.90+ Macro F1 is Credible After Robustness Checks
@@ -869,3 +870,8 @@ should be increased to at least 512, or chunked/hierarchical encoding used for v
 BERT-Tiny performed too poorly to warrant using the held-out test set on it.
 A stronger transformer (DistilBERT on GPU, or fine-tuned BERT-base) could be revisited in
 a future stage if compute becomes available.
+
+## Stage 4B - Final Test Set Evaluation
+- **Decision:** The locked LinearSVC configuration was evaluated exactly once on the held-out temporal test set.
+- **Rationale:** Strict separation of test data to prevent information leak. 
+- **Result:** The model achieved a Macro F1 of 0.9300 and Accuracy of 0.9369. The test set was accessed exactly once and no hyperparameter modifications were made after observing the results.

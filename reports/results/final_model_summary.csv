@@ -1,0 +1,2 @@
+Model,Temporal_Validation_Macro_F1,Temporal_Test_Macro_F1,Delta
+LinearSVC (Final),0.9087,0.9299610281005973,0.02126102810059738

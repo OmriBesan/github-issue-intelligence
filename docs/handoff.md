@@ -7,12 +7,12 @@ work at any point and know exactly where to start.
 
 ## Current State
 
-**Completed stages:** Stages 0, 1A-1D, 2A-2C, 3A, 3B, 3C, 4A
+**Completed stages:** Stages 0, 1A-1D, 2A-2C, 3A, 3B, 3C, 4A, 4B
 **Date completed:** 2026-08-04
 
 Best classical candidate: LinearSVC (C=0.3, balanced, bigrams, min_df=5).
 Temporal val Macro F1: 0.9087. Vocabulary: 20,473 terms (70% smaller than untuned).
-The next step is Stage 4B: evaluate tuned LinearSVC on the held-out test set. BERT-Tiny (0.8550) did not beat LinearSVC (0.9087) so only LinearSVC advances.
+Stage 4B (Final Evaluation) complete. Test Macro F1: 0.9300. BERT-Tiny (0.8550) did not beat LinearSVC (0.9087) so only LinearSVC advances.
 
 ---
 
@@ -115,9 +115,6 @@ This produces `data/processed/scikit-learn_issues_model.jsonl` (and `.csv`).
 
 ## Exact Next Task
 
-**Stage 3 — Classical NLP Models (TF-IDF).**
+**Stage 5 — (Upcoming Feature / API).**
 
-Tell the assistant:
-> "Begin Stage 3: implement and evaluate classical NLP models using TF-IDF features.
-> Compare their performance against the Stage 2C baselines.
-> Read the project constraints and rules carefully."
+Tell the assistant to proceed to the next stage.

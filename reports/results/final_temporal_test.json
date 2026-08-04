@@ -1,0 +1,50 @@
+{
+  "model_name": "LinearSVC",
+  "configuration": {
+    "C": 0.3,
+    "class_weight": "balanced",
+    "tfidf_ngram_range": [
+      1,
+      2
+    ],
+    "tfidf_min_df": 5
+  },
+  "training_time_s": 3.3702890872955322,
+  "inference_time_s": 0.5393984317779541,
+  "vocabulary_size": 27129,
+  "feature_matrix_shape": [
+    4854,
+    27129
+  ],
+  "test_metrics": {
+    "macro_f1": 0.9299610281005973,
+    "weighted_f1": 0.9367750307165585,
+    "accuracy": 0.9369158878504673,
+    "per_class": {
+      "Bug": {
+        "precision": 0.948780487804878,
+        "recall": 0.970074812967581,
+        "f1": 0.9593094944512947,
+        "support": 401.0
+      },
+      "Documentation": {
+        "precision": 0.8980582524271845,
+        "recall": 0.8980582524271845,
+        "f1": 0.8980582524271845,
+        "support": 206.0
+      },
+      "Enhancement": {
+        "precision": 0.95,
+        "recall": 0.9156626506024096,
+        "f1": 0.9325153374233128,
+        "support": 249.0
+      }
+    }
+  },
+  "predicted_distribution": {
+    "Bug": 410,
+    "Documentation": 206,
+    "Enhancement": 240
+  },
+  "model_size_mb": 1.25469970703125
+}
