@@ -464,3 +464,33 @@ by AI and how the output was reviewed, adapted, and integrated.
 - Verified that LinearSVC temporal val improved by +0.0027 and noted this is not practically meaningful.
 - Confirmed min_df=5 reduces vocabulary from 67,838 to 20,473 terms (70%) with negligible F1 loss.
 - Confirmed test split was never accessed.
+
+
+---
+
+## Entry 013 -- Transformer Classifier (Stage 4A)
+
+**Date:** 2026-08-04
+**Tool:** Google Antigravity (AI coding assistant powered by Gemini)
+**Stage:** Stage 4A
+
+### What the AI assisted with
+- Created `src/issue_intelligence/data/transformer_dataset.py` with dataset utilities,
+  label encoding, truncation statistics.
+- Created `src/issue_intelligence/models/transformer.py` with model loading, class weight
+  computation, parameter counting.
+- Created `scripts/train_transformer.py` — full training loop with WeightedTrainer, epoch
+  history tracking, 6 figures.
+- Created `scripts/evaluate_transformer.py` — standalone evaluation.
+- Created `tests/test_transformer_dataset.py` (15 tests) and `tests/test_transformer_pipeline.py`
+  (11 tests). All 280 tests pass.
+- Performed hardware audit: CPU-only, no GPU, 3.8 GB free RAM.
+- Timed DistilBERT at 14.5s/step (~180 min for 3 epochs) and BERT-Tiny at 0.26s/step
+  (~3.3 min for 3 epochs). Selected BERT-Tiny based on hardware constraint.
+- Diagnosed and fixed transformers 5.x API changes: evaluation_strategy → eval_strategy,
+  no_cuda → use_cpu, tokenizer → processing_class in Trainer.
+
+### What the student reviewed and verified
+- Confirmed BERT-Tiny Macro F1 = 0.8550, substantially below LinearSVC 0.9087 (delta=-0.054).
+- Confirmed 49.9% truncation rate is a structural disadvantage for transformers.
+- Confirmed LinearSVC is the correct model to advance to final test evaluation.

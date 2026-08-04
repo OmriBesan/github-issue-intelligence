@@ -64,6 +64,7 @@ Audit checks:
 **Stage 3A:** Classical TF-IDF Models ✅ (Complete)
 **Stage 3B:** Robustness Validation ✅ (Complete)
 **Stage 3C:** Hyperparameter Tuning ✅ (Complete)
+**Stage 4A:** Transformer Baseline ✅ (Complete) — BERT-Tiny 0.8550 vs LinearSVC 0.9087
 
 Models:
 - Majority-class baseline (always predicts the most frequent class)

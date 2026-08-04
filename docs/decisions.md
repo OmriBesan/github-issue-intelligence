@@ -826,3 +826,46 @@ produces ~0.91.
 (2) The inner folds are harder: fold 1 validates on 2015-2018 data with only pre-2015 training.
 (3) The full training set has 3× more data (3996 vs ~1000-2999). The gap is expected and not
 evidence of leakage; it shows the model benefits from more training data.
+
+
+## Decision 033 -- Transformer Checkpoint: BERT-Tiny (google/bert_uncased_L-2_H-128_A-2)
+**Date:** 2026-08-04
+**Context:** Stage 4A requires a transformer-based issue classifier. The preferred checkpoint
+is distilbert-base-uncased (66M params, 6 layers). A timing estimate on the project's CPU-only
+hardware (Windows 11, no GPU, ~3.8 GB free RAM) showed distilbert requires ~14.5s/step at
+batch=16, seq_len=256, giving ~60 min/epoch and ~180 min for 3 epochs — unreasonable.
+**Decision:** Use google/bert_uncased_L-2_H-128_A-2 (BERT-Tiny, 4.4M params, 2 layers, hidden=128).
+This is the official Google BERT-Tiny checkpoint. It uses standard BERT WordPiece tokenization
+(no sentencepiece required). Measured timing: 0.26s/step, ~3.3 min for 3 epochs.
+**Expected tradeoff:** BERT-Tiny has 15× fewer parameters and shallower attention than DistilBERT.
+Classification F1 is typically 5–15 pp lower on downstream tasks. The goal is not to match
+DistilBERT but to determine whether any BERT-family transformer beats the tuned LinearSVC.
+
+## Decision 034 -- BERT-Tiny Does Not Beat Tuned LinearSVC
+**Date:** 2026-08-04
+**Context:** Stage 4A training result (3 epochs, lr=5e-5, class-weighted loss, max_length=256).
+BERT-Tiny temporal val Macro F1: 0.8550
+LinearSVC (tuned) temporal val Macro F1: 0.9087
+Delta: -0.0537 (BERT-Tiny is 5.4 pp WORSE).
+**Decision:** BERT-Tiny does not justify its extra complexity on this dataset.
+The tuned LinearSVC remains the stronger model and the preferred candidate for final test evaluation.
+This result is not surprising: (1) GitHub issue text is technical but follows predictable patterns
+that TF-IDF captures well; (2) BERT-Tiny's 2-layer architecture captures minimal contextual
+information; (3) 49.9% of training examples are truncated at 256 tokens, removing information
+that TF-IDF retains; (4) The LinearSVC was already tuned; the transformer was not.
+
+## Decision 035 -- Token Truncation: 49.9% at max_length=256
+**Date:** 2026-08-04
+**Context:** Mean token length is 491.5; median is 256.0; p99 is 3594; max is 25878.
+Nearly half of all training examples are truncated, losing tail content (code, stack traces,
+comments). This disadvantages transformers relative to TF-IDF which uses the full combined_text.
+**Implication:** If a larger transformer (DistilBERT, BERT-base) were used on a GPU, max_length
+should be increased to at least 512, or chunked/hierarchical encoding used for very long issues.
+
+## Decision 036 -- LinearSVC Advances to Final Test Evaluation; BERT-Tiny Does Not
+**Date:** 2026-08-04
+**Context:** The two candidates are tuned LinearSVC (0.9087) and BERT-Tiny (0.8550).
+**Decision:** Only LinearSVC advances to final held-out test set evaluation.
+BERT-Tiny performed too poorly to warrant using the held-out test set on it.
+A stronger transformer (DistilBERT on GPU, or fine-tuned BERT-base) could be revisited in
+a future stage if compute becomes available.

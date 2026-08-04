@@ -1,0 +1,3 @@
+model,temporal_macro_f1,temporal_accuracy,bug_f1,doc_f1,enh_f1,vocab_or_params,train_time_s,inference_time_s,model_size_mb
+LinearSVC (tuned),0.9087,,0.9278,0.8759,0.9225,"20,473 terms",1.94,0.39,< 1
+Transformer (google/bert_uncased_L-2_H-128_A-2),0.85502391464312,0.8601398601398601,0.8675,0.8333333333333334,0.8642384105960265,"4,386,307 params",411.9,4.867,18.3
