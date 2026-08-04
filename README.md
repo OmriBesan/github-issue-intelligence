@@ -1,148 +1,220 @@
 # GitHub Issue Intelligence
 
-> An AI/ML system that analyses GitHub issues from real open-source repositories,
-> classifies them by type, and retrieves lexically similar historical scikit-learn issues using TF-IDF cosine similarity.
+**Repository:** https://github.com/OmriBesan/github-issue-intelligence
+
+A machine-learning system for classifying **scikit-learn GitHub issues** as:
+
+- **Bug**
+- **Documentation**
+- **Enhancement**
+
+The project also retrieves lexically similar historical issues using **TF-IDF cosine similarity** and provides a local demonstration through **FastAPI** and **Streamlit**.
+
+> The current trained model is specific to scikit-learn. The architecture can be adapted to other repositories, but reliable use elsewhere requires repository-specific labelled data, retraining, and evaluation.
 
 ---
 
-## Project Status
+## Main Result
 
-**Current Status: Stage 5C Complete — Local Streamlit Demonstration Interface Built**
+The final model is a **TF-IDF + LinearSVC** pipeline evaluated on a held-out temporal test set containing 856 newer scikit-learn issues from 2024–2026.
 
-Stages 0, 1A-1D, 2A-2C, 3A, 3B, 3C, 4A, 4B, 5A, 5B, and 5C are ✅ Complete.
-BERT-Tiny (4.4M params) Temporal Macro F1: **0.8550** — 5.4 pp below tuned LinearSVC (0.9087).
-LinearSVC advances to final test-set evaluation. Transformer does not.
-**Note:** Evaluated once on a held-out temporal test set (2024-2026). No post-test tuning occurred.
+| Metric | Result |
+|---|---:|
+| Macro F1 | **0.9300** |
+| Accuracy | **0.9369** |
+| Weighted F1 | **0.9368** |
 
----
-
-## Motivation
-
-GitHub repositories accumulate thousands of issues. Manually triaging each
-issue — deciding whether it is a bug, a feature request, or a documentation
-problem — costs maintainer time and slows down project management.
-
-This project explores whether ML models trained on historical, human-labelled
-issues can automate or assist with that triage process reliably enough to be
-useful in practice.
+The selected LinearSVC model also outperformed the BERT-Tiny benchmark while being faster, smaller, and easier to run on CPU.
 
 ---
 
-## Planned Phases
+## What the System Does
 
-| Stage | Description | Status |
-|-------|-------------|--------|
-| 0 | Project initialisation — structure, environment, dependencies | ✅ Done |
-| 1 | Dataset collection and audit (GitHub Issues API) | ✅ Done |
-| 2 | Simple baselines (majority-class, dummy classifier) | ✅ Done |
-| 3 | Classical NLP models (TF-IDF + Logistic Regression, SVM, SGD) | ✅ Done |
-| 4 | Proper evaluation (macro F1, confusion matrix, temporal split) | ✅ Done |
-| 5A | FastAPI backend inference service | ✅ Done |
-| 5B | TF-IDF similar-issue retrieval | ✅ Done |
-| 5C | Local Streamlit demonstration interface | ✅ Done |
-| — | Duplicate detection — removed from scope | ❌ Removed |
-| — | Finalization — repository audit, report, and presentation | ⬜ Next |
+Given a GitHub issue title and body, the system can:
 
-> **Note:** The table above may change after the dataset audit in Stage 1.
-> Label classes, repository selection, and modelling approach will all be
-> decided based on what the data actually looks like.
+1. Predict whether the issue is a Bug, Documentation issue, or Enhancement.
+2. Display the raw LinearSVC decision scores and decision margin.
+3. Retrieve lexically similar historical scikit-learn issues.
+4. Present the results through a local Streamlit interface.
+
+Decision scores are **not probabilities** and are not displayed as confidence percentages.
+
+Retrieved issues are ranked by **TF-IDF cosine similarity**. Similar issues are not necessarily duplicates.
 
 ---
 
-## Repository Structure
+## Project Pipeline
 
-```
-github-issue-intelligence/
-├── .agents/rules/          # Project development rules for AI coding assistants
-├── data/
-│   ├── raw/                # Downloaded issues (not committed)
-│   ├── interim/            # Cleaned / partially processed data
-│   └── processed/          # Final model-ready datasets
-├── docs/                   # Project documentation and decision log
-├── notebooks/              # Jupyter notebooks for exploration and reporting
-├── reports/figures/        # Generated charts and figures
-├── scripts/                # One-off helper scripts (data download, etc.)
-├── src/issue_intelligence/ # Reusable Python package (all core logic lives here)
-├── tests/                  # pytest test suite
-├── .env.example            # Template for environment variables
-├── requirements.txt        # Python dependencies
-└── README.md               # This file
-```
-
----
-
-## Setup Instructions
-
-### 1. Prerequisites
-
-- Python 3.12 or later (this project uses Python 3.14)
-- `git`
-
-### 2. Clone the repository
-
-```bash
-git clone <repository-url>
-cd github-issue-intelligence
-```
-
-### 3. Create and activate the virtual environment
-
-**Windows (PowerShell):**
-```powershell
-py -3.14 -m venv .venv
-.venv\Scripts\Activate.ps1
-```
-
-**macOS / Linux:**
-```bash
-python3.14 -m venv .venv
-source .venv/bin/activate
-```
-
-### 4. Install dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### 5. Configure environment variables
-
-```bash
-cp .env.example .env
-# Edit .env and add your GitHub Personal Access Token
-```
-
-### 6. Verify the setup
-
-```bash
-pytest tests/ -v
-ruff check src/ tests/
+```text
+GitHub issue collection
+        ↓
+Dataset audit and label mapping
+        ↓
+Preprocessing and deterministic splitting
+        ↓
+Baselines and classical ML models
+        ↓
+Robustness experiments and temporal tuning
+        ↓
+BERT-Tiny comparison
+        ↓
+Final held-out temporal evaluation
+        ↓
+FastAPI inference service
+        ↓
+TF-IDF similar-issue retrieval
+        ↓
+Streamlit demonstration interface
 ```
 
 ---
 
-## API Usage
+## Dataset
 
-A FastAPI service is available to run inferences against the final tuned LinearSVC model.
+The project uses public issues from the `scikit-learn/scikit-learn` GitHub repository.
 
-### Starting the Server
+| Dataset stage | Records |
+|---|---:|
+| Raw collected issues | 12,190 |
+| Final labelled modelling dataset | 5,710 |
+| Temporal train split | 3,996 |
+| Temporal validation split | 858 |
+| Held-out temporal test split | 856 |
+
+Final class distribution:
+
+| Class | Count |
+|---|---:|
+| Bug | 2,274 |
+| Enhancement | 2,039 |
+| Documentation | 1,397 |
+
+The held-out test set was isolated until the final evaluation.
+
+---
+
+## Model Comparison
+
+### Temporal validation
+
+| Model | Macro F1 |
+|---|---:|
+| Stratified-random baseline | 0.3376 |
+| Logistic Regression | 0.9051 |
+| LinearSVC | 0.9060 |
+| SGDClassifier | 0.9077 |
+| Tuned LinearSVC | **0.9087** |
+| BERT-Tiny | 0.8550 |
+
+### Selected final configuration
+
+- TF-IDF lowercasing
+- unigrams and bigrams
+- `min_df=5`
+- `max_df=0.95`
+- sublinear term frequency
+- LinearSVC with `C=0.3`
+- balanced class weights
+
+The tuned training-only vocabulary contained 20,473 terms.  
+After refitting on train + validation, the final saved model contained 27,129 terms.
+
+---
+
+## Robustness Checks
+
+The project includes:
+
+- title-only and body-only experiments,
+- target-label word masking,
+- prefix-free evaluation,
+- performance by year,
+- performance by text length,
+- exact-duplicate checks,
+- near-duplicate checks,
+- decision-margin analysis,
+- influential-term review,
+- misclassification review.
+
+No exact train-validation duplicates were found, and no near-duplicate pairs were found at cosine thresholds of 0.90, 0.95, or 0.99.
+
+---
+
+## Local Architecture
+
+```text
+Streamlit UI
+    ↓ HTTP
+FastAPI service
+    ├── /health
+    ├── /model-info
+    ├── /predict
+    └── /similar
+          ↓
+TF-IDF + LinearSVC classifier
+TF-IDF cosine retrieval index
+```
+
+The Streamlit interface communicates only with FastAPI. It does not load datasets or model artifacts directly.
+
+---
+
+## Run the Local Demonstration
+
+### 1. Start the FastAPI backend
+
 ```powershell
 .venv\Scripts\python -m uvicorn issue_intelligence.api.app:app --reload
 ```
 
-Optionally set the model path via environment variable:
+### 2. Start Streamlit in a second terminal
+
 ```powershell
-$env:ISSUE_MODEL_PATH="models/classical/final_linear_svc.joblib"
+.venv\Scripts\python -m streamlit run src/issue_intelligence/ui/app.py
 ```
-If the model file is missing, the API will start but will report not-ready and return 503s for predictions. You must run Stage 3A/3C scripts to build a model, or provide a saved pipeline.
 
-### Endpoints
+The frontend uses:
 
-- `GET /health` : Returns readiness status.
-- `GET /model-info` : Returns model labels, expected inputs, and configuration.
-- `POST /predict` : Submits an issue title and body.
+```text
+http://127.0.0.1:8000
+```
 
-**Example Request:**
+by default. A different backend can be configured with the `ISSUE_API_URL` environment variable.
+
+---
+
+## Example Input
+
+**Title**
+
+```text
+RandomForestClassifier raises an error when fitting sparse input
+```
+
+**Body**
+
+```text
+Calling fit with a sparse matrix produces an unexpected ValueError.
+```
+
+The verified local smoke test predicted **Bug** and returned five lexically similar historical issues.
+
+---
+
+## API Summary
+
+### `GET /health`
+
+Reports classifier and retrieval availability.
+
+### `GET /model-info`
+
+Reports the loaded model type, labels, and vocabulary information.
+
+### `POST /predict`
+
+Example request:
+
 ```json
 {
   "title": "RandomForestClassifier raises an error when fitting sparse input",
@@ -150,25 +222,10 @@ If the model file is missing, the API will start but will report not-ready and r
 }
 ```
 
-**Example Response:**
-```json
-{
-  "predicted_label": "Bug",
-  "decision_scores": {
-    "Bug": 0.5218,
-    "Documentation": -0.8881,
-    "Enhancement": -0.6790
-  },
-  "decision_margin": 1.2008,
-  "model_name": "LinearSVC"
-}
-```
+### `POST /similar`
 
-> **Note:** The `decision_scores` are raw LinearSVC decision scores. They are NOT probabilities or calibrated confidence metrics. `decision_margin` represents the gap between the top prediction and the runner-up.
+Example request:
 
-- `POST /similar` : Retrieves similar historical issues using TF-IDF similar-issue retrieval with exact cosine similarity.
-
-**Example Request:**
 ```json
 {
   "title": "RandomForestClassifier raises an error when fitting sparse input",
@@ -177,91 +234,64 @@ If the model file is missing, the API will start but will report not-ready and r
 }
 ```
 
-```json
-{
-  "results": [
-    {
-      "issue_number": 14613,
-      "title": "EllipticEnvelope does not work with a sparse matrix",
-      "target_label": "Documentation",
-      "created_at": "2019-08-09T13:17:27Z",
-      "url": "https://github.com/scikit-learn/scikit-learn/issues/14613",
-      "similarity_score": 0.214
-    }
-  ],
-  "retrieval_method": "tfidf_cosine",
-  "indexed_issue_count": 4854
-}
-```
+---
 
-> **Note:** Similarity scores are raw TF-IDF cosine similarity values, not
-> probabilities and not proof of duplicate issues.
+## Quality Checks
 
-## Stage 5C — Local Streamlit Demonstration Interface
+Final repository verification:
 
-A local Streamlit UI sits on top of the FastAPI backend.
-It communicates exclusively via HTTP — it does not load model artifacts directly.
-
-### Running both services (two terminals)
-
-**Terminal 1 — API backend:**
-```powershell
-.venv\Scripts\python -m uvicorn issue_intelligence.api.app:app --reload
-```
-
-**Terminal 2 — Streamlit frontend:**
-```powershell
-.venv\Scripts\python -m streamlit run src/issue_intelligence/ui/app.py
-```
-
-The UI defaults to `http://127.0.0.1:8000`. Override with:
-```powershell
-$env:ISSUE_API_URL="http://127.0.0.1:8000"
-```
-
-## Configuration
-
-All secrets and environment-specific settings are stored in `.env` (not
-committed). See `.env.example` for the full list of variables.
+| Check | Result |
+|---|---|
+| Automated tests | **341 passed** |
+| Ruff | **All checks passed** |
+| Dependency check | **No broken requirements** |
+| Stage 4B metrics | **Unchanged after final evaluation** |
+| Generated model and retrieval artifacts | **Gitignored** |
 
 ---
 
-## Documentation
+## Limitations
 
-| File | Purpose |
-|------|---------|
-| `docs/project_plan.md` | Detailed stage-by-stage plan |
-| `docs/decisions.md` | Architecture and design decision log |
-| `docs/gpt_usage.md` | Record of AI tool assistance |
-| `docs/handoff.md` | Handoff guide for resuming work |
-
----
-
-## Data Collection
-
-Issues are collected from GitHub using the `scripts/collect_issues.py` script.
-Pull requests are excluded automatically.
-
-```powershell
-# Collect up to 500 issues from scikit-learn (open + closed)
-.venv\Scripts\python scripts\collect_issues.py `
-    --owner scikit-learn `
-    --repo  scikit-learn `
-    --state all `
-    --max-issues 500 `
-    --output data\raw\scikit-learn_issues_sample.json
-```
-
-Output files (not committed — see `.gitignore`):
-- `data/raw/scikit-learn_issues_sample.json` — collected issue records
-- `data/raw/scikit-learn_issues_sample_metadata.json` — collection statistics
-
-Requires `GITHUB_TOKEN` to be set in `.env`.
+- The model was trained and evaluated only on scikit-learn issues.
+- GitHub labels may contain human inconsistency and historical noise.
+- Issues without a reliable target type were excluded.
+- LinearSVC decision scores are uncalibrated.
+- TF-IDF retrieval measures lexical similarity, not full semantic equivalence.
+- Similar retrieved issues are not confirmed duplicates.
+- The transformer benchmark used BERT-Tiny under CPU and sequence-length constraints.
+- The FastAPI service and Streamlit interface are local demonstration components, not production deployment.
 
 ---
 
-## Contributing
+## Project Report
 
-This is a university course project with two contributors. Changes are made
-in small, reviewable increments. See `docs/handoff.md` for context before
-starting any new work session.
+The complete English project report is available in:
+
+[`REPORT.md`](REPORT.md)
+
+It describes the data journey, modelling decisions, experiments, findings, system architecture, limitations, and use of AI tools.
+
+---
+
+## AI Assistance
+
+AI coding assistants were used for planning, implementation support, debugging, documentation, and review.
+
+The project team remained responsible for:
+
+- defining the task and labels,
+- protecting the held-out test set,
+- reviewing generated code,
+- verifying reported metrics,
+- correcting unsupported claims,
+- running tests and linting,
+- understanding the final implementation.
+
+See [`docs/gpt_usage.md`](docs/gpt_usage.md) for the detailed AI-usage record.
+
+---
+
+## Authors
+
+- Omri Besan
+- Leon Pasternak
