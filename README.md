@@ -13,6 +13,7 @@ Stages 0, 1A-1D, 2A-2C, 3A, 3B, 3C, and 4A are ✅ Complete.
 BERT-Tiny (4.4M params) Temporal Macro F1: **0.8550** — 5.4 pp below tuned LinearSVC (0.9087).
 LinearSVC advances to final test-set evaluation. Transformer does not.
 Next: Stage 4B — final model evaluation on held-out test set.
+**Note:** Evaluated once on a held-out temporal test set (2024-2026). No post-test tuning occurred.
 
 ---
 

@@ -90,7 +90,7 @@ def plot_validation_vs_test(val_macro_f1: float, test_macro_f1: float, output_pa
     """Plot temporal validation vs test Macro F1."""
     plt.figure(figsize=(6, 5))
     bars = plt.bar(
-        ["Temporal Validation\n(2018-2020)", "Temporal Test\n(2020-2023)"],
+        ["Temporal Validation\n(2022-2024)", "Temporal Test\n(2024-2026)"],
         [val_macro_f1, test_macro_f1],
         color=["#2c3e50", "#27ae60"],
     )
